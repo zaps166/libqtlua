@@ -246,7 +246,7 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(QtLua::UserData::ptr);
+Q_DECLARE_METATYPE(QtLua::UserData::ptr)
 
 #endif
 
