@@ -307,6 +307,35 @@ namespace QtLua {
 	*color = QColor(v.at(1).to_integer(), v.at(2).to_integer(), v.at(3).to_integer());
 	break;
       }
+      case QMetaType::QCursor: {
+	QCursor *cursor = reinterpret_cast<QCursor*>(data);
+	*cursor = QCursor((Qt::CursorShape)v.to_integer());
+	break;
+      }
+      case QMetaType::QPalette: {
+	QPalette *palette = reinterpret_cast<QPalette*>(data);
+	if (v.type() == ValueBase::TNumber) {
+	  *palette = QPalette(v.to_integer());
+	} else {
+	  for (int i = 1; ; ++i) {
+	    Value v_at = v.at(i);
+	    const Value *val = NULL;
+	    if (v_at.is_nil()) {
+	      if (i == 1)
+		val = &v;
+	      else
+		break;
+	    } else {
+	      val = &v_at;
+	    }
+	    palette->setColor((QPalette::ColorRole)val->at("role").to_integer(), val->at("color").to_integer());
+	    if (val == &v)
+	      break;
+	  }
+	}
+	break;
+      }
+
       default: {
 
 	if (!QMetaType::isRegistered(type))
