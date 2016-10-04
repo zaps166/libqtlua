@@ -55,7 +55,7 @@ class UserListItem : public UserItem
 
 public:
 
-  QTLUA_REFTYPE(UserListItem);
+  QTLUA_REFTYPE(UserListItem)
 
   UserListItem();
   ~UserListItem();

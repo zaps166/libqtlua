@@ -46,7 +46,7 @@ template <class Container>
 class QLinkedListProxy : public UserData
 {
 public:
-  QTLUA_REFTYPE(QLinkedListProxy);
+  QTLUA_REFTYPE(QLinkedListProxy)
 
   /** Create a @ref QListProxy object with no attached container */
   QLinkedListProxy();
@@ -70,7 +70,7 @@ private:
   class ProxyIterator : public Iterator
   {
   public:
-    QTLUA_REFTYPE(ProxyIterator);
+    QTLUA_REFTYPE(ProxyIterator)
     ProxyIterator(State *ls, const Ref<QLinkedListProxy> &proxy);
 
   private:

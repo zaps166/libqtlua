@@ -139,7 +139,7 @@ class QHashProxy : public QHashProxyRo<Container>
   using QHashProxyRo<Container>::_hash;
 
 public:
-  QTLUA_REFTYPE(QHashProxy);
+  QTLUA_REFTYPE(QHashProxy)
 
   /** Create a @ref QHashProxy object */
   QHashProxy();

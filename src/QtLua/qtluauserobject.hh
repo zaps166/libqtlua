@@ -67,7 +67,7 @@ namespace QtLua {
     class UserObjectIterator : public Iterator
     {
     public:
-      QTLUA_REFTYPE(UserObjectIterator);
+      QTLUA_REFTYPE(UserObjectIterator)
       UserObjectIterator(State *ls, const Ref<UserObject> &obj);
 
     private:

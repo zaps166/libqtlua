@@ -76,7 +76,7 @@ private:
   class ProxyIterator : public Iterator
   {
   public:
-    QTLUA_REFTYPE(ProxyIterator);
+    QTLUA_REFTYPE(ProxyIterator)
     ProxyIterator(State *ls, const Ref<QVectorProxyRo> &proxy);
 
   private:
@@ -133,7 +133,7 @@ protected:
   using QVectorProxyRo<Container, max_resize, min_resize>::_vector;
 
 public:
-  QTLUA_REFTYPE(QVectorProxy);
+  QTLUA_REFTYPE(QVectorProxy)
 
   /** Create a @ref QVectorProxy object */
   QVectorProxy();

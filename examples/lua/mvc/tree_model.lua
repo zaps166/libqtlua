@@ -1,5 +1,3 @@
-#!/usr/bin/env qtlua
-
 data = { "a", "b", "c", { "d", "e" } };
 
 model = qt.mvc.new_table_tree_model(data, qt.meta.QtLua__TableTreeModel.Recursive +

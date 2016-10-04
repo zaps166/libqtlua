@@ -71,7 +71,7 @@ private:
   class ProxyIterator : public Iterator
   {
   public:
-    QTLUA_REFTYPE(ProxyIterator);
+    QTLUA_REFTYPE(ProxyIterator)
     ProxyIterator(State *ls, const Ref<ArrayProxyRo> &proxy);
 
   private:
@@ -124,7 +124,7 @@ class ArrayProxy : public ArrayProxyRo<T>
   using ArrayProxyRo<T>::_size;
 
 public:
-  QTLUA_REFTYPE(ArrayProxy);
+  QTLUA_REFTYPE(ArrayProxy)
 
   /** Create a @ref ArrayProxy object */
   ArrayProxy();

@@ -1,5 +1,3 @@
-#!/usr/bin/env qtlua
-
 qt.dialog.tree_view(_G, 
 --		    qt.meta.QtLua__TableTreeModel.HideKey +
 --		    qt.meta.QtLua__TableTreeModel.HideValue +

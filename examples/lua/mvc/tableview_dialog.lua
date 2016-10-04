@@ -1,5 +1,3 @@
-#!/usr/bin/env qtlua
-
 qt.dialog.table_view(_G,
 		     qt.meta.QtLua__TableTreeModel.Editable +
 			qt.meta.QtLua__TableGridModel.EditLuaEval +

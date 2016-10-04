@@ -1,5 +1,3 @@
-#!/usr/bin/env qtlua
-
 function create_model(array)
 
    -- fetch some constant values

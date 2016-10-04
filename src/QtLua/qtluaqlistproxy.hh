@@ -71,7 +71,7 @@ private:
   class ProxyIterator : public Iterator
   {
   public:
-    QTLUA_REFTYPE(ProxyIterator);
+    QTLUA_REFTYPE(ProxyIterator)
     ProxyIterator(State *ls, const Ref<QListProxyRo> &proxy);
 
   private:
@@ -125,7 +125,7 @@ class QListProxy : public QListProxyRo<Container>
   using QListProxyRo<Container>::_list;
 
 public:
-  QTLUA_REFTYPE(QListProxy);
+  QTLUA_REFTYPE(QListProxy)
 
   /** Create a @ref QListProxy object */
   QListProxy();
