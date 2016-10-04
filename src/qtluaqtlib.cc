@@ -402,6 +402,11 @@ namespace QtLua {
     return QtLua::Value(ls);
   }
 
+  QTLUA_FUNCTION(get_viewport, "Get viewport from scroll area.",
+		 "usage: qt.ui.get_viewport( object )")
+  {
+    return QtLua::Value(ls, get_arg_qobject<QAbstractScrollArea>(args, 0)->viewport());
+  }
   
   ////////////////////////////////////////////////// translation
 
@@ -1015,6 +1020,7 @@ namespace QtLua {
 
     QTLUA_FUNCTION_REGISTER(ls, "qt.ui.", layout_add         );
     QTLUA_FUNCTION_REGISTER(ls, "qt.ui.", layout_spacer      );
+    QTLUA_FUNCTION_REGISTER(ls, "qt.ui.", get_viewport);
     QTLUA_FUNCTION_REGISTER2(ls, "qt.ui.attach", ui_attach );
 
     QTLUA_FUNCTION_REGISTER(ls, "qt.ui.menu.", add_menu         );
