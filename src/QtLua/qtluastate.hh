@@ -221,6 +221,13 @@ public:
   static inline void register_qobject_meta();
 
   /**
+   * @This adds a new entry to the @tt{qt.meta} lua table. This allows
+   * lua script to access QObject members.
+   */
+  template <class QObject_T>
+  static inline void register_qobject_meta_noconstruct();
+
+  /**
    * @internal @This asserts internal lua stack is empty.
    */
   void check_empty_stack() const;
