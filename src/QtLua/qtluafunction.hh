@@ -24,7 +24,6 @@
 
 #include "qtluauserdata.hh"
 #include "qtluavalue.hh"
-#include "qtluaplugin.hh"
 
 namespace QtLua {
 
@@ -58,8 +57,6 @@ namespace QtLua {
    * global lua variables:
    *
    * @example examples/cpp/userdata/function.cc:2
-   *
-   * Functions can also be registered on a @ref Plugin objects.
    */
 
   class Function : public UserData
@@ -69,9 +66,6 @@ namespace QtLua {
 
     /** @internal */
     void register_(State *ls, const String &path);
-
-    /** @internal @see Plugin */
-    void register_(Plugin &plugin, const String &name);
 
     /** This function may be reimplemented to return a short
 	description of the function. */

@@ -21,7 +21,6 @@
 #include <QtLua/String>
 #include <QtLua/Function>
 #include <QtLua/State>
-#include <QtLua/Plugin>
 
 namespace QtLua {
 
@@ -48,15 +47,6 @@ String Function::get_description() const
 void Function::register_(State *ls, const String &path)
 {
   ls->set_global(path, Value(ls, *this));
-}
-
-void Function::register_(Plugin &plugin, const String &name)
-{
-  if (ref_is_delegate())
-    QTLUA_THROW(QtLua::Function, "The `%' function is already registered on a plugin. Plugin already loaded?", .arg(name));
-
-  ref_delegate(&plugin);
-  plugin._map.insert(name, this);
 }
 
 void Function::completion_patch(String &path, String &entry, int &offset)

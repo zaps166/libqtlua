@@ -18,8 +18,6 @@
 
 */
 
-#include "config.hh"
-
 #include <cstdlib>
 
 #include <QStringList>
@@ -32,7 +30,6 @@
 #include <QtLua/Iterator>
 #include <QtLua/String>
 #include <QtLua/Function>
-#include <QtLua/Console>
 #include <internal/QObjectWrapper>
 
 #include "qtluaqtlib.hh"
@@ -44,6 +41,8 @@ extern "C" {
 }
 
 namespace QtLua {
+
+#define QTLUA_MAX_COMPLETION 200
 
 char State::_key_threads;
 char State::_key_item_metatable;
@@ -144,32 +143,6 @@ int State::lua_cmd_print(lua_State *st)
 
   QTLUA_RESTORE_THREAD(this_);
   return 0;
-}
-
-int State::lua_cmd_plugin(lua_State *st)
-{
-  State	*this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
-
-  try {
-
-    if (lua_gettop(st) < 1 || !lua_isstring(st, 1))
-      {
-	this_->output_str("Usage: plugin(\"library_filename_without_ext\")\n");
-	QTLUA_RESTORE_THREAD(this_);
-	return 0;
-      }
-
-    QTLUA_REFNEW(Plugin, String(lua_tostring(st, 1)) + Plugin::get_plugin_ext())->push_ud(st);
-    QTLUA_RESTORE_THREAD(this_);
-    return 1;
-
-  } catch (String &e) {
-    QTLUA_RESTORE_THREAD(this_);
-    luaL_error(st, "%s", e.constData());
-  }
-
-  std::abort();
 }
 
 int State::lua_cmd_list(lua_State *st)
@@ -948,7 +921,7 @@ void State::exec(const QString &statement)
 
 void State::gc_collect()
 {
-#ifdef HAVE_LUA_GC
+#if LUA_VERSION_NUM >= 501
   lua_gc(_lst, LUA_GCCOLLECT, 0);
 #else
   lua_setgcthreshold(_lst, 0);
@@ -995,7 +968,7 @@ bool State::openlib(Library lib)
     case BaseLib:
       QTLUA_LUA_CALL(_lst, luaopen_base, "_G");
       return true;
-#ifdef HAVE_LUA_PACKAGELIB
+#if LUA_VERSION_NUM >= 501
     case PackageLib:
       QTLUA_LUA_CALL(_lst, luaopen_package, "package");
       return true;
@@ -1012,7 +985,7 @@ bool State::openlib(Library lib)
     case IoLib:
       QTLUA_LUA_CALL(_lst, luaopen_io, "io");
       return true;
-#ifdef HAVE_LUA_OSLIB
+#if LUA_VERSION_NUM >= 501
     case OsLib:
       QTLUA_LUA_CALL(_lst, luaopen_os, "os");
       return true;
@@ -1027,12 +1000,13 @@ bool State::openlib(Library lib)
       return true;
 #endif
 
-#ifdef HAVE_LUA_JITLIB
+#ifdef LUAJIT_VERSION_NUM
+    case Bit32Lib:
+      QTLUA_LUA_CALL(_lst, luaopen_bit, "bit");
+      return true;
     case JitLib:
       QTLUA_LUA_CALL(_lst, luaopen_jit, "jit");
       return true;
-#endif
-#ifdef HAVE_LUA_FFILIB
     case FfiLib:
       QTLUA_LUA_CALL(_lst, luaopen_ffi, "ffi");
       return true;
@@ -1043,10 +1017,10 @@ bool State::openlib(Library lib)
       QTLUA_LUA_CALL(_lst, luaopen_coroutine, "coroutine");
       QTLUA_LUA_CALL(_lst, luaopen_bit32, "bit32");
 #endif
-#ifdef HAVE_LUA_OSLIB
+#if LUA_VERSION_NUM >= 501
       QTLUA_LUA_CALL(_lst, luaopen_os, "os");
 #endif
-#ifdef HAVE_LUA_PACKAGELIB
+#if LUA_VERSION_NUM >= 501
       QTLUA_LUA_CALL(_lst, luaopen_package, "package");
 #endif
       QTLUA_LUA_CALL(_lst, luaopen_base, "_G");
@@ -1055,10 +1029,9 @@ bool State::openlib(Library lib)
       QTLUA_LUA_CALL(_lst, luaopen_math, "math");
       QTLUA_LUA_CALL(_lst, luaopen_io, "io");
       QTLUA_LUA_CALL(_lst, luaopen_debug, "debug");
-#ifdef HAVE_LUA_JITLIB
+#ifdef LUAJIT_VERSION_NUM
+      QTLUA_LUA_CALL(_lst, luaopen_bit, "bit");
       QTLUA_LUA_CALL(_lst, luaopen_jit, "jit");
-#endif
-#ifdef HAVE_LUA_FFILIB
       QTLUA_LUA_CALL(_lst, luaopen_ffi, "ffi");
 #endif
       qtluaopen_qt(this);
@@ -1068,7 +1041,6 @@ bool State::openlib(Library lib)
       reg_c_function("list", lua_cmd_list);
       reg_c_function("each", lua_cmd_each);
       reg_c_function("help", lua_cmd_help);
-      reg_c_function("plugin", lua_cmd_plugin);
       reg_c_function("qtype", lua_cmd_qtype);
       return true;
 

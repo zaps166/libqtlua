@@ -86,9 +86,8 @@ namespace QtLua {
    * Some functions in this class may throw an exception to handle lua
    * errors, see @xref{Error handling and exceptions}.
    *
-   * This class provides Qt slots and signals for use with the @ref
-   * Console widget. This enables table names completion and error
-   * messages reporting on user console.
+   * This class provides Qt slots and signals which enables table
+   * names completion and error messages reporting to the user.
    */
 
 class State : public QObject
@@ -243,13 +242,11 @@ public slots:
    * This slot function execute the given script string and initiate a
    * garbage collection cycle. It will catch and print lua
    * errors using the @ref output signal.
-   * @see Console
    */
   void exec(const QString &statements);
 
   /**
-   * Lua global variables completion handler. May be connected to
-   * Console widget for default global variables completion behavior.
+   * Lua global variables completion handler.
    */
   void fill_completion_list(const QString &prefix, QStringList &list, int &cursor_offset);
 
@@ -292,7 +289,6 @@ private:
   static int lua_cmd_print(lua_State *st);
   static int lua_cmd_list(lua_State *st);
   static int lua_cmd_help(lua_State *st);
-  static int lua_cmd_plugin(lua_State *st);
   static int lua_cmd_qtype(lua_State *st);
 
   // lua meta methods functions

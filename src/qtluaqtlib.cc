@@ -18,8 +18,6 @@
 
 */
 
-#include "config.hh"
-
 #ifdef HAVE_QT_UITOOLS
 # include <QUiLoader>
 #endif

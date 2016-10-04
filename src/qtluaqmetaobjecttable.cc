@@ -21,7 +21,6 @@
 #include <QMetaObject>
 #include <internal/QMetaObjectWrapper>
 
-#include <QtLua/Console>
 #include <QtLua/UserItemSelectionModel>
 #include <QtLua/UserItemModel>
 #include <QtLua/ItemViewDialog>
@@ -82,7 +81,6 @@
 #include <QObject>
 #include <QPainter>
 #include <QPalette>
-#include <QPluginLoader>
 #include <QProcess>
 #include <QProgressBar>
 #include <QProgressDialog>
@@ -132,7 +130,6 @@
 namespace QtLua {
 
 const meta_object_table_s meta_object_table[] = {
-  { &QtLua::Console::staticMetaObject,               &create_qobject<QtLua::Console> },
   { &QtLua::UserItemSelectionModel::staticMetaObject,    0 },
   { &QtLua::UserItemModel::staticMetaObject,	     0 },
   { &QtLua::ItemViewDialog::staticMetaObject,	     0 },
@@ -193,7 +190,6 @@ const meta_object_table_s meta_object_table[] = {
   { &QObject::staticMetaObject,			     &create_qobject<QObject> },
   { &QPainter::staticMetaObject,		     0 },
   { &QPalette::staticMetaObject,		     0 },
-  { &QPluginLoader::staticMetaObject,		     &create_qobject<QPluginLoader> },
   { &QProcess::staticMetaObject,		     &create_qobject<QProcess> },
   { &QProgressBar::staticMetaObject,		     &create_qobject<QProgressBar> },
   { &QProgressDialog::staticMetaObject,		     &create_qobject<QProgressDialog> },
