@@ -88,7 +88,7 @@ namespace QtLua {
 	}
 
       _mo_table.insert("Qt", QMetaObjectWrapper(&staticQtMetaObject));
-      _mo_table.insert("QSizePolicy", QMetaObjectWrapper(&QtLua::SizePolicy::staticMetaObject));
+      _mo_table.insert("QSizePolicy", QMetaObjectWrapper(&QSizePolicy::staticMetaObject));
     }
 
     qmetaobject_table_t _mo_table;
