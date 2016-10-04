@@ -799,6 +799,9 @@ State::~State()
 
   while ((i = _whash.begin()) != _whash.end())
     i.value()->_drop();
+
+  foreach (Function *function, _functions)
+    delete function;
 }
 
 Value State::eval_expr(bool use_lua, const String &expr)

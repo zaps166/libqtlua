@@ -35,6 +35,8 @@ struct lua_State;
 
 namespace QtLua {
 
+  class Function;
+
   /** @internal */
   typedef QObject * qobject_creator();
 
@@ -228,6 +230,11 @@ public:
   static inline void register_qobject_meta_noconstruct();
 
   /**
+   * @internal @This adds a new lua function.
+   */
+  inline void add_function(Function *function);
+
+  /**
    * @internal @This asserts internal lua stack is empty.
    */
   void check_empty_stack() const;
@@ -328,6 +335,8 @@ private:
   lua_State	*_lst;      //< current thread state
   bool          _yield_on_return;
   bool          _debug_output;
+
+  QList<Function *> _functions;
 };
 
 }

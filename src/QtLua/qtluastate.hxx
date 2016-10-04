@@ -75,6 +75,11 @@ namespace QtLua {
     qtlib_register_meta(&QObject_T::staticMetaObject, 0);
   }
 
+  void State::add_function(Function *function)
+  {
+    _functions.append(function);
+  }
+
   void State::enable_qdebug_print(bool enabled)
   {
     _debug_output = enabled;
