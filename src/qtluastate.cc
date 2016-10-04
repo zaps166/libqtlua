@@ -32,7 +32,7 @@
 #include <QtLua/Function>
 #include <internal/QObjectWrapper>
 
-#include "qtluaqtlib.hh"
+#include "internal/qtluaqtlib.hh"
 
 extern "C" {
 #include <lua.h>

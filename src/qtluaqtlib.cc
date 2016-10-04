@@ -66,7 +66,7 @@
 #include <internal/MetaCache>
 #include <internal/QMetaObjectWrapper>
 
-#include "qtluaqtlib.hh"
+#include "internal/qtluaqtlib.hh"
 
 namespace QtLua {
 

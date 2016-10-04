@@ -21,9 +21,6 @@
 #ifndef QTLUAQTLIB_HH_
 #define QTLUAQTLIB_HH_
 
-#include <QObject>
-#include <QSizePolicy>
-
 namespace QtLua {
 
   class State;
