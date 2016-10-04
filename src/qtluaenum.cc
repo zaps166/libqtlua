@@ -63,6 +63,8 @@ namespace QtLua {
 
   void Enum::completion_patch(String &path, String &entry, int &offset)
   {
+    Q_UNUSED(path)
+    Q_UNUSED(offset)
     entry += ".";
   }
 

@@ -43,7 +43,7 @@ namespace QtLua {
 class ListIterator : public Iterator
 {
 public:
-  QTLUA_REFTYPE(ListIterator);
+  QTLUA_REFTYPE(ListIterator)
 
   ListIterator(State *ls, const UserListItem::ptr &list);
 

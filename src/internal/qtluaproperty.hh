@@ -41,7 +41,7 @@ namespace QtLua {
   class Property : public Member
   {
   public:
-    QTLUA_REFTYPE(Property);
+    QTLUA_REFTYPE(Property)
 
     Property(const QMetaObject *mo, int index);
 

@@ -160,7 +160,7 @@ const meta_object_table_s meta_object_table[] = {
   { &QDoubleSpinBox::staticMetaObject,		     &create_qobject<QDoubleSpinBox> },
   { &QErrorMessage::staticMetaObject,		     &create_qobject<QErrorMessage> },
   { &QFile::staticMetaObject,			     &create_qobject<QFile> },
-  // { &QFileDialog::staticMetaObject,		     &create_qobject<QFileDialog> },
+  { &QFileDialog::staticMetaObject,		     &create_qobject<QFileDialog> },
   { &QFocusFrame::staticMetaObject,		     &create_qobject<QFocusFrame> },
   { &QFont::staticMetaObject,			     0 },
   { &QFontDialog::staticMetaObject,		     &create_qobject<QFontDialog> },

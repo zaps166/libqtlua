@@ -66,9 +66,9 @@ namespace QtLua {
 
   class TableTreeModel : public QAbstractItemModel
   {
-    Q_OBJECT;
-    Q_ENUMS(Attribute);
-    Q_FLAGS(Attributes);
+    Q_OBJECT
+    Q_ENUMS(Attribute)
+    Q_FLAGS(Attributes)
 
   public:
 
@@ -92,7 +92,7 @@ namespace QtLua {
 	EditAll		= 0x00039000,	//< Editable, EditInsert, EditRemove and EditKey allowed
       };
 
-    Q_DECLARE_FLAGS(Attributes, Attribute);
+    Q_DECLARE_FLAGS(Attributes, Attribute)
 
     /** Create a new lua table model. */
     TableTreeModel(const Value &root, Attributes attr, QObject *parent = 0);

@@ -18,10 +18,6 @@
 
 */
 
-#ifdef HAVE_QT_UITOOLS
-# include <QUiLoader>
-#endif
-
 #include <QFile>
 #include <QWidget>
 
@@ -115,6 +111,7 @@ namespace QtLua {
 		 "usage: qt.connect(qobjectwrapper, \"qt_signal_signature()\", qobjectwrapper, \"qt_slot_signature()\")\n"
 		 "       qt.connect(qobjectwrapper, \"qt_signal_signature()\", lua_function)\n")
   {
+    Q_UNUSED(ls)
     meta_call_check_args(args, 3, 4, Value::TUserData, Value::TString, Value::TNone, Value::TString);
 
     QObjectWrapper::ptr sigqow = args[0].to_userdata_cast<QObjectWrapper>();
@@ -124,7 +121,7 @@ namespace QtLua {
 
     int sigindex = sigobj.metaObject()->indexOfSignal(signame.constData());
     if (sigindex < 0)
-      QTLUA_THROW(qt.connect, "No such signal `%'.", .arg(signame));
+      QTLUA_THROW(qt.connect, "No such signal '%'.", .arg(signame));
 
     switch (args.size())
       {
@@ -141,10 +138,10 @@ namespace QtLua {
 
 	int slotindex = sloobj.metaObject()->indexOfSlot(slotname.constData());
 	if (slotindex < 0)
-	  QTLUA_THROW(qt.connect, "No such slot `%'.", .arg(slotname));
+	  QTLUA_THROW(qt.connect, "No such slot '%'.", .arg(slotname));
 
 	if (!QMetaObject::checkConnectArgs(signame.constData(), slotname.constData()))
-	  QTLUA_THROW(qt.connect, "Incompatible argument types between signal `%' and slot `%'.",
+	  QTLUA_THROW(qt.connect, "Incompatible argument types between signal '%' and slot '%'.",
 		      .arg(signame.constData()).arg(slotname.constData()));
 
 	if (!QMetaObject::connect(&sigobj, sigindex, &sloobj, slotindex))
@@ -170,7 +167,7 @@ namespace QtLua {
 
     int sigindex = sigobj.metaObject()->indexOfSignal(signame.constData());
     if (sigindex < 0)
-      QTLUA_THROW(qt.disconnect, "No such signal `%'.", .arg(signame));
+      QTLUA_THROW(qt.disconnect, "No such signal '%'.", .arg(signame));
 
     switch (args.size())
       {
@@ -190,7 +187,7 @@ namespace QtLua {
 
 	int slotindex = sloobj.metaObject()->indexOfSlot(slotname.constData());
 	if (slotindex < 0)
-	  QTLUA_THROW(qt.disconnect, "No such slot `%'.", .arg(slotname));
+	  QTLUA_THROW(qt.disconnect, "No such slot '%'.", .arg(slotname));
 
 	return Value(ls, (Value::Bool)QMetaObject::disconnect(&sigobj, sigindex, &sloobj, slotindex));
       }
@@ -221,14 +218,14 @@ namespace QtLua {
 	String n(args[0].to_string());
 	if (int t = QMetaType::type(n.constData()))
 	  return Value(ls, t);
-	QTLUA_THROW(qt.meta_type, "Unable to resolve Qt meta type `%'.", .arg(n));
+	QTLUA_THROW(qt.meta_type, "Unable to resolve Qt meta type '%'.", .arg(n));
       }
 
       case Value::TNumber: {
 	int t = args[0].to_integer();
 	if (const char *n = QMetaType::typeName(t))
 	  return Value(ls, n);
-	QTLUA_THROW(qt.meta_type, "Unable to resolve Qt meta type handle `%'.", .arg(t));
+	QTLUA_THROW(qt.meta_type, "Unable to resolve Qt meta type handle '%'.", .arg(t));
       }
 
       default:
@@ -249,59 +246,6 @@ namespace QtLua {
 
   ////////////////////////////////////////////////// ui
 
-
-  QTLUA_FUNCTION(load_ui, "Load a Qt ui file.",
-		 "usage: qt.ui.load_ui(\"file.ui\", [ parent ])\n")
-  {
-#ifdef HAVE_QT_UITOOLS
-    static QUiLoader uil;
-
-    meta_call_check_args(args, 1, 2, Value::TString, Value::TUserData);
-    QWidget *p = 0;
-
-    if (args.size() > 1)
-      p = args[0].to_qobject_cast<QWidget>();
-
-    QFile f(args[0].to_qstring());
-    QObject *w = uil.load(&f, p);
-
-    if (!w)
-      QTLUA_THROW(qt.ui.load_ui, "Unable to load the `%' ui file.", .arg(f.fileName()));
-
-    return Value(ls, w, true, true);
-#else
-    QTLUA_THROW(new_qobject, "QtLua has been compiled without support for Qt uitools module.");
-#endif
-  }
-
-
-  QTLUA_FUNCTION(new_widget, "Dynamically create a new Qt Widget using QUiLoader.",
-		 "usage: qt.ui.new_widget(\"QtClassName\", [ \"name\", parent ] )\n")
-  {
-#ifdef HAVE_QT_UITOOLS
-    static QUiLoader uil;
-
-    meta_call_check_args(args, 1, 3, Value::TString, Value::TString, Value::TUserData);
-    QWidget *p = 0;
-    String classname(args[0].to_string());
-    String name;
-
-    if (args.size() > 2)
-      p = args[2].to_qobject_cast<QWidget>();
-
-    if (args.size() > 1)
-      name = args[1].to_string();
-
-    QObject *w = uil.createWidget(classname.to_qstring(), p, name.to_qstring());
-
-    if (!w)
-      QTLUA_THROW(qt.ui.new_widget, "Unable to create a widget of type `%'.", .arg(classname));
-
-    return Value(ls, w, true, true);
-#else
-    QTLUA_THROW(new_qobject, "QtLua has been compiled without support for Qt uitools module.");
-#endif
-  }
 
   QTLUA_FUNCTION(layout_add, "Add an item to a QLayout or set QLayout of a QWidget.",
 		 "usage: qt.ui.layout_add( box_layout, widget|layout )\n"
@@ -484,7 +428,7 @@ namespace QtLua {
     if (!qtr->load(filename))
       {
 	delete qtr;
-	QTLUA_THROW(qt.translator, "Unable to load the translation file `%'", .arg(filename));
+	QTLUA_THROW(qt.translator, "Unable to load the translation file '%'", .arg(filename));
       }
 
     QCoreApplication::installTranslator(qtr);
@@ -599,7 +543,7 @@ namespace QtLua {
 
     return QtLua::Value(ls);
   err:
-    QTLUA_THROW(qt.ui.menu.attach, "Can not attach a `%' object to a `%' object.",
+    QTLUA_THROW(qt.ui.menu.attach, "Can not attach a '%' object to a '%' object.",
 		.arg(obj2->metaObject()->className())
 		.arg(obj->metaObject()->className()));
   }
@@ -713,7 +657,7 @@ namespace QtLua {
 
     return QtLua::Value(ls);
   err:
-    QTLUA_THROW(qt.ui.attach, "Can not attach a `%' to a `%' object.",
+    QTLUA_THROW(qt.ui.attach, "Can not attach a '%' to a '%' object.",
 		.arg(obj2->metaObject()->className())
 		.arg(obj->metaObject()->className()));
   }
@@ -908,6 +852,7 @@ namespace QtLua {
   QTLUA_FUNCTION(tree_view, "Expose a lua table in a QTreeView.",
 		 "usage: qt.dialog.tree_view( table [ , TableTreeModel::Attribute, \"title\" ] )\n")
   {
+    Q_UNUSED(ls)
     meta_call_check_args(args, 1, 3, Value::TNone, Value::TNumber, Value::TString);
 
     TableTreeModel::tree_dialog(QApplication::activeWindow(),
@@ -922,6 +867,7 @@ namespace QtLua {
   QTLUA_FUNCTION(table_view, "Expose a lua table in a QTableView with key, value and type columns.",
 		 "usage: qt.dialog.table_view( table [ , TableTreeModel::Attribute, \"title\" ] )\n")
   {
+    Q_UNUSED(ls)
     meta_call_check_args(args, 1, 3, Value::TNone, Value::TNumber, Value::TString);
 
     TableTreeModel::table_dialog(QApplication::activeWindow(),
@@ -936,6 +882,7 @@ namespace QtLua {
   QTLUA_FUNCTION(grid_view, "Expose 2 dimensions nested lua tables in a QTableView.",
 		 "usage: qt.dialog.grid_view( table [ , TableGridModel::Attribute, \"title\", {column keys}, {row keys} ] )\n")
   {
+    Q_UNUSED(ls)
     meta_call_check_args(args, 1, 5, Value::TNone, Value::TNumber,
 			 Value::TString, Value::TTable, Value::TTable);
     Value::List rk, *rkptr = 0;
@@ -1030,6 +977,7 @@ namespace QtLua {
   QTLUA_FUNCTION(set_model, "Set a MVC model of one or more Qt views.",
 		 "usage: qt.mvc.set_model( model, view_widget [, view_widget, ... ] )\n")
   {
+    Q_UNUSED(ls)
     meta_call_check_args(args, 2, 0, Value::TUserData, Value::TUserData);
 
     QAbstractItemModel *m = get_arg_qobject<QAbstractItemModel>(args, 0);
@@ -1065,8 +1013,6 @@ namespace QtLua {
     QTLUA_FUNCTION_REGISTER(ls, "qt.", tr                    );
     QTLUA_FUNCTION_REGISTER(ls, "qt.", translator            );
 
-    QTLUA_FUNCTION_REGISTER(ls, "qt.ui.", load_ui            );
-    QTLUA_FUNCTION_REGISTER(ls, "qt.ui.", new_widget         );
     QTLUA_FUNCTION_REGISTER(ls, "qt.ui.", layout_add         );
     QTLUA_FUNCTION_REGISTER(ls, "qt.ui.", layout_spacer      );
     QTLUA_FUNCTION_REGISTER2(ls, "qt.ui.attach", ui_attach );

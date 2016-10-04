@@ -295,7 +295,7 @@ namespace QtLua {
     assert(_obj);
 
     if (!_reparent)
-      QTLUA_THROW(QtLua::QObjectWrapper, "Parent change disallowed for the `%' QObject.",
+      QTLUA_THROW(QtLua::QObjectWrapper, "Parent change disallowed for the '%' QObject.",
 		  .arg(QObjectWrapper::qobject_name(*_obj)));
 
     if (!_obj->isWidgetType() || (parent && !parent->isWidgetType()))
@@ -383,6 +383,8 @@ namespace QtLua {
 
   void QObjectWrapper::completion_patch(String &path, String &entry, int &offset)
   {
+    Q_UNUSED(path)
+    Q_UNUSED(offset)
     if (_obj)
       entry += ".";
   }

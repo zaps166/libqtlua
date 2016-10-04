@@ -135,6 +135,7 @@ void UserItem::data_changed(int column) const
 
 UserItem * UserItem::get_child_row(int row) const
 {
+  Q_UNUSED(row)
   return 0;
 }
 
@@ -172,16 +173,21 @@ QIcon &	UserItem::get_icon() const
 
 bool UserItem::set_data(int column, int role)
 {
+  Q_UNUSED(column)
+  Q_UNUSED(role)
   return false;
 }
 
 QVariant UserItem::get_data(int column, int role) const
 {
+  Q_UNUSED(column)
+  Q_UNUSED(role)
   return QVariant();
 }
 
 Qt::ItemFlags UserItem::get_flags(int column) const
 {
+  Q_UNUSED(column)
   return Qt::ItemIsEnabled;
 }
 

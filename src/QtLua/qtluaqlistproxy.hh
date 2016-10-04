@@ -44,7 +44,7 @@ template <class Container>
 class QListProxyRo : public UserData
 {
 public:
-  QTLUA_REFTYPE(QListProxyRo);
+  QTLUA_REFTYPE(QListProxyRo)
 
   /** Create a @ref QListProxy object with no attached container */
   QListProxyRo();

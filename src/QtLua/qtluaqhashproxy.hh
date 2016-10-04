@@ -85,7 +85,7 @@ private:
   class ProxyIterator : public Iterator
   {
   public:
-    QTLUA_REFTYPE(ProxyIterator);
+    QTLUA_REFTYPE(ProxyIterator)
     ProxyIterator(State *ls, const Ref<QHashProxyRo> &proxy);
 
   private:

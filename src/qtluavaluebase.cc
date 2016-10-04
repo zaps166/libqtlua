@@ -612,7 +612,7 @@ QObject *ValueBase::to_qobject() const
   QObjectWrapper::ptr ow = to_userdata_cast<QObjectWrapper>();
 
   if (!ow.valid())
-    QTLUA_THROW(QtLua::ValueBase, "Can not convert a `%' lua value to a QObject.", .arg(type_name()));
+    QTLUA_THROW(QtLua::ValueBase, "Can not convert a '%' lua value to a QObject.", .arg(type_name()));
 
   return &ow->get_object();
 }
@@ -632,7 +632,7 @@ QVariant ValueBase::to_qvariant() const
       return QVariant(to_string());
 
     default:
-      QTLUA_THROW(QtLua::ValueBase, "Can not convert a `%' lua value to a QVariant.", .arg(type_name()));
+      QTLUA_THROW(QtLua::ValueBase, "Can not convert a '%' lua value to a QVariant.", .arg(type_name()));
     }
 }
 
@@ -643,6 +643,7 @@ QVariant ValueBase::to_qvariant(int qt_type) const
 
 static int lua_writer(lua_State *L, const void* p, size_t sz, void* pv)
 {
+  Q_UNUSED(L)
   QByteArray *ba = (QByteArray*)pv;
   ba->append((const char*)p, (int)sz);
   return 0;

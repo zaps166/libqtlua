@@ -46,7 +46,7 @@ namespace QtLua {
     friend class QObjectIterator;
 
   public:
-    QTLUA_REFTYPE(QObjectWrapper);
+    QTLUA_REFTYPE(QObjectWrapper)
 
     /** Create or find existing QObjectWrapper associated with given
 	QObject. QObject will be deleted when wrapper is destroyed

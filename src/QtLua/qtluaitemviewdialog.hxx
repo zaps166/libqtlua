@@ -37,16 +37,6 @@ namespace QtLua {
     return _view;
   }
 
-  ItemViewDialog::EditActions ItemViewDialog::get_edit_actions() const
-  {
-    return _edit;
-  }
-
-  void ItemViewDialog::set_edit_actions_(int edit)
-  {
-    set_edit_actions((EditAction)edit);
-  }
-
 }
 
 #endif

@@ -73,6 +73,7 @@ namespace QtLua {
   template <class Container>
   bool QHashProxyRo<Container>::meta_contains(State *ls, const Value &key)
   {
+    Q_UNUSED(ls)
     return _hash->contains(key);
   }
 
@@ -189,6 +190,8 @@ namespace QtLua {
 
   void QHashProxyKeytype<String>::completion_patch(String &path, String &entry, int &offset)
   {
+    Q_UNUSED(path)
+    Q_UNUSED(offset)
     entry += ".";
   }
 

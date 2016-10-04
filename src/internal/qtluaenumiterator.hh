@@ -44,7 +44,7 @@ namespace QtLua {
 class EnumIterator : public Iterator
 {
 public:
-  QTLUA_REFTYPE(EnumIterator);
+  QTLUA_REFTYPE(EnumIterator)
 
   EnumIterator(State *ls, QMetaEnum me);
 

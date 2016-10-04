@@ -28,12 +28,6 @@
 
 namespace QtLua {
 
-  Value::Value()
-    : ValueBase(0)
-    , _id(_id_counter++)
-  {
-  }
-
   Value::Value(const State *ls)
     : ValueBase(ls)
     , _id(_id_counter++)
@@ -124,20 +118,7 @@ namespace QtLua {
     *this = qv;
   }
 
-  Value::~Value()
-  {
-    if (_st)
-      cleanup();
-  }
-
 #ifdef Q_COMPILER_RVALUE_REFS
-  Value::Value(Value &&lv)
-    : ValueBase(lv._st)
-    , _id(lv._id)
-  {
-    lv._st = 0;
-  }
-
   Value::Value(const State *ls, Value &&lv)
     : ValueBase(ls)
     , _id(lv._id)

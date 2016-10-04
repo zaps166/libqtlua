@@ -310,7 +310,7 @@ namespace QtLua {
       default: {
 
 	if (!QMetaType::isRegistered(type))
-	  QTLUA_THROW(QtLua::MetaType, "Unable to convert from lua type `%' to the non-registered Qt type handle `%'.",
+	  QTLUA_THROW(QtLua::MetaType, "Unable to convert from lua type '%' to the non-registered Qt type handle '%'.",
 		      .arg(v.type_name_u()).arg(type));
 
 	if (type == ud_ref_type)
@@ -326,7 +326,7 @@ namespace QtLua {
       }
 
       case 0:
-	QTLUA_THROW(QtLua::MetaType, "Unsupported conversion from lua type `%' to Qt type `%'.",
+	QTLUA_THROW(QtLua::MetaType, "Unsupported conversion from lua type '%' to Qt type '%'.",
 		    .arg(v.type_name_u()).arg(QMetaType::typeName(type)));
       }
 

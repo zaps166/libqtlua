@@ -379,7 +379,7 @@ namespace QtLua {
   {
     X *p = dynamic_cast<X*>(to_qobject());
     if(!p)
-      QTLUA_THROW(QtLua::ValueBase, "Can not cast this QObject to the `%' class.",
+      QTLUA_THROW(QtLua::ValueBase, "Can not cast this QObject to the '%' class.",
 		  .arg(X::staticMetaObject.className()));
     return p;
   }
@@ -395,7 +395,7 @@ namespace QtLua {
     Ref<X> ref = ud.dynamiccast<X>();
 
     if (!ref.valid())
-      QTLUA_THROW(QtLua::ValueBase, "Can not convert from `%' type to `%'.",
+      QTLUA_THROW(QtLua::ValueBase, "Can not convert from '%' type to '%'.",
 		  .arg(ud->get_type_name()).arg(UserData::type_name<X>()));
 
     return ref;
@@ -409,7 +409,7 @@ namespace QtLua {
     Ref<X> ref = ud.dynamiccast<X>();
 
     if (ud.valid() && !ref.valid())
-      QTLUA_THROW(QtLua::ValueBase, "Can not convert from `%' type to `%'.",
+      QTLUA_THROW(QtLua::ValueBase, "Can not convert from '%' type to '%'.",
 		  .arg(ud->get_type_name()).arg(UserData::type_name<X>()));
 
     return ref;
@@ -426,7 +426,7 @@ namespace QtLua {
     X* ref = dynamic_cast<X*>(ud.ptr());
 
     if (!ref)
-      QTLUA_THROW(QtLua::ValueBase, "Can not convert from `%' type to `%'.",
+      QTLUA_THROW(QtLua::ValueBase, "Can not convert from '%' type to '%'.",
 		  .arg(ud->get_type_name()).arg(UserData::type_name<X>()));
 
     return ref;
@@ -440,7 +440,7 @@ namespace QtLua {
     X* ref = dynamic_cast<X*>(ud.ptr());
 
     if (ud.valid() && !ref)
-      QTLUA_THROW(QtLua::ValueBase, "Can not convert from `%' type to `%'.",
+      QTLUA_THROW(QtLua::ValueBase, "Can not convert from '%' type to '%'.",
 		  .arg(ud->get_type_name()).arg(UserData::type_name<X>()));
 
     return ref;

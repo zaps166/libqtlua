@@ -490,7 +490,7 @@ namespace QtLua {
   class Refobj : public RefobjBase
   {
   public:
-    QTLUA_REFTYPE(X);
+    QTLUA_REFTYPE(X)
 
     Refobj()
       : RefobjBase()
@@ -500,10 +500,12 @@ namespace QtLua {
     Refobj(const Refobj &r)
       : RefobjBase()
     {
+      Q_UNUSED(r)
     }
 
     Refobj & operator=(const Refobj &r)
     {
+      Q_UNUSED(r)
       assert(ref_count() == 0 || !"Can not overwrite object with live references");
       return *this;
     }

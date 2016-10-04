@@ -49,7 +49,7 @@ template <class Container,
 class QVectorProxyRo : public UserData
 {
 public:
-  QTLUA_REFTYPE(QVectorProxyRo);
+  QTLUA_REFTYPE(QVectorProxyRo)
 
   /** Create a @ref QVectorProxy object with no attached container */
   QVectorProxyRo();

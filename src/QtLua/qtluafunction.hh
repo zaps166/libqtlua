@@ -62,7 +62,7 @@ namespace QtLua {
   class Function : public UserData
   {
   public:
-    QTLUA_REFTYPE(Function);
+    QTLUA_REFTYPE(Function)
 
     /** @internal */
     void register_(State *ls, const String &path);

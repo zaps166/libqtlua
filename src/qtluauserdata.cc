@@ -109,21 +109,29 @@ String UserData::get_value_str() const
 Value UserData::meta_operation(State *ls, Value::Operation op,
 			       const Value &a, const Value &b) 
 {
-  QTLUA_THROW(QtLua::UserData, "The operation `%' is not handled by the `%' class.",
+  Q_UNUSED(ls)
+  Q_UNUSED(a)
+  Q_UNUSED(b)
+  QTLUA_THROW(QtLua::UserData, "The operation '%' is not handled by the '%' class.",
 	      .arg((int)op).arg(get_type_name()));
-};
+}
 
 void UserData::meta_newindex(State *ls, const Value &key, const Value &value) 
 {
-  QTLUA_THROW(QtLua::UserData, "The table newindex operation not is handled by the `%' class.",
+  Q_UNUSED(ls)
+  Q_UNUSED(key)
+  Q_UNUSED(value)
+  QTLUA_THROW(QtLua::UserData, "The table newindex operation not is handled by the '%' class.",
 	      .arg(get_type_name()));
-};
+}
 
 Value UserData::meta_index(State *ls, const Value &key) 
 {
-  QTLUA_THROW(QtLua::UserData, "The table index operation is not handled by the `%' class.",
+  Q_UNUSED(ls)
+  Q_UNUSED(key)
+  QTLUA_THROW(QtLua::UserData, "The table index operation is not handled by the '%' class.",
 	      .arg(get_type_name()));
-};
+}
 
 bool UserData::meta_contains(State *ls, const Value &key)
 {
@@ -136,18 +144,22 @@ bool UserData::meta_contains(State *ls, const Value &key)
 
 Value::List UserData::meta_call(State *ls, const Value::List &args) 
 {
-  QTLUA_THROW(QtLua::UserData, "The call operation is not handled by the `%' class.",
+  Q_UNUSED(ls)
+  Q_UNUSED(args)
+  QTLUA_THROW(QtLua::UserData, "The call operation is not handled by the '%' class.",
 	      .arg(get_type_name()));
-};
+}
 
 Ref<Iterator> UserData::new_iterator(State *ls)
 {
-  QTLUA_THROW(QtLua::UserData, "Table iteration is not handled by the `%' class",
+  Q_UNUSED(ls)
+  QTLUA_THROW(QtLua::UserData, "Table iteration is not handled by the '%' class",
 	      .arg(get_type_name()));
 }
 
 bool UserData::support(Value::Operation c) const
 {
+  Q_UNUSED(c)
   return false;
 }
 
@@ -195,7 +207,7 @@ void UserData::meta_call_check_args(const Value::List &args,
       if (type != Value::TNone && type != args[i].type())
 	{
 	  va_end(ap);
-	  QTLUA_THROW(QtLua::UserData, "Bad value type for call argument %, `lua::%' expected instead of `%'.",
+	  QTLUA_THROW(QtLua::UserData, "Bad value type for call argument %, `lua::%' expected instead of '%'.",
 		      .arg(i+1).arg(lua_typename(0, type)).arg(args[i].type_name()));
 	}
     }
@@ -215,6 +227,9 @@ bool UserData::operator<(const UserData &ud)
 
 void UserData::completion_patch(String &path, String &entry, int &offset)
 {
+  Q_UNUSED(path)
+  Q_UNUSED(entry)
+  Q_UNUSED(offset)
 }
 
 Value UserData::yield(State *ls) const

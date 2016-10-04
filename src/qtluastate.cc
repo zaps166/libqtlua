@@ -573,7 +573,7 @@ void State::set_global_r(const String &name, const Value &value, int tblidx)
 	{
 	  // bad existing intermediate value
 	  lua_pop(_lst, 1);
-	  QTLUA_THROW(QtLua::State, "Can not set the global, the `%' key already exists.", .arg(name));
+	  QTLUA_THROW(QtLua::State, "Can not set the global, the '%' key already exists.", .arg(name));
 	}
     }
 }
@@ -630,7 +630,7 @@ void State::get_global_r(const String &name, Value &value, int tblidx) const
       if (!lua_istable(_lst, -1))
 	{
 	  lua_pop(_lst, 1);
-	  QTLUA_THROW(QtLua::State, "Can not get the global, `%' is not a table.", .arg(prefix));
+	  QTLUA_THROW(QtLua::State, "Can not get the global, '%' is not a table.", .arg(prefix));
 	}
 
       try {
@@ -809,7 +809,7 @@ Value State::eval_expr(bool use_lua, const String &expr)
       Value::List res = exec_statements(String("return ") + expr);
 
       if (res.empty())
-	QTLUA_THROW(QtLua::State, "The lua expression `%' returned no value.", .arg(expr));
+	QTLUA_THROW(QtLua::State, "The lua expression '%' returned no value.", .arg(expr));
 
       return res[0];
     }
@@ -841,6 +841,7 @@ struct lua_reader_state_s
 
 static const char * lua_reader(lua_State *st, void *data, size_t *size)
 {
+  Q_UNUSED(st)
   struct lua_reader_state_s *rst = (struct lua_reader_state_s *)data;
 
   rst->_read_buf = rst->_io->read(4096);

@@ -51,11 +51,11 @@ namespace QtLua {
 
   class ItemViewDialog : public QDialog
   {
-    Q_OBJECT;
-    Q_PROPERTY(bool resize_on_expand READ get_resize_on_expand WRITE set_resize_on_expand);
-    Q_PROPERTY(float column_margin_factor READ get_column_margin_factor WRITE set_column_margin_factor);
-    Q_PROPERTY(int edit_actions READ get_edit_actions WRITE set_edit_actions_);
-    Q_ENUMS(EditAction);
+    Q_OBJECT
+    Q_PROPERTY(bool resize_on_expand READ get_resize_on_expand WRITE set_resize_on_expand)
+    Q_PROPERTY(float column_margin_factor READ get_column_margin_factor WRITE set_column_margin_factor)
+    Q_PROPERTY(int edit_actions READ get_edit_actions WRITE set_edit_actions_)
+    Q_ENUMS(EditAction)
 
   public:
 
@@ -69,16 +69,16 @@ namespace QtLua {
 	EditInsertRowAfter    = 0x00020,
 	EditAddRow            = 0x00040,
 	EditRemoveRow         = 0x00080,
-        EditRowAll            = 0x000f0,
+	EditRowAll            = 0x000f0,
 
 	EditInsertColumn      = 0x00100,
 	EditInsertColumnAfter = 0x00200,
 	EditAddColumn         = 0x00400,
 	EditRemoveColumn      = 0x00800,
-        EditColumnAll         = 0x00f00,
+	EditColumnAll         = 0x00f00,
       };
 
-    Q_DECLARE_FLAGS(EditActions, EditAction);
+    Q_DECLARE_FLAGS(EditActions, EditAction)
 
     /**
      * Create a table dialog.
@@ -98,7 +98,7 @@ namespace QtLua {
 		   QWidget *parent = 0);
 
     void set_edit_actions(EditActions edit);
-    inline EditActions get_edit_actions() const;
+    EditActions get_edit_actions() const;
 
     /** Return pointer to model */
     inline QAbstractItemModel *get_model() const;
@@ -137,7 +137,7 @@ namespace QtLua {
 
   private:
 
-    inline void set_edit_actions_(int edit);
+    void set_edit_actions_(int edit);
     void new_row(const QModelIndex &parent, int row) const;
 
     EditActions _edit;
@@ -151,7 +151,7 @@ namespace QtLua {
     float _column_margin_factor;
   };
 
-  Q_DECLARE_OPERATORS_FOR_FLAGS(ItemViewDialog::EditActions);
+  Q_DECLARE_OPERATORS_FOR_FLAGS(ItemViewDialog::EditActions)
 
 }
 

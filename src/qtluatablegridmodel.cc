@@ -192,6 +192,7 @@ namespace QtLua {
 
   QModelIndex TableGridModel::parent(const QModelIndex &index) const
   {
+    Q_UNUSED(index)
     return QModelIndex();
   }
 
@@ -207,6 +208,7 @@ namespace QtLua {
 
   int TableGridModel::rowCount(const QModelIndex &parent) const
   {
+    Q_UNUSED(parent)
     if (!_st)
       return 0;
 
@@ -215,6 +217,7 @@ namespace QtLua {
 
   int TableGridModel::columnCount(const QModelIndex &parent) const
   {
+    Q_UNUSED(parent)
     if (!_st)
       return 0;
 
@@ -223,6 +226,7 @@ namespace QtLua {
 
   bool TableGridModel::hasChildren(const QModelIndex & parent) const
   {
+    Q_UNUSED(parent)
     return false;
   }
 
@@ -304,7 +308,7 @@ namespace QtLua {
       // check type change
       if ((_attr & EditFixedType) &&
 	  (oldtype != Value::TNil) && (oldtype != newtype))
-	QTLUA_THROW(TableGridModel, "The entry value type is `%' and can not be changed.",
+	QTLUA_THROW(TableGridModel, "The entry value type is '%' and can not be changed.",
 		    .arg(Value::type_name(oldtype)));
 
       ref = newvalue;
@@ -492,11 +496,8 @@ namespace QtLua {
 
   Value TableGridModel::new_cell_value(State *st, int row, int col) const
   {
-#if 0
-    QString s;
-    s.sprintf("%i,%i", row, col);
-    return Value(st, s);
-#endif
+    Q_UNUSED(row)
+    Q_UNUSED(col)
     return Value(st);
   }
 

@@ -145,6 +145,7 @@ namespace QtLua {
 
   int TableTreeModel::columnCount(const QModelIndex &parent) const
   {
+    Q_UNUSED(parent)
     if (!_st)
       return 0;
 
@@ -282,7 +283,7 @@ namespace QtLua {
 	  // check type change
 	  if ((t->_attr & EditFixedType) &&
 	      (oldtype != Value::TNil) && (oldtype != newtype))
-	    QTLUA_THROW(QtLua::TableGridModel, "The entry value type is `%' and can not be changed.",
+	    QTLUA_THROW(QtLua::TableGridModel, "The entry value type is '%' and can not be changed.",
 			.arg(Value::type_name(oldtype)));
 
 	  t->set_value(index.row(), newvalue);

@@ -42,7 +42,7 @@ namespace QtLua {
   class Enum : public Member
   {
   public:
-    QTLUA_REFTYPE(Enum);
+    QTLUA_REFTYPE(Enum)
 
     Enum(const QMetaObject *mo, int index);
 

@@ -65,7 +65,7 @@ namespace QtLua {
       IoLib,		//< standard lua io library
       OsLib,		//< standard lua os library
       DebugLib,		//< standard lua debug library
-      Bit32Lib,		//< standard lua bit library
+      Bit32Lib,		//< standard lua bit library or luajit bit library
       JitLib,		//< luajit jit library
       FfiLib,		//< luajit ffi library
       QtLuaLib,		//< lua library with base functions, see the @xref{Predefined lua functions} section.

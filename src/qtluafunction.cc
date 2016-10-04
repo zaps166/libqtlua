@@ -51,6 +51,7 @@ void Function::register_(State *ls, const String &path)
 
 void Function::completion_patch(String &path, String &entry, int &offset)
 {
+  Q_UNUSED(path)
   entry += "()";
   offset--;
 }

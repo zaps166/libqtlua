@@ -246,6 +246,11 @@ namespace QtLua {
     _edit = edit;
   }
 
+  ItemViewDialog::EditActions ItemViewDialog::get_edit_actions() const
+  {
+    return _edit;
+  }
+
   void ItemViewDialog::edit() const
   {
     QModelIndex index = _view->currentIndex();
@@ -348,6 +353,11 @@ namespace QtLua {
     QModelIndex parent;
     int row = _model->rowCount(parent);
     new_row(parent, row);
+  }
+
+  void ItemViewDialog::set_edit_actions_(int edit)
+  {
+    set_edit_actions((EditAction)edit);
   }
 
   void ItemViewDialog::new_row(const QModelIndex &parent, int row) const

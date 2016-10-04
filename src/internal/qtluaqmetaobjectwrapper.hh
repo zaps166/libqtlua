@@ -52,7 +52,7 @@ namespace QtLua {
   class QMetaObjectWrapper : public UserData
   {
   public:
-    QTLUA_REFTYPE(QMetaObjectWrapper);
+    QTLUA_REFTYPE(QMetaObjectWrapper)
 
     QMetaObjectWrapper(const QMetaObject *mo, qobject_creator *creator = 0);
 

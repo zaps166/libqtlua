@@ -151,7 +151,7 @@ namespace QtLua {
     unsigned int index = (unsigned int)key.to_number() - 1;
 
     if (index >= _size)
-      QTLUA_THROW(QtLua::ArrayProxy, "Array index `%' is out of bounds.", .arg(index));
+      QTLUA_THROW(QtLua::ArrayProxy, "Array index '%' is out of bounds.", .arg(index));
 
     const_cast<T*>(_array)[index] = value;
   }

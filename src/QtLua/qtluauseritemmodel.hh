@@ -61,7 +61,7 @@ class UserItemModel : public QAbstractItemModel
   friend class UserItem;
   friend class UserListItem;
 
-  Q_OBJECT;
+  Q_OBJECT
 
 public:
   /** Create a new item model with pointer to root item */

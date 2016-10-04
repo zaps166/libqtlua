@@ -47,7 +47,7 @@ namespace QtLua {
     Member::ptr m = get_member(name);
 
     if (!m.valid())
-      QTLUA_THROW(QtLua::MetaCache, "Unknow QObject member `%'.", .arg(name));
+      QTLUA_THROW(QtLua::MetaCache, "Unknow QObject member '%'.", .arg(name));
 
     return m;
   }
@@ -58,7 +58,7 @@ namespace QtLua {
     typename X::ptr x = get_member_throw(name).dynamiccast<X>();
 
     if (!x.valid())
-      QTLUA_THROW(QtLua::MetaCache, "The type of the QObject member `%' is not `%'.",
+      QTLUA_THROW(QtLua::MetaCache, "The type of the QObject member '%' is not '%'.",
 		  .arg(name).arg(UserData::type_name<X>()));
 
     return x;

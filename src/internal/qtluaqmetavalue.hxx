@@ -40,7 +40,7 @@ namespace QtLua {
     _data = QMetaType::create(_type, 0);
 #endif
     if (!_data)
-      QTLUA_THROW(QtLui::QMetaValue, "Failed to construct an object of type `%' using the QMetaType API.",
+      QTLUA_THROW(QtLua::QMetaValue, "Failed to construct an object of type '%' using the QMetaType API.",
 		  .arg(QMetaType::typeName(_type)));
   }
 

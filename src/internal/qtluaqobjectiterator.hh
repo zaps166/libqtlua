@@ -49,7 +49,7 @@ namespace QtLua {
 class QObjectIterator : public Iterator
 {
 public:
-  QTLUA_REFTYPE(QObjectIterator);
+  QTLUA_REFTYPE(QObjectIterator)
 
   QObjectIterator(State *ls, const Ref<QObjectWrapper> &qow);
   QObjectIterator(State *ls, const QMetaObject *mo);

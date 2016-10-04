@@ -53,7 +53,7 @@ class Value : public ValueBase
 
 public:
   /** Create a lua value object with no associated @ref State */
-  inline Value();
+  Value();
 
   /** Create a "nil" lua value. @multiple */
   inline Value(const State *ls);
@@ -62,7 +62,7 @@ public:
   Value(const Value &lv);
   Value(const State *ls, const Value &lv);
 #ifdef Q_COMPILER_RVALUE_REFS
-  inline Value(Value &&lv);
+  Value(Value &&lv);
   inline Value(const State *ls, Value &&lv);
 #endif
 
@@ -164,7 +164,7 @@ public:
   inline Value(const State *ls, QMap<Key, Val> &map);
 
   /** Remove lua value from lua state registry. */
-  inline ~Value();
+  ~Value();
 
   /** Copy a lua value. */
   Value & operator=(const Value &lv);

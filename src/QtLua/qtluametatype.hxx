@@ -31,7 +31,7 @@ namespace QtLua {
       if ((_type = QMetaType::type(name)))
 	{
 	  if (types_map.contains(_type))
-	    QTLUA_THROW(QtLua::MetaType, "A lua conversion handler is already registered for the `%' type.", .arg(_type));
+	    QTLUA_THROW(QtLua::MetaType, "A lua conversion handler is already registered for the '%' type.", .arg(_type));
 	}
       else
 	{
@@ -47,7 +47,7 @@ namespace QtLua {
       _type = type;
 
       if (types_map.contains(type))
-	QTLUA_THROW(QtLua::MetaType, "A lua conversion handler is already registered for type handle `%'.", .arg(_type));
+	QTLUA_THROW(QtLua::MetaType, "A lua conversion handler is already registered for type handle '%'.", .arg(_type));
 
       types_map.insert(type, reinterpret_cast<metatype_void_t*>(this));
     }

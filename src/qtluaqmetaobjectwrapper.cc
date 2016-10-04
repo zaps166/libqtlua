@@ -76,7 +76,7 @@ namespace QtLua {
       }
 #endif
 
-    QTLUA_THROW(QtLua::QMetaObjectWrapper, "No invokable constructor found to create an object of the `%' class.", .arg(_mo->className()));
+    QTLUA_THROW(QtLua::QMetaObjectWrapper, "No invokable constructor found to create an object of the '%' class.", .arg(_mo->className()));
   }
 
   Value QMetaObjectWrapper::meta_index(State *ls, const Value &key)
@@ -114,6 +114,8 @@ namespace QtLua {
 
   void QMetaObjectWrapper::completion_patch(String &path, String &entry, int &offset)
   {
+    Q_UNUSED(path)
+    Q_UNUSED(offset)
     entry += ".";
   }
 

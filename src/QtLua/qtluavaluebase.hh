@@ -186,7 +186,7 @@ public:
       OpAll       = 0xffff,     //< All operations mask
     };
 
-  Q_DECLARE_FLAGS(Operations, Operation);
+  Q_DECLARE_FLAGS(Operations, Operation)
 
   /**
    * @short List of Value objects used for arguments and return values.
@@ -575,7 +575,7 @@ QDebug operator<<(QDebug dbg, const ValueBase &c);
 
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(QtLua::ValueBase::Operations);
+Q_DECLARE_OPERATORS_FOR_FLAGS(QtLua::ValueBase::Operations)
 
 #endif
 

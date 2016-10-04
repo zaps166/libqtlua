@@ -40,8 +40,8 @@ Value UserListItem::meta_operation(State *ls, Value::Operation op, const Value &
 }
 
 void UserListItem::meta_newindex(State *ls, const Value &key, const Value &value)
-  
 {
+  Q_UNUSED(ls)
   UserItem::ptr old;
   Value::ValueType t = key.type();
   unsigned int c = 0;
@@ -70,7 +70,7 @@ void UserListItem::meta_newindex(State *ls, const Value &key, const Value &value
       if (old.valid())
 	{
 	  if (!old->is_remove_allowed())
-	    QTLUA_THROW(QtLua::UserListItem, "Removing the `%' item is not permitted.", .arg(old->get_name()));
+	    QTLUA_THROW(QtLua::UserListItem, "Removing the '%' item is not permitted.", .arg(old->get_name()));
 	  old->remove();
 	}
       break;
@@ -79,13 +79,13 @@ void UserListItem::meta_newindex(State *ls, const Value &key, const Value &value
       UserItem::ptr kbml = value.to_userdata_cast<UserItem>();
 
       if (in_parent_path(kbml.ptr()))
-	QTLUA_THROW(QtLua::UserListItem, "The `%' item can not have one of its parent as a child.", .arg(kbml->get_name()));
+	QTLUA_THROW(QtLua::UserListItem, "The '%' item can not have one of its parent as a child.", .arg(kbml->get_name()));
 
       // remove item with same key if it already exists
       if (old.valid())
 	{
 	  if (!old->is_replace_allowed())
-	    QTLUA_THROW(QtLua::UserListItem, "Replacing the `%' item with the `%' item  is not permitted.",
+	    QTLUA_THROW(QtLua::UserListItem, "Replacing the '%' item with the '%' item  is not permitted.",
 			.arg(old->get_name()).arg(kbml->get_name()));
 	  old->remove();
 	}
@@ -94,7 +94,7 @@ void UserListItem::meta_newindex(State *ls, const Value &key, const Value &value
 	{
 	  // rename
 	  if (!kbml->is_rename_allowed())
-	    QTLUA_THROW(QtLua::UserListItem, "Renaming the `%' item is not permitted.", .arg(kbml->get_name()));
+	    QTLUA_THROW(QtLua::UserListItem, "Renaming the '%' item is not permitted.", .arg(kbml->get_name()));
 	  kbml->set_name(key.to_string());
 	  break;
 	}
@@ -102,10 +102,10 @@ void UserListItem::meta_newindex(State *ls, const Value &key, const Value &value
       if (kbml->_parent != this)
 	{
 	  if (!kbml->is_move_allowed())
-	    QTLUA_THROW(QtLua::UserListItem, "Moving the `%' item to an other parent is not permitted.", .arg(kbml->get_name()));
+	    QTLUA_THROW(QtLua::UserListItem, "Moving the '%' item to an other parent is not permitted.", .arg(kbml->get_name()));
 
 	  if (!accept_child(kbml))
-	    QTLUA_THROW(QtLua::UserListItem, "The parent item `%' doesn't accept the `%' item as child.",
+	    QTLUA_THROW(QtLua::UserListItem, "The parent item '%' doesn't accept the '%' item as child.",
 			.arg(get_name()).arg(kbml->get_name()));
 	}
 
@@ -131,7 +131,7 @@ void UserListItem::meta_newindex(State *ls, const Value &key, const Value &value
     } break;
 
     default:
-      QTLUA_THROW(QtLua::UserListItem, "A value of type `%' can not be stored in model.",
+      QTLUA_THROW(QtLua::UserListItem, "A value of type '%' can not be stored in model.",
 		  .arg(value.type_name_u()));
     }
 }
@@ -165,6 +165,7 @@ Value UserListItem::meta_index(State *ls, const Value &key)
 
 bool UserListItem::meta_contains(State *ls, const Value &key)
 {
+  Q_UNUSED(ls)
   switch (key.type())
     {
     case Value::TString:
@@ -262,6 +263,7 @@ void UserListItem::insert_name(UserItem *item, int row)
 
 bool UserListItem::accept_child(const UserItem::ptr &item) const
 {
+  Q_UNUSED(item)
   return true;
 }
 
@@ -298,6 +300,8 @@ void UserListItem::set_model(UserItemModel* model)
 
 void UserListItem::completion_patch(String &path, String &entry, int &offset)
 {
+  Q_UNUSED(path)
+  Q_UNUSED(offset)
   entry += ".";
 }
 
@@ -307,6 +311,7 @@ void UserListItem::child_changed()
 
 String UserListItem::default_child_name(int row) const
 {
+  Q_UNUSED(row)
   return "noname";
 }
 

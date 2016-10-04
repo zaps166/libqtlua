@@ -94,12 +94,14 @@ Qt::ItemFlags UserItemModel::flags(const QModelIndex &index) const
 
 UserItem::ptr UserItemModel::from_mimedata(const QMimeData *data)
 {
+  Q_UNUSED(data)
   return UserItem::ptr();
 }
 
 bool UserItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 			     int row, int column, const QModelIndex &parent)
 {
+  Q_UNUSED(column)
   UserListItem *pi = parent.isValid()
     ? static_cast<UserListItem*>(parent.internalPointer())
     : _root.ptr();
@@ -203,6 +205,9 @@ Qt::DropActions UserItemModel::supportedDropActions() const
 
 QVariant UserItemModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+  Q_UNUSED(section)
+  Q_UNUSED(orientation)
+  Q_UNUSED(role)
   return QVariant();
 }
 

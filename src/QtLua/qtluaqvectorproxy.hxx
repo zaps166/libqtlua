@@ -177,7 +177,7 @@ namespace QtLua {
 
     return;
   oob:
-    QTLUA_THROW(QtLua::QVectorProxy, "Index `%' is out of bounds.", .arg(index));
+    QTLUA_THROW(QtLua::QVectorProxy, "Index '%' is out of bounds.", .arg(index));
   }
 
   template <class Container, unsigned max_resize, unsigned min_resize>

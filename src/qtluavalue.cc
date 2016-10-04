@@ -49,6 +49,7 @@ void Value::push_value(lua_State *st) const
 
 int Value::empty_fcn(lua_State *st)
 {
+  Q_UNUSED(st)
   return 0;
 }
 
@@ -236,6 +237,12 @@ Value::Value(const Value &lv)
   lua_rawset(lst, LUA_REGISTRYINDEX);
 }
 
+Value::Value()
+  : ValueBase(0)
+  , _id(_id_counter++)
+{
+}
+
 Value::Value(const State *ls, const Value &lv)
   : ValueBase(ls)
   , _id(_id_counter++)
@@ -279,6 +286,21 @@ Value::Value(int index, const State *st)
     index--;
   lua_pushvalue(lst, index);
   lua_rawset(lst, LUA_REGISTRYINDEX);
+}
+
+#ifdef Q_COMPILER_RVALUE_REFS
+Value::Value(Value &&lv)
+  : ValueBase(lv._st)
+  , _id(lv._id)
+{
+  lv._st = 0;
+}
+#endif
+
+Value::~Value()
+{
+  if (_st)
+    cleanup();
 }
 
 }

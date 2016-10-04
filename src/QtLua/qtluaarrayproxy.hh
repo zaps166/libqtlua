@@ -44,7 +44,7 @@ template <class T>
 class ArrayProxyRo : public UserData
 {
 public:
-  QTLUA_REFTYPE(ArrayProxyRo);
+  QTLUA_REFTYPE(ArrayProxyRo)
 
   /** Create a @ref ArrayProxy object with no attached array */
   ArrayProxyRo();

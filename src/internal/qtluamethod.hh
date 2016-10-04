@@ -41,7 +41,7 @@ namespace QtLua {
   class Method : public Member
   {
   public:
-    QTLUA_REFTYPE(Method);
+    QTLUA_REFTYPE(Method)
 
     Method(const QMetaObject *mo, int index);
 

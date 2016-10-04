@@ -41,7 +41,7 @@ namespace QtLua {
 
   class UserItemSelectionModel : public QItemSelectionModel
   {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     inline UserItemSelectionModel(UserItemModel *model);

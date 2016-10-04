@@ -77,9 +77,9 @@ namespace QtLua {
 
   class TableGridModel : public QAbstractItemModel
   {
-    Q_OBJECT;
-    Q_ENUMS(Attribute);
-    Q_FLAGS(Attributes);
+    Q_OBJECT
+    Q_ENUMS(Attribute)
+    Q_FLAGS(Attributes)
 
   public:
 
@@ -101,7 +101,7 @@ namespace QtLua {
 	EditRemoveCol = 0x00040000,	//< Allow deletion of existing columns.
       };
 
-    Q_DECLARE_FLAGS(Attributes, Attribute);
+    Q_DECLARE_FLAGS(Attributes, Attribute)
 
     /** 
      * Create a new lua grid table model. 

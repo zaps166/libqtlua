@@ -60,7 +60,7 @@ namespace QtLua {
   class UserObject : public UserData
   {
   public:
-    QTLUA_REFTYPE(UserObject);
+    QTLUA_REFTYPE(UserObject)
 
   private:
     /** @internal */

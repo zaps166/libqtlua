@@ -54,7 +54,7 @@ class DispatchProxy : public UserData
 {
 
 public:
-  QTLUA_REFTYPE(DispatchProxy);
+  QTLUA_REFTYPE(DispatchProxy)
 
   DispatchProxy();
   ~DispatchProxy();

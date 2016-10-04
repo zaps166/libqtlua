@@ -42,7 +42,7 @@ namespace QtLua {
 class TableIterator : public Iterator
 {
 public:
-  QTLUA_REFTYPE(TableIterator);
+  QTLUA_REFTYPE(TableIterator)
 
   TableIterator(State *st, int index);
   ~TableIterator();
