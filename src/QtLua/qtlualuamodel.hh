@@ -18,8 +18,6 @@
 
 */
 
-// __moc_flags__ -fQtLua/LuaModel
-
 #ifndef QTLUA_CALLMODEL_HH_
 #define QTLUA_CALLMODEL_HH_
 
@@ -139,7 +137,7 @@ function remove_cols(check, parent_id, pos, count)
 
   class LuaModel : public QAbstractItemModel
   {
-    Q_OBJECT;
+    Q_OBJECT
     Q_ENUMS(ItemDataRole)
 
   public:

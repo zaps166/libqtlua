@@ -18,8 +18,6 @@
 
 */
 
-// __moc_flags__ -fQtLua/ItemViewDialog
-
 #ifndef QTLUA_TABLEDIALOG_HH_
 #define QTLUA_TABLEDIALOG_HH_
 

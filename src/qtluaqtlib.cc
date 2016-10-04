@@ -53,6 +53,8 @@
 #include <QMenuBar>
 #include <QStatusBar>
 
+#include <QDebug>
+
 #include <QtLua/State>
 #include <QtLua/Function>
 #include <internal/QObjectWrapper>
@@ -61,6 +63,8 @@
 #include <QtLua/TableGridModel>
 #include <QtLua/TableTreeModel>
 #include <QtLua/LuaModel>
+
+#include <QtLua/qtluapixmap.hh>
 
 #include <internal/Method>
 #include <internal/MetaCache>
@@ -1002,6 +1006,24 @@ namespace QtLua {
 					));
   }
 
+  QTLUA_FUNCTION(pixmap_load, "Create QPixmap from image data.",
+		 "usage: qt.pixmap.load( data )\n")
+  {
+    Pixmap::ptr pixmap = QTLUA_REFNEW(QtLua::Pixmap, );
+    if (get_arg<ValueBase::Bool>(args, 0))
+      pixmap->_pixmap.loadFromData(get_arg<String>(args, 1));
+    else
+      pixmap->_pixmap.load(get_arg<String>(args, 1));
+    if (pixmap->_pixmap.isNull())
+	return Value(ls);
+    if (args.count() > 2)
+      {
+	Value size = get_arg<Value>(args, 2);
+	pixmap->_pixmap = pixmap->_pixmap.scaled(size.at(1).to_integer(), size.at(2).to_integer(), (Qt::AspectRatioMode)get_arg<int>(args, 3), (Qt::TransformationMode)get_arg<int>(args, 4));
+      }
+    return Value(ls, pixmap);
+  }
+
 
   //////////////////////////////////////////////////
    
@@ -1055,6 +1077,8 @@ namespace QtLua {
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", tree_view             );
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", table_view            );
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", grid_view             );
+
+    QTLUA_FUNCTION_REGISTER2(ls, "qt.pixmap.load", pixmap_load);
   }
 
 }

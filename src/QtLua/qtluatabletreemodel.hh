@@ -18,8 +18,6 @@
 
 */
 
-// __moc_flags__ -fQtLua/TableTreeModel
-
 #ifndef QTLUA_TABLETREEMODEL_HH_
 #define QTLUA_TABLETREEMODEL_HH_
 

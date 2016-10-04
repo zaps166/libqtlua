@@ -58,7 +58,7 @@ template <class Container>
 class QHashProxyRo : public UserData
 {
 public:
-  QTLUA_REFTYPE(QHashProxyRo);
+  QTLUA_REFTYPE(QHashProxyRo)
 
   /** Create a @ref QHashProxy object with no attached container */
   QHashProxyRo();

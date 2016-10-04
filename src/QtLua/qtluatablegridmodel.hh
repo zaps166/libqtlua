@@ -18,8 +18,6 @@
 
 */
 
-// __moc_flags__ -fQtLua/TableGridModel
-
 #ifndef QTLUA_TABLEGRIDMODEL_HH_
 #define QTLUA_TABLEGRIDMODEL_HH_
 

@@ -18,8 +18,6 @@
 
 */
 
-// __moc_flags__ -fQtLua/UserItemModel
-
 #ifndef QTLUA_ITEMMODEL_HH_
 #define QTLUA_ITEMMODEL_HH_
 

@@ -22,8 +22,6 @@
 #ifndef QTLUAUSERDATA_HH_
 #define QTLUAUSERDATA_HH_
 
-#include <iostream>
-
 #include <QList>
 #include <QHash>
 

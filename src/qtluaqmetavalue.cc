@@ -29,11 +29,15 @@
 #include <QWidget>
 #include <QIcon>
 #include <QColor>
+#include <QPixmap>
+#include <QDebug>
 
 #include <QtLua/String>
 #include <QtLua/MetaType>
-#include <internal/QObjectWrapper>
 
+#include <QtLua/qtluapixmap.hh>
+
+#include <internal/QObjectWrapper>
 #include <internal/QMetaValue>
 
 namespace QtLua {
@@ -333,6 +337,11 @@ namespace QtLua {
 	      break;
 	  }
 	}
+	break;
+      }
+      case QMetaType::QPixmap: {
+	QPixmap *pixmap = reinterpret_cast<QPixmap*>(data);
+	*pixmap = v.to_userdata_cast<Pixmap>()->_pixmap;
 	break;
       }
 
