@@ -51,6 +51,47 @@ namespace QtLua {
       QTLUA_THROW(QtLua::Method, "The method doesn't belong to the class of the passed QObject.");
 
     QMetaMethod mm = _mo->method(_index);
+    QList<QByteArray> pt = mm.parameterTypes();
+
+    int index_offset = 0;
+    int lua_args_count = lua_args.size() - 1;
+    bool lua_args_count_correct = (pt.size() == lua_args_count);
+
+    // if arguments count in Lua is less than C++ method arguments count,
+    // find method with the same name with correct arguments count.
+    if (lua_args_count < pt.size())
+      {
+#if QT_VERSION < 0x050000
+	QByteArray method_name_sig = mm.signature();
+	method_name_sig.truncate(method_name_sig.indexOf('(') + 1);
+#else
+	const QByteArray method_name = mm.name();
+#endif
+	for (index_offset = 1; ; ++index_offset)
+	  {
+	    mm = _mo->method(_index + index_offset);
+#if QT_VERSION < 0x050000
+	    if (!QByteArray(mm.signature()).startsWith(method_name_sig))
+#else
+	    if (mm.name() != method_name)
+#endif
+		break;
+	    pt = mm.parameterTypes();
+	    if (pt.size() == lua_args_count)
+	      {
+		lua_args_count_correct = true;
+		break;
+	      }
+	  }
+      }
+
+    if (!lua_args_count_correct)
+      QTLUA_THROW(QtLua::Method, "Wrong number of arguments for the '%' QMetaMethod.",
+#if QT_VERSION < 0x050000
+		 .arg(mm.signature()));
+#else
+		 .arg(mm.methodSignature()));
+#endif
 
     if (mm.methodType() != QMetaMethod::Slot
 #if QT_VERSION >= 0x040500
@@ -75,31 +116,18 @@ namespace QtLua {
 
     int i = 1;
 
-    QList<QByteArray> pt = mm.parameterTypes();
-
-    if (pt.size() != lua_args.size() - 1)
-      QTLUA_THROW(QtLua::Method, "Wrong number of arguments for the '%' QMetaMethod.",
-#if QT_VERSION < 0x050000
-		 .arg(mm.signature()));
-#else
-		 .arg(mm.methodSignature()));
-#endif
-
     // parameters
     foreach (const QByteArray &pt, pt)
       {
 	assert(i < 11);
 
-	//	if (i <= lua_args.size())
-	  qt_args[i] = args.create(QMetaType::type(pt.constData()), lua_args[i]).get_data();
+	qt_args[i] = args.create(QMetaType::type(pt.constData()), lua_args[i]).get_data();
 
-	  //	else
-	  //	  qt_args[i] = args.create(QMetaType::type(pt.constData())).get_data();
 	i++;
       }
 
     // actual invocation
-    if (!obj.qt_metacall(QMetaObject::InvokeMetaMethod, _index, qt_args))
+    if (!obj.qt_metacall(QMetaObject::InvokeMetaMethod, _index + index_offset, qt_args))
       QTLUA_THROW(QtLua::Method, "Error on invocation of the '%' Qt method.",
 #if QT_VERSION < 0x050000
 		  .arg(mm.signature()));
