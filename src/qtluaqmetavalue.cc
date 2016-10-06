@@ -35,10 +35,9 @@
 #include <QtLua/String>
 #include <QtLua/MetaType>
 
-#include <QtLua/qtluapixmap.hh>
-
 #include <internal/QObjectWrapper>
 #include <internal/QMetaValue>
+#include <internal/qtluapixmap.hh>
 
 namespace QtLua {
 
@@ -341,7 +340,7 @@ namespace QtLua {
       }
       case QMetaType::QPixmap: {
 	QPixmap *pixmap = reinterpret_cast<QPixmap*>(data);
-	*pixmap = v.to_userdata_cast<Pixmap>()->_pixmap;
+	*pixmap = *v.to_userdata_cast<Pixmap>();
 	break;
       }
 

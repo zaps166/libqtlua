@@ -300,7 +300,6 @@ private:
   static int lua_cmd_each(lua_State *st);
   static int lua_cmd_print(lua_State *st);
   static int lua_cmd_list(lua_State *st);
-  static int lua_cmd_help(lua_State *st);
   static int lua_cmd_qtype(lua_State *st);
 
   // lua meta methods functions

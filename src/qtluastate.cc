@@ -178,38 +178,6 @@ int State::lua_cmd_list(lua_State *st)
   return 0;
 }
 
-int State::lua_cmd_help(lua_State *st)
-{
-  State *this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
-
-  if (lua_gettop(st) < 1)
-    {
-      this_->output_str("Usage: help(QtLua::Function object)\n");
-      QTLUA_RESTORE_THREAD(this_);
-      return 0;
-    }
-
-  Value v(1, this_);
-
-  if (v.type() == Value::TUserData)
-    {
-      Function::ptr cmd = v.to_userdata().dynamiccast<Function>();
-
-      if (cmd.valid())
-	{
-	  this_->output_str(cmd->get_help() + "\n");
-	  QTLUA_RESTORE_THREAD(this_);
-	  return 0;
-	}
-    }
-
-  this_->output_str("Help is only available for QtLua::Function objects\n");
-
-  QTLUA_RESTORE_THREAD(this_);
-  return 0;
-}
-
 int State::lua_cmd_qtype(lua_State *st)
 {
   State *this_ = get_this(st);
@@ -1044,7 +1012,6 @@ bool State::openlib(Library lib)
       reg_c_function("print", lua_cmd_print);
       reg_c_function("list", lua_cmd_list);
       reg_c_function("each", lua_cmd_each);
-      reg_c_function("help", lua_cmd_help);
       reg_c_function("qtype", lua_cmd_qtype);
       return true;
 

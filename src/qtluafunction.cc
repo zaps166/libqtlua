@@ -31,17 +31,7 @@ String Function::get_type_name() const
 
 String Function::get_value_str() const
 {
-  return get_description();
-}
-
-String Function::get_help() const
-{
-  return "No help available for this function";
-}
-
-String Function::get_description() const
-{
-  return "";
+  return get_type_name();
 }
 
 void Function::register_(State *ls, const String &path)

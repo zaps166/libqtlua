@@ -64,9 +64,8 @@
 #include <QtLua/TableTreeModel>
 #include <QtLua/LuaModel>
 
-#include <QtLua/qtluapixmap.hh>
-
 #include <internal/Method>
+#include <internal/qtluapixmap.hh>
 #include <internal/MetaCache>
 #include <internal/QMetaObjectWrapper>
 
@@ -111,9 +110,7 @@ namespace QtLua {
   ////////////////////////////////////////////////// qobjects
 
 
-  QTLUA_FUNCTION(connect, "Connect a Qt signal to a Qt slot or lua function.",
-		 "usage: qt.connect(qobjectwrapper, \"qt_signal_signature()\", qobjectwrapper, \"qt_slot_signature()\")\n"
-		 "       qt.connect(qobjectwrapper, \"qt_signal_signature()\", lua_function)\n")
+  QTLUA_FUNCTION(connect)
   {
     Q_UNUSED(ls)
     meta_call_check_args(args, 3, 4, Value::TUserData, Value::TString, Value::TNone, Value::TString);
@@ -157,10 +154,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(disconnect, "Disconnect a Qt signal",
-		 "usage: qt.disconnect(qobjectwrapper, \"qt_signal_signature()\", qobjectwrapper, \"qt_slot_signature()\")\n"
-		 "       qt.disconnect(qobjectwrapper, \"qt_signal_signature()\", lua_function)\n"
-		 "       qt.disconnect(qobjectwrapper, \"qt_signal_signature()\")\n")
+  QTLUA_FUNCTION(disconnect)
   {
     meta_call_check_args(args, 2, 4, Value::TUserData, Value::TString, Value::TNone, Value::TString);
 
@@ -202,17 +196,14 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(connect_slots_by_name, "Invoke the QMetaObject::connectSlotsByName function.",
-		 "usage: qt.connect_slots_by_name(qobjectwrapper)\n")
+  QTLUA_FUNCTION(connect_slots_by_name)
   {
     QMetaObject::connectSlotsByName(get_arg_qobject<QObject>(args, 0));
 
     return Value(ls);
   }
 
-  QTLUA_FUNCTION(meta_type, "Translate between a registered Qt type numeric handle and associated type name.",
-		 "usage: qt.meta_type(\"QTypeName\")\n"
-		 "       qt.meta_type(type_handle)\n")
+  QTLUA_FUNCTION(meta_type)
   {
     meta_call_check_args(args, 1, 1, Value::TNone);
 
@@ -239,8 +230,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(new_qobject, "Dynamically create a new QObject.",
-		 "usage: qt.new_qobject( qt.meta.QClassName, [ Constructor arguments ] )\n")
+  QTLUA_FUNCTION(new_qobject)
   {
     QMetaObjectWrapper::ptr mow = get_arg_ud<QMetaObjectWrapper>(args, 0);
 
@@ -251,12 +241,7 @@ namespace QtLua {
   ////////////////////////////////////////////////// ui
 
 
-  QTLUA_FUNCTION(layout_add, "Add an item to a QLayout or set QLayout of a QWidget.",
-		 "usage: qt.ui.layout_add( box_layout, widget|layout )\n"
-		 "       qt.ui.layout_add( grid_layout, widget|layout, row, column, [ row_span, col_span, align ] )\n"
-		 "       qt.ui.layout_add( form_layout, widget|layout, row, column, [ col_span ] )\n"
-		 "       qt.ui.layout_add( form_layout, text, widget|layout )\n"
-		 "       qt.ui.layout_add( widget, layout )\n")
+  QTLUA_FUNCTION(layout_add)
   {
     meta_call_check_args(args, 2, 0, Value::TUserData, Value::TNone);
 
@@ -391,8 +376,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(layout_spacer, "Add a spacer to a QLayout.",
-		 "usage: qt.ui.layout_spacer( layout, width, height, h QSizePolicy, v QSizePolicy )\n")
+  QTLUA_FUNCTION(layout_spacer)
   {
     meta_call_check_args(args, 3, 5, Value::TUserData, Value::TNumber, Value::TNumber, Value::TNumber, Value::TNumber);
 
@@ -406,8 +390,7 @@ namespace QtLua {
     return QtLua::Value(ls);
   }
 
-  QTLUA_FUNCTION(get_viewport, "Get viewport from scroll area.",
-		 "usage: qt.ui.get_viewport( object )")
+  QTLUA_FUNCTION(get_viewport)
   {
     return QtLua::Value(ls, get_arg_qobject<QAbstractScrollArea>(args, 0)->viewport());
   }
@@ -415,8 +398,7 @@ namespace QtLua {
   ////////////////////////////////////////////////// translation
 
 
-  QTLUA_FUNCTION(tr, "Translate utf8 text using the QCoreApplication::translate function.",
-		 "usage: qt.tr(\"context\", \"text\", [ \"disambiguation\", n ])\n")
+  QTLUA_FUNCTION(tr)
   {
     return Value(ls, QCoreApplication::translate(get_arg<String>(args, 0),
 						 get_arg<String>(args, 1),
@@ -428,8 +410,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(translator, "Install a translation file and return associated QTranslator object.",
-		 "usage: qt.translator(\"filename\")\n")
+  QTLUA_FUNCTION(translator)
   {
     String filename(get_arg<String>(args, 0));
     QTranslator *qtr = new QTranslator();
@@ -448,8 +429,7 @@ namespace QtLua {
   ////////////////////////////////////////////////// menus
   
 
-  QTLUA_FUNCTION(add_menu, "Add a new QMenu to a QMenu or QMenuBar.",
-		 "usage: qt.ui.menu.add_menu( menu|menubar, \"text\", [ \"object_name\" ] )\n")
+  QTLUA_FUNCTION(add_menu)
   {
     meta_call_check_args(args, 2, 3, Value::TUserData, Value::TString, Value::TString);
 
@@ -471,8 +451,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(add_separator, "Add a separator QAction to a QMenu or QToolBar.",
-		 "usage: qt.ui.menu.add_separator( menu|toolbar, [ \"name\" ] )\n")
+  QTLUA_FUNCTION(add_separator)
   {
     meta_call_check_args(args, 1, 2, Value::TUserData, Value::TString);
 
@@ -493,8 +472,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(add_action, "Add a QAction to a QMenuBar, QMenu or QActionGroup.",
-		 "usage: qt.ui.menu.add_action( menu|menubar|... , \"text\", [ \"name\" ] )\n")
+  QTLUA_FUNCTION(add_action)
   {
     meta_call_check_args(args, 2, 3, Value::TUserData, Value::TNone, Value::TString);
 
@@ -519,8 +497,7 @@ namespace QtLua {
     return QtLua::Value(ls, result, true, true);
   }
 
-  QTLUA_FUNCTION(menu_attach, "Attach QAction, QActionGroup, QMenu, QMenuBar and QToolBar together.",
-		 "usage: qt.ui.menu.attach( container, part )\n")
+  QTLUA_FUNCTION(menu_attach)
   {
     QObject *obj = get_arg_qobject<QObject>(args, 0);
     QObject *obj2 = get_arg_qobject<QObject>(args, 1);
@@ -558,8 +535,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(new_action_group, "Create a new QActionGroup and add passed actions.",
-		 "usage: qt.ui.menu.new_action_group( action [, action ...] )\n")
+  QTLUA_FUNCTION(new_action_group)
   {
     QAction *a[args.size()];
 
@@ -573,20 +549,17 @@ namespace QtLua {
     return QtLua::Value(ls, result, true, true);
   }
 
-  QTLUA_FUNCTION(new_action, "Create a new QAction.",
-		 "usage: qt.ui.menu.new_action( parent )\n")
+  QTLUA_FUNCTION(new_action)
   {
     return QtLua::Value(ls, new QAction(get_arg_qobject<QObject>(args, 0)), true, true);
   }
 
-  QTLUA_FUNCTION(new_menu, "Create a new QMenu.",
-		 "usage: qt.ui.menu.new_menu( parent )\n")
+  QTLUA_FUNCTION(new_menu)
   {
     return QtLua::Value(ls, new QMenu(get_arg_qobject<QWidget>(args, 0)), true, true);
   }
 
-  QTLUA_FUNCTION(remove, "Remove a QAction or QMenu action from a QWidget or QActionGroup.",
-		 "usage: qt.ui.menu.remove( qaction|qmenu [, qwidget|qactiongroup ] )\n")
+  QTLUA_FUNCTION(remove)
   {
     meta_call_check_args(args, 1, 2, Value::TUserData, Value::TUserData);
 
@@ -619,8 +592,7 @@ namespace QtLua {
 
   ////////////////////////////////////////////////// main window
 
-  QTLUA_FUNCTION(ui_attach, "Invoke setWidget or addWidget like functions on various widgets.",
-		 "usage: qt.ui.attach( container, part, [ attributes ] )\n")
+  QTLUA_FUNCTION(ui_attach)
   {
     QObject *obj = get_arg_qobject<QObject>(args, 0);
     QObject *obj2 = get_arg_qobject<QObject>(args, 1);
@@ -674,8 +646,7 @@ namespace QtLua {
   ////////////////////////////////////////////////// dialogs
 
 
-  QTLUA_FUNCTION(get_existing_directory, "Wrap QFileDialog::getExistingDirectory function.",
-		 "usage: qt.dialog.get_existing_directory( [ \"caption\", \"directory\", QFileDialog::Option ] )\n")
+  QTLUA_FUNCTION(get_existing_directory)
   {
     return Value(ls, QFileDialog::getExistingDirectory(QApplication::activeWindow(),
 						       get_arg<QString>(args, 0, ""),
@@ -685,8 +656,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(get_open_filename, "Wrap QFileDialog::getOpenFileName function.",
-		 "usage: qt.dialog.get_open_filename( [ \"caption\", \"directory\", \"filter\", QFileDialog::Option ] )\n")
+  QTLUA_FUNCTION(get_open_filename)
   {
     return Value(ls, QFileDialog::getOpenFileName(QApplication::activeWindow(),
 						  get_arg<QString>(args, 0, ""),
@@ -696,8 +666,7 @@ namespace QtLua {
 						  ));
   }
 
-  QTLUA_FUNCTION(get_open_filenames, "Wrap QFileDialog::getOpenFileNames function.",
-		 "usage: qt.dialog.get_open_filenames( [ \"caption\", \"directory\", \"filter\", QFileDialog::Option ] )\n")
+  QTLUA_FUNCTION(get_open_filenames)
   {
     return Value(ls, QFileDialog::getOpenFileNames(QApplication::activeWindow(),
 						   get_arg<QString>(args, 0, ""),
@@ -708,8 +677,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(get_save_filename, "Wrap QFileDialog::getSaveFileName function.",
-		 "usage: qt.dialog.get_save_filename( [ \"caption\", \"directory\", \"filter\", QFileDialog::Option] )\n")
+  QTLUA_FUNCTION(get_save_filename)
   {
     return Value(ls, QFileDialog::getSaveFileName(QApplication::activeWindow(),
 						  get_arg<QString>(args, 0, ""),
@@ -720,8 +688,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(get_color, "Wrap QColorDialog::getColor function, returns rgb triplet in [0, 255] range.",
-		 "usage: qt.dialog.get_color( [ init_red, init_green, init_blue ] )\n")	 
+  QTLUA_FUNCTION(get_color)
   {
     QColor init(Qt::white);
 
@@ -735,8 +702,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(get_double, "Wrap QInputDialog::getDouble function.",
-		 "usage: qt.dialog.get_double( [ \"title\", \"label\", value, min, max, decimals ] )\n")
+  QTLUA_FUNCTION(get_double)
   {
     bool ok;
     double v = QInputDialog::getDouble(QApplication::activeWindow(),
@@ -752,8 +718,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(get_integer, "Wrap QInputDialog::getInteger function.",
-		 "usage: qt.dialog.get_integer( [ \"title\", \"label\", value, min, max, step ] )\n")
+  QTLUA_FUNCTION(get_integer)
   {
     bool ok;
 #if QT_VERSION < 0x050000
@@ -773,8 +738,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(get_text, "Wrap QInputDialog::getText function.",
-		 "usage: qt.dialog.get_text( [ \"title\", \"label\", \"init_text\" ] )\n")
+  QTLUA_FUNCTION(get_text)
   {
     bool ok;
     QString v = QInputDialog::getText(QApplication::activeWindow(),
@@ -788,8 +752,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(get_item, "Wrap QInputDialog::getItem function.",
-		 "usage: qt.dialog.get_item( { \"item\", \"item\", ... }, [ default, editable, \"title\", \"label\" ] )\n")
+  QTLUA_FUNCTION(get_item)
   {
     bool ok;
     QString v = QInputDialog::getItem(QApplication::activeWindow(),
@@ -804,8 +767,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(msg_about, "Wrap QMessageBox::about function.",
-		 "usage: qt.dialog.msg_about( \"text\" [ , \"title\" ] )\n")
+  QTLUA_FUNCTION(msg_about)
   {
     QMessageBox::about(QApplication::activeWindow(),
 		       get_arg<QString>(args, 1, ""),
@@ -814,8 +776,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(msg_critical, "Wrap QMessageBox::critical function.",
-		 "usage: qt.dialog.msg_critical( \"text\" [ , \"title\", buttons, default_button ] )\n")
+  QTLUA_FUNCTION(msg_critical)
   {
     return Value(ls, QMessageBox::critical(QApplication::activeWindow(),
 					   get_arg<QString>(args, 1, ""),
@@ -825,8 +786,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(msg_information, "Wrap QMessageBox::information function.",
-		 "usage: qt.dialog.msg_information( \"text\" [ , \"title\", buttons, default_button ] )\n")
+  QTLUA_FUNCTION(msg_information)
   {
     return Value(ls, QMessageBox::information(QApplication::activeWindow(),
 					      get_arg<QString>(args, 1, ""),
@@ -836,8 +796,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(msg_question, "Wrap QMessageBox::question function.",
-		 "usage: qt.dialog.msg_question( \"text\" [ , \"title\", buttons, default_button ] )\n")
+  QTLUA_FUNCTION(msg_question)
   {
     return Value(ls, QMessageBox::question(QApplication::activeWindow(),
 					   get_arg<QString>(args, 1, ""),
@@ -847,8 +806,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(msg_warning, "Wrap QMessageBox::warning function.",
-		 "usage: qt.dialog.msg_warning( \"text\" [ , \"title\", buttons, default_button ] )\n")
+  QTLUA_FUNCTION(msg_warning)
   {
     return Value(ls, QMessageBox::warning(QApplication::activeWindow(),
 					  get_arg<QString>(args, 1, ""),
@@ -858,8 +816,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(tree_view, "Expose a lua table in a QTreeView.",
-		 "usage: qt.dialog.tree_view( table [ , TableTreeModel::Attribute, \"title\" ] )\n")
+  QTLUA_FUNCTION(tree_view)
   {
     Q_UNUSED(ls)
     meta_call_check_args(args, 1, 3, Value::TNone, Value::TNumber, Value::TString);
@@ -873,8 +830,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(table_view, "Expose a lua table in a QTableView with key, value and type columns.",
-		 "usage: qt.dialog.table_view( table [ , TableTreeModel::Attribute, \"title\" ] )\n")
+  QTLUA_FUNCTION(table_view)
   {
     Q_UNUSED(ls)
     meta_call_check_args(args, 1, 3, Value::TNone, Value::TNumber, Value::TString);
@@ -888,8 +844,7 @@ namespace QtLua {
   }
 
 
-  QTLUA_FUNCTION(grid_view, "Expose 2 dimensions nested lua tables in a QTableView.",
-		 "usage: qt.dialog.grid_view( table [ , TableGridModel::Attribute, \"title\", {column keys}, {row keys} ] )\n")
+  QTLUA_FUNCTION(grid_view)
   {
     Q_UNUSED(ls)
     meta_call_check_args(args, 1, 5, Value::TNone, Value::TNumber,
@@ -937,8 +892,7 @@ namespace QtLua {
       }
   }
 
-  QTLUA_FUNCTION(new_table_tree_model, "Return a new QtLua::TableTreeModel object and set it has MVC model of some Qt views.",
-		 "usage: qt.mvc.new_table_tree_model( table, TableTreeModel::Attributes, [ view_widget, ... ] )\n")
+  QTLUA_FUNCTION(new_table_tree_model)
   {
     meta_call_check_args(args, 2, -3, Value::TNone, Value::TNumber, Value::TUserData);
 
@@ -951,8 +905,7 @@ namespace QtLua {
     return Value(ls, m, true, true);
   }
 
-  QTLUA_FUNCTION(new_table_grid_model, "Return a new QtLua::TableGridModel object and set it has MVC model of some Qt views.",
-		 "usage: qt.mvc.new_table_grid_model( table, TableGridModel::Attributes, [ view_widget, ... ] )\n")
+  QTLUA_FUNCTION(new_table_grid_model)
   {
     meta_call_check_args(args, 2, -3, Value::TNone, Value::TNumber, Value::TUserData);
 
@@ -965,9 +918,7 @@ namespace QtLua {
     return Value(ls, m, true, true);
   }
 
-  QTLUA_FUNCTION(new_lua_model, "Return a new QtLua::LuaModel object and set it has MVC model of some Qt views.",
-		 "usage: qt.mvc.new_lua_model( get_fcn [ , set_fcn, ins_row_fcn, \n"
-		 "                             del_row_fnc, ins_col_fcn, del_col_fcn, view_widget, ... ] )\n")
+  QTLUA_FUNCTION(new_lua_model)
   {
     LuaModel *m = new LuaModel(get_arg<Value>(args, 0),
 				 get_arg<Value>(args, 1, Value()),
@@ -983,8 +934,7 @@ namespace QtLua {
     return Value(ls, m, true, true);
   }
 
-  QTLUA_FUNCTION(set_model, "Set a MVC model of one or more Qt views.",
-		 "usage: qt.mvc.set_model( model, view_widget [, view_widget, ... ] )\n")
+  QTLUA_FUNCTION(set_model)
   {
     Q_UNUSED(ls)
     meta_call_check_args(args, 2, 0, Value::TUserData, Value::TUserData);
@@ -997,8 +947,7 @@ namespace QtLua {
     return Value::List();
   }
 
-  QTLUA_FUNCTION(new_itemview_dialog, "Dynamically create a new QtLua::ItemViewDialog.",
-		 "usage: qt.mvc.new_itemview_dialog( ItemViewDialog::EditActions, model, view )\n")
+  QTLUA_FUNCTION(new_itemview_dialog)
   {
     return Value(ls, new ItemViewDialog((ItemViewDialog::EditActions)get_arg<int>(args, 0),
 					get_arg_qobject<QAbstractItemModel>(args, 1),
@@ -1006,22 +955,24 @@ namespace QtLua {
 					));
   }
 
-  QTLUA_FUNCTION(pixmap_load, "Create QPixmap from image data.",
-		 "usage: qt.pixmap.load( data )\n")
+  QTLUA_FUNCTION(pixmap_file)
   {
-    Pixmap::ptr pixmap = QTLUA_REFNEW(QtLua::Pixmap, );
-    if (get_arg<ValueBase::Bool>(args, 0))
-      pixmap->_pixmap.loadFromData(get_arg<String>(args, 1));
-    else
-      pixmap->_pixmap.load(get_arg<String>(args, 1));
-    if (pixmap->_pixmap.isNull())
-	return Value(ls);
-    if (args.count() > 2)
-      {
-	Value size = get_arg<Value>(args, 2);
-	pixmap->_pixmap = pixmap->_pixmap.scaled(size.at(1).to_integer(), size.at(2).to_integer(), (Qt::AspectRatioMode)get_arg<int>(args, 3), (Qt::TransformationMode)get_arg<int>(args, 4));
-      }
-    return Value(ls, pixmap);
+    meta_call_check_args(args, 1, 0, Value::TString);
+    Pixmap::ptr pixmap = QTLUA_REFNEW(Pixmap);
+    pixmap->load(get_arg<String>(args, 0));
+    if (!pixmap->isNull())
+      return Value(ls, pixmap);
+    return Value(ls);
+  }
+
+  QTLUA_FUNCTION(pixmap_data)
+  {
+    meta_call_check_args(args, 1, 0, Value::TString);
+    Pixmap::ptr pixmap = QTLUA_REFNEW(Pixmap);
+    pixmap->loadFromData(get_arg<String>(args, 0));
+    if (!pixmap->isNull())
+      return Value(ls, pixmap);
+    return Value(ls);
   }
 
 
@@ -1078,7 +1029,8 @@ namespace QtLua {
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", table_view            );
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", grid_view             );
 
-    QTLUA_FUNCTION_REGISTER2(ls, "qt.pixmap.load", pixmap_load);
+    QTLUA_FUNCTION_REGISTER2(ls, "qt.pixmap.from_file", pixmap_file);
+    QTLUA_FUNCTION_REGISTER2(ls, "qt.pixmap.from_data", pixmap_data);
   }
 
 }
