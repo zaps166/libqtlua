@@ -44,7 +44,6 @@ namespace QtLua {
 
 #define QTLUA_MAX_COMPLETION 200
 
-char State::_key_threads;
 char State::_key_item_metatable;
 char State::_key_this;
 
@@ -691,11 +690,7 @@ State::State()
   assert(Value::TUserData == LUA_TUSERDATA);
   assert(Value::TThread == LUA_TTHREAD);
 
-#if LUA_VERSION_NUM < 501
-  _mst = _lst = lua_open();
-#else
   _mst = _lst = luaL_newstate();
-#endif
 
   if (!_mst)
     throw std::bad_alloc();
@@ -734,20 +729,6 @@ State::State()
   lua_pushlightuserdata(_mst, &_key_this);
   lua_pushlightuserdata(_mst, this);
   lua_rawset(_mst, LUA_REGISTRYINDEX);
-
-#if LUA_VERSION_NUM < 501
-  // create a weak table for threads, substitute for lua_pushthread
-  lua_pushlightuserdata(_mst, &_key_threads);
-  lua_newtable(_mst);
-
-  lua_newtable(_mst);    // metatable for weak table mode
-  lua_pushstring(_mst, "__mode");
-  lua_pushstring(_mst, "v");
-  lua_rawset(_mst, -3);
-  lua_setmetatable(_mst, -2);
-
-  lua_rawset(_mst, LUA_REGISTRYINDEX);
-#endif
 
   _debug_output = false;
   _yield_on_return = false;
@@ -893,11 +874,7 @@ void State::exec(const QString &statement)
 
 void State::gc_collect()
 {
-#if LUA_VERSION_NUM >= 501
   lua_gc(_lst, LUA_GCCOLLECT, 0);
-#else
-  lua_setgcthreshold(_lst, 0);
-#endif
 }
 
 void State::reg_c_function(const char *name, lua_CFunction f)
@@ -940,11 +917,9 @@ bool State::openlib(Library lib)
     case BaseLib:
       QTLUA_LUA_CALL(_lst, luaopen_base, "_G");
       return true;
-#if LUA_VERSION_NUM >= 501
     case PackageLib:
       QTLUA_LUA_CALL(_lst, luaopen_package, "package");
       return true;
-#endif
     case StringLib:
       QTLUA_LUA_CALL(_lst, luaopen_string, "string");
       return true;
@@ -957,11 +932,9 @@ bool State::openlib(Library lib)
     case IoLib:
       QTLUA_LUA_CALL(_lst, luaopen_io, "io");
       return true;
-#if LUA_VERSION_NUM >= 501
     case OsLib:
       QTLUA_LUA_CALL(_lst, luaopen_os, "os");
       return true;
-#endif
     case DebugLib:
       QTLUA_LUA_CALL(_lst, luaopen_debug, "debug");
       return true;
@@ -989,12 +962,8 @@ bool State::openlib(Library lib)
       QTLUA_LUA_CALL(_lst, luaopen_coroutine, "coroutine");
       QTLUA_LUA_CALL(_lst, luaopen_bit32, "bit32");
 #endif
-#if LUA_VERSION_NUM >= 501
       QTLUA_LUA_CALL(_lst, luaopen_os, "os");
-#endif
-#if LUA_VERSION_NUM >= 501
       QTLUA_LUA_CALL(_lst, luaopen_package, "package");
-#endif
       QTLUA_LUA_CALL(_lst, luaopen_base, "_G");
       QTLUA_LUA_CALL(_lst, luaopen_string, "string");
       QTLUA_LUA_CALL(_lst, luaopen_table, "table");
@@ -1026,11 +995,7 @@ bool State::openlib(Library lib)
 
 int State::lua_version() const
 {
-#if LUA_VERSION_NUM < 501
-  return 500;
-#else
   return LUA_VERSION_NUM;
-#endif
 }
 
 void State::lua_do(void (*func)(lua_State *st))

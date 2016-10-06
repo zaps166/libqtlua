@@ -321,7 +321,6 @@ private:
   static int lua_meta_item_gc(lua_State *st);
 
   // static member addresses are used as lua registry table keys
-  static char _key_threads;
   static char _key_item_metatable;
   static char _key_this;
 

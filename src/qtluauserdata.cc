@@ -239,22 +239,8 @@ Value UserData::yield(State *ls) const
   if (ls->_mst == lst)
     return Value(ls);
   ls->_yield_on_return = true;
-#if LUA_VERSION_NUM < 501
-  // get thread from a weak metatable, substitute for lua_pushthread
-  lua_pushlightuserdata(lst, &State::_key_threads);
-  lua_rawget(lst, LUA_REGISTRYINDEX);
-  lua_pushlightuserdata(lst, lst);
-  lua_rawget(lst, -2);
-  lua_remove(lst, -2);
-  if (lua_isnil(lst, -1))
-    {
-      lua_pop(lst, 1);
-      lua_pushboolean(lst, 1);
-    }
-#else
   int r = lua_pushthread(lst);
   assert(r != 1);
-#endif
   Value res(-1, ls);
   lua_pop(lst, 1);
   return res;

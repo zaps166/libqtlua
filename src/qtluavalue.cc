@@ -82,16 +82,6 @@ void Value::init_thread(const Value &main)
   lua_pushnumber(lst, _id);
   lua_State *th = lua_newthread(lst);
 
-#if LUA_VERSION_NUM < 501
-  // store the new thread in a weak metatable, substitute for lua_pushthread
-  lua_pushlightuserdata(lst, &State::_key_threads);
-  lua_rawget(lst, LUA_REGISTRYINDEX);
-  lua_pushlightuserdata(lst, th);
-  lua_pushvalue(lst, -3);
-  lua_rawset(lst, -3);
-  lua_pop(lst, 1);
-#endif
-
   try {
     main.push_value(lst);
   } catch (...) {
