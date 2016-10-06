@@ -93,11 +93,7 @@ namespace QtLua {
 		 .arg(mm.methodSignature()));
 #endif
 
-    if (mm.methodType() != QMetaMethod::Slot
-#if QT_VERSION >= 0x040500
-	&& mm.methodType() != QMetaMethod::Method
-#endif
-	)
+    if (mm.methodType() != QMetaMethod::Slot && mm.methodType() != QMetaMethod::Method)
       QTLUA_THROW(QtLua::Method, "The QMetaMethod '%' is not callable.",
 #if QT_VERSION < 0x050000
 		  .arg(mm.signature()));

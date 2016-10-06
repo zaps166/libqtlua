@@ -119,13 +119,10 @@
 #include <QValidator>
 #include <QWidget>
 #include <QWidgetAction>
-
-#if QT_VERSION >= 0x040400
 #include <QFormLayout>
 #include <QCommandLinkButton>
 #include <QPlainTextEdit>
 #include <QStyledItemDelegate>
-#endif
 
 namespace QtLua {
 
@@ -228,13 +225,10 @@ const meta_object_table_s meta_object_table[] = {
   { &QValidator::staticMetaObject,		     0 },
   { &QWidget::staticMetaObject,			     &create_qobject<QWidget> },
   { &QWidgetAction::staticMetaObject,                0 },
-
-#if QT_VERSION >= 0x040400
   { &QCommandLinkButton::staticMetaObject,           &create_qobject<QCommandLinkButton> },
   { &QFormLayout::staticMetaObject,		     &create_qobject<QFormLayout> },
   { &QPlainTextEdit::staticMetaObject,		     &create_qobject<QPlainTextEdit> },
   { &QStyledItemDelegate::staticMetaObject,          &create_qobject<QStyledItemDelegate> },
-#endif
 
   { 0, 0 },
 };

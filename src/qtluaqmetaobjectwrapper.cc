@@ -42,7 +42,6 @@ namespace QtLua {
     if (lua_args.size() <= 1 && _creator)
       return _creator();
 
-#if QT_VERSION >= 0x040500
     QObject *obj;
     void *qt_args[11];
     qt_args[0] = &obj;
@@ -74,7 +73,6 @@ namespace QtLua {
 
 	return obj;
       }
-#endif
 
     QTLUA_THROW(QtLua::QMetaObjectWrapper, "No invokable constructor found to create an object of the '%' class.", .arg(_mo->className()));
   }
