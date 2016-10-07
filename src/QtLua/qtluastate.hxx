@@ -80,11 +80,6 @@ namespace QtLua {
     _functions.append(function);
   }
 
-  void State::enable_qdebug_print(bool enabled)
-  {
-    _debug_output = enabled;
-  }
-
 }
 
 #endif

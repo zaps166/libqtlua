@@ -128,10 +128,9 @@ int State::lua_cmd_print(lua_State *st)
     for (int i = 1; i <= lua_gettop(st); i++)
       {
 	String s = Value::to_string_p(st, i, true);
-	if (this_->_debug_output)
-	  qDebug() << s; //"QtLua print:%s", s.constData());
-	this_->output_str(s + "\n");
+	this_->output_str(s + "\t");
       }
+    this_->output_str("\n");
 
   } catch (String &e) {
     QTLUA_RESTORE_THREAD(this_);
@@ -725,7 +724,6 @@ State::State()
   lua_pushlightuserdata(_mst, this);
   lua_rawset(_mst, LUA_REGISTRYINDEX);
 
-  _debug_output = false;
   _yield_on_return = false;
 }
 
