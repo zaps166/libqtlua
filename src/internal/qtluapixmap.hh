@@ -17,6 +17,7 @@ namespace QtLua {
   private:
     Value meta_index(State *ls, const Value &key);
     bool support(Value::Operation c) const;
+    virtual String get_value_str() const;
   };
 
 }

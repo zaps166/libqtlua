@@ -31,7 +31,12 @@ namespace QtLua {
 	return true;
       default:
 	return false;
-      }
+    }
+  }
+
+  String Pixmap::get_value_str() const
+  {
+    return QString().sprintf("Pixmap: %p", this);
   }
 
 }
