@@ -47,12 +47,6 @@ void Value::push_value(lua_State *st) const
   lua_rawget(st, LUA_REGISTRYINDEX);  
 }
 
-int Value::empty_fcn(lua_State *st)
-{
-  Q_UNUSED(st)
-  return 0;
-}
-
 void Value::init_global()
 {
   check_state();

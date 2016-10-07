@@ -259,8 +259,6 @@ private:
   void init_table();
   void init_thread(const Value &main);
 
-  static int empty_fcn(lua_State *st);
-
   double _id;
 };
 

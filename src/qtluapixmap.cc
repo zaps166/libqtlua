@@ -23,4 +23,15 @@ namespace QtLua {
     return Value();
   }
 
+  bool Pixmap::support(Value::Operation c) const
+  {
+    switch (c)
+      {
+      case Value::OpIndex:
+	return true;
+      default:
+	return false;
+      }
+  }
+
 }
