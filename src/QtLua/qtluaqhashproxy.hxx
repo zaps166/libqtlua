@@ -125,6 +125,7 @@ namespace QtLua {
   template <class Container>
   void QHashProxy<Container>::meta_newindex(State *ls, const Value &key, const Value &value)
   {
+    Q_UNUSED(ls)
     if (!_hash)
       QTLUA_THROW(QtLua::QHashProxy, "Can not index a null container.");
 
@@ -184,6 +185,7 @@ namespace QtLua {
   template <typename T>
   void QHashProxyKeytype<T>::completion_patch(String &path, String &entry, int &offset)
   {
+    Q_UNUSED(path)
     entry += "[]";
     offset--;
   }

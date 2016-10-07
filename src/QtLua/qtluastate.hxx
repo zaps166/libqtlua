@@ -49,7 +49,7 @@ namespace QtLua {
 
   void State::output_str(const String &str)
   {
-    output(str.to_qstring());
+    emit output(str.to_qstring());
   }
 
   lua_State * State::get_lua_state() const

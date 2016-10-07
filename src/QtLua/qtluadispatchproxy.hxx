@@ -44,7 +44,7 @@ namespace QtLua {
   template <class T>
   void DispatchProxy::remove_target(T *t)
   {
-    for (unsigned int i = 0; i < _targets.size(); )
+    for (int i = 0; i < _targets.size(); )
       {
 	TargetBase *b = _targets[i];
 	if (b->_ud == t && dynamic_cast<Target<T>*>(b))
