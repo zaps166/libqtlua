@@ -59,10 +59,6 @@
 #include <QtLua/Function>
 #include <internal/QObjectWrapper>
 #include <QtLua/QHashProxy>
-#include <QtLua/ItemViewDialog>
-#include <QtLua/TableGridModel>
-#include <QtLua/TableTreeModel>
-#include <QtLua/LuaModel>
 
 #include <internal/Method>
 #include <internal/qtluapixmap.hh>
@@ -645,7 +641,6 @@ namespace QtLua {
 
   ////////////////////////////////////////////////// dialogs
 
-
   QTLUA_FUNCTION(get_existing_directory)
   {
     return Value(ls, QFileDialog::getExistingDirectory(QApplication::activeWindow(),
@@ -815,145 +810,7 @@ namespace QtLua {
 					  (QMessageBox::StandardButton)get_arg<int>(args, 3, QMessageBox::NoButton)));
   }
 
-
-  QTLUA_FUNCTION(tree_view)
-  {
-    Q_UNUSED(ls)
-    meta_call_check_args(args, 1, 3, Value::TNone, Value::TNumber, Value::TString);
-
-    TableTreeModel::tree_dialog(QApplication::activeWindow(),
-				get_arg<QString>(args, 2, ""), args[0],
-				(TableTreeModel::Attributes)get_arg<int>(args, 1, 0)
-				);
-
-    return Value::List();
-  }
-
-
-  QTLUA_FUNCTION(table_view)
-  {
-    Q_UNUSED(ls)
-    meta_call_check_args(args, 1, 3, Value::TNone, Value::TNumber, Value::TString);
-
-    TableTreeModel::table_dialog(QApplication::activeWindow(),
-				 get_arg<QString>(args, 2, ""), args[0],
-				 (TableTreeModel::Attributes)get_arg<int>(args, 1, 0)
-				 );
-
-    return Value::List();
-  }
-
-
-  QTLUA_FUNCTION(grid_view)
-  {
-    Q_UNUSED(ls)
-    meta_call_check_args(args, 1, 5, Value::TNone, Value::TNumber,
-			 Value::TString, Value::TTable, Value::TTable);
-    Value::List rk, *rkptr = 0;
-    Value::List ck, *ckptr = 0;
-
-    if (args.count() >= 5)
-      {
-	rk = args[4].to_qlist<Value>();
-	if (!rk.empty())
-	  rkptr = &rk;
-      }
-
-    if (args.count() >= 4)
-      {
-	ck = args[3].to_qlist<Value>();
-	if (!ck.empty())
-	  ckptr = &ck;
-      }
-
-    TableGridModel::table_dialog(QApplication::activeWindow(),
-				   get_arg<QString>(args, 2, ""), args[0],
-				   (TableGridModel::Attributes)get_arg<int>(args, 1, 0),
-				   ckptr, rkptr
-				   );
-
-    return Value::List();
-  }
-
-
-  ////////////////////////////////////////////////// MVC stuff
-
-
-  static void set_model(QWidget *obj, QAbstractItemModel *m)
-  {
-    if (QAbstractItemView *w = dynamic_cast<QAbstractItemView*>(obj))
-      w->setModel(m);
-    else if (QComboBox *w = dynamic_cast<QComboBox*>(obj))
-      w->setModel(m);
-    else
-      {
-	delete m;
-	QTLUA_THROW(qt.mvc.new_*_model, "Unable to set the MVC model for this object type.");
-      }
-  }
-
-  QTLUA_FUNCTION(new_table_tree_model)
-  {
-    meta_call_check_args(args, 2, -3, Value::TNone, Value::TNumber, Value::TUserData);
-
-    TableTreeModel::Attributes a = (TableTreeModel::Attributes)get_arg<int>(args, 1);
-    TableTreeModel *m = new TableTreeModel(args[0], a);
-
-    for (int i = 2; i < args.count(); i++)
-      set_model(get_arg_qobject<QWidget>(args, i), m);
-
-    return Value(ls, m, true, true);
-  }
-
-  QTLUA_FUNCTION(new_table_grid_model)
-  {
-    meta_call_check_args(args, 2, -3, Value::TNone, Value::TNumber, Value::TUserData);
-
-    TableGridModel::Attributes a = (TableGridModel::Attributes)get_arg<int>(args, 1);
-    TableGridModel *m = new TableGridModel(args[0], a, true);
-
-    for (int i = 2; i < args.count(); i++)
-      set_model(get_arg_qobject<QWidget>(args, i), m);
-
-    return Value(ls, m, true, true);
-  }
-
-  QTLUA_FUNCTION(new_lua_model)
-  {
-    LuaModel *m = new LuaModel(get_arg<Value>(args, 0),
-				 get_arg<Value>(args, 1, Value()),
-				 get_arg<Value>(args, 2, Value()),
-				 get_arg<Value>(args, 3, Value()),
-				 get_arg<Value>(args, 4, Value()),
-				 get_arg<Value>(args, 5, Value())
-				 );
-
-    for (int i = 6; i < args.count(); i++)
-      set_model(get_arg_qobject<QWidget>(args, i), m);
-
-    return Value(ls, m, true, true);
-  }
-
-  QTLUA_FUNCTION(set_model)
-  {
-    Q_UNUSED(ls)
-    meta_call_check_args(args, 2, 0, Value::TUserData, Value::TUserData);
-
-    QAbstractItemModel *m = get_arg_qobject<QAbstractItemModel>(args, 0);
-
-    for (int i = 1; i < args.count(); i++)
-      set_model(get_arg_qobject<QWidget>(args, i), m);
-
-    return Value::List();
-  }
-
-  QTLUA_FUNCTION(new_itemview_dialog)
-  {
-    return Value(ls, new ItemViewDialog((ItemViewDialog::EditActions)get_arg<int>(args, 0),
-					get_arg_qobject<QAbstractItemModel>(args, 1),
-					get_arg_qobject<QAbstractItemView>(args, 2)
-					));
-  }
+  ////////////////////////////////////////////////// pixmap
 
   QTLUA_FUNCTION(pixmap_file)
   {
@@ -1005,12 +862,6 @@ namespace QtLua {
     QTLUA_FUNCTION_REGISTER(ls, "qt.ui.menu.", new_menu         );
     QTLUA_FUNCTION_REGISTER(ls, "qt.ui.menu.", remove           );
 
-    QTLUA_FUNCTION_REGISTER(ls, "qt.mvc.", new_table_tree_model  );
-    QTLUA_FUNCTION_REGISTER(ls, "qt.mvc.", new_table_grid_model  );
-    QTLUA_FUNCTION_REGISTER(ls, "qt.mvc.", new_lua_model     );
-    QTLUA_FUNCTION_REGISTER(ls, "qt.mvc.", set_model         );
-    QTLUA_FUNCTION_REGISTER(ls, "qt.mvc.", new_itemview_dialog   );
-
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", get_existing_directory);
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", get_open_filename     );
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", get_open_filenames    );
@@ -1025,9 +876,6 @@ namespace QtLua {
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", msg_information       );
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", msg_question          );
     QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", msg_warning           );
-    QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", tree_view             );
-    QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", table_view            );
-    QTLUA_FUNCTION_REGISTER(ls, "qt.dialog.", grid_view             );
 
     QTLUA_FUNCTION_REGISTER2(ls, "qt.pixmap.from_file", pixmap_file);
     QTLUA_FUNCTION_REGISTER2(ls, "qt.pixmap.from_data", pixmap_data);

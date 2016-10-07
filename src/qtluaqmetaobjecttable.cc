@@ -21,12 +21,6 @@
 #include <QMetaObject>
 #include <internal/QMetaObjectWrapper>
 
-#include <QtLua/UserItemSelectionModel>
-#include <QtLua/UserItemModel>
-#include <QtLua/ItemViewDialog>
-#include <QtLua/TableTreeModel>
-#include <QtLua/TableGridModel>
-#include <QtLua/LuaModel>
 #include <QtLua/State>
 
 #include <QAbstractItemDelegate>
@@ -127,13 +121,6 @@
 namespace QtLua {
 
 const meta_object_table_s meta_object_table[] = {
-  { &QtLua::UserItemSelectionModel::staticMetaObject,    0 },
-  { &QtLua::UserItemModel::staticMetaObject,	     0 },
-  { &QtLua::ItemViewDialog::staticMetaObject,	     0 },
-  { &QtLua::TableTreeModel::staticMetaObject,	     0 },
-  { &QtLua::TableGridModel::staticMetaObject,	     0 },
-  { &QtLua::LuaModel::staticMetaObject,	     0 },
-
   { &QAbstractItemDelegate::staticMetaObject,	     0 },
   { &QAbstractItemModel::staticMetaObject,	     0 },
   { &QAbstractItemView::staticMetaObject,	     0 },
