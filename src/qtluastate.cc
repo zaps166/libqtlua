@@ -128,7 +128,7 @@ int State::lua_cmd_print(lua_State *st)
     for (int i = 1; i <= lua_gettop(st); i++)
       {
 	String s = Value::to_string_p(st, i, true);
-	this_->output_str(s + "\t");
+	this_->output_str((i > 1 ? "\t" : "") + s);
       }
     this_->output_str("\n");
 
