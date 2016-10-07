@@ -206,35 +206,6 @@ public:
    */
   Value & operator=(const QVariant &qv);
 
-#if 0 && defined(Q_COMPILER_RVALUE_REFS) // FIXME rvalue ref not supported in gcc 4.7
-
-#ifdef __GNUC__
-# define QTLUA_TEMP_VALUE_ASSIGN __attribute__((deprecated("Assignment to temporary Value object")))
-#else
-# define QTLUA_TEMP_VALUE_ASSIGN
-#endif
-
-  /** @multiple @internal This functions is not implemented, its
-      declaration prevents a common pitfall of assignment to
-      temporary @ref Value instead of @ref ValueRef object. */
-
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(Bool n) &&;
-
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(double n) &&;
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(float n) &&;
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(int n) &&;
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(unsigned int n) &&;
-
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(const String &str) &&;
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(const QString &str) &&;
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(const char *str) &&;
-
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(const Ref<UserData> &ud) &&;
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(UserData *ud) &&;
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(QObject *obj) &&;
-  QTLUA_TEMP_VALUE_ASSIGN Value & operator=(const QVariant &qv) &&;
-#endif
-
 private:
   template <typename HashContainer>
   inline void from_hash(const State *ls, const HashContainer &hash);
