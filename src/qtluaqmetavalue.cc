@@ -150,6 +150,26 @@ namespace QtLua {
 	value[3] = color->blue();
 	return value;
       }
+      case QMetaType::QCursor: {
+	return Value(ls, reinterpret_cast<const QCursor*>(data)->shape());
+      }
+      case QMetaType::QPalette: {
+	Value value(Value::new_table(ls));
+	const QPalette *palette = reinterpret_cast<const QPalette*>(data);
+	for (int i = QPalette::WindowText; i < QPalette::NColorRoles; ++i)
+	  {
+	    Value color(Value::new_table(ls));
+	    color["role"] = i;
+	    color["color"] = palette->color((QPalette::ColorRole)i).rgb() & 0x00FFFFFF;
+	    value[i + 1] = color;
+	  }
+	return Value(ls, value);
+      }
+      case QMetaType::QPixmap: {
+	Pixmap::ptr pixmap = QTLUA_REFNEW(Pixmap);
+	static_cast<QPixmap &>(*pixmap) = *reinterpret_cast<const QPixmap*>(data);
+	return Value(ls, pixmap);
+      }
       default:
 	if (type == ud_ref_type)
 	  {
@@ -302,7 +322,18 @@ namespace QtLua {
       }
       case QMetaType::QIcon: {
 	QIcon *icon = reinterpret_cast<QIcon*>(data);
-	*icon = QIcon(v.to_string());
+	switch (v.type())
+	  {
+	  case ValueBase::TString:
+	    *icon = QIcon(v.to_string());
+	    break;
+	  case ValueBase::TUserData:
+	    *icon = *v.to_userdata_cast<Pixmap>();
+	    break;
+	  default:
+	    QTLUA_THROW(QtLua::MetaType, "Can not convert from lua type '%' to 'QIcon'.",
+			.arg(v.type_name_u()));
+	  }
 	break;
       }
       case QMetaType::QColor: {
