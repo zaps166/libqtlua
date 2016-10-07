@@ -337,6 +337,14 @@ namespace QtLua {
 	    m->assign(*this, value);
 	    return;
 	  }
+	else if (obj.isWidgetType())
+	  {
+	    if (skey == "windowFlags")
+	      {
+		qobject_cast<QWidget *>(&obj)->setWindowFlags((Qt::WindowFlags)value.to_integer());
+		return;
+	      }
+	  }
       }
 
     // child insertion
