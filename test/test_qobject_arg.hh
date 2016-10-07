@@ -81,6 +81,7 @@ struct MyData : public UserData
 
   Value meta_index(State *ls, const Value &key)
   {
+    Q_UNUSED(key)
     return Value(ls, _data);
   }
 

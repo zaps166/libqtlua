@@ -26,7 +26,7 @@
 
 using namespace QtLua;
 
-QTLUA_FUNCTION(test, "", "")
+QTLUA_FUNCTION(test)
 {
   int a = args[1].to_integer();
 
