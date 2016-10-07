@@ -18,8 +18,6 @@
 
 */
 
-#include <cstdarg>
-
 #include <QtLua/DispatchProxy>
 
 namespace QtLua {
@@ -164,7 +162,7 @@ namespace QtLua {
 
   void DispatchProxy::ProxyIterator::next()
   {
-    assert(_cur.valid());
+    Q_ASSERT(_cur.valid());
     _cur->next();
   }
 

@@ -24,5 +24,9 @@
 
 #include <internal/qtluamember.hxx>
 
+namespace QtLua {
+
+}
+
 #endif
 

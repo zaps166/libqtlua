@@ -20,8 +20,6 @@
 
 #include <QDebug>
 
-#include <cstring>
-
 #include <internal/QObjectWrapper>
 
 #include <internal/Method>
@@ -115,7 +113,7 @@ namespace QtLua {
     // parameters
     foreach (const QByteArray &pt, pt)
       {
-	assert(i < 11);
+	Q_ASSERT(i < 11);
 
 	qt_args[i] = args.create(QMetaType::type(pt.constData()), lua_args[i]).get_data();
 

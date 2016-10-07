@@ -64,8 +64,7 @@
 #include <internal/qtluapixmap.hh>
 #include <internal/MetaCache>
 #include <internal/QMetaObjectWrapper>
-
-#include "internal/qtluaqtlib.hh"
+#include <internal/qtluaqtlib.hh>
 
 namespace QtLua {
 

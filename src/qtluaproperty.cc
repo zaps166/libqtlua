@@ -18,8 +18,6 @@
 
 */
 
-#include <cstring>
-
 #include <internal/QObjectWrapper>
 
 #include <internal/QMetaValue>

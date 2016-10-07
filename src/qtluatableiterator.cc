@@ -18,8 +18,6 @@
 
 */
 
-#include <cassert>
-
 #include <QtLua/Value>
 #include <QtLua/State>
 #include <QtLua/Iterator>
@@ -47,7 +45,7 @@ TableIterator::TableIterator(State *st, int index)
       )
     index--;
   lua_pushvalue(lst, index);
-  assert(lua_type(lst, -1) == Value::TTable);
+  Q_ASSERT(lua_type(lst, -1) == Value::TTable);
   lua_rawset(lst, LUA_REGISTRYINDEX);
 
   fetch();
@@ -78,7 +76,7 @@ void TableIterator::fetch()
   if (!_st)
     return;
 
-  assert(_more);
+  Q_ASSERT(_more);
 
   lua_State *lst = _st->_lst;
   lua_pushlightuserdata(lst, this);

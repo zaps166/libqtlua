@@ -24,13 +24,12 @@
 #include <QWidget>
 
 #include <internal/QObjectWrapper>
-
 #include <internal/QMetaValue>
 #include <internal/Method>
 #include <internal/MetaCache>
 #include <internal/QObjectIterator>
 
-#define assert_do(x) { bool res_ = (x); assert (((void)#x, res_)); }
+#define Q_ASSERT_DO(x) { bool res_ = (x); Q_ASSERT(((void)#x, res_)); }
 
 namespace QtLua {
 
@@ -49,7 +48,7 @@ namespace QtLua {
 
     if (_obj)
       {
-	assert_do(QMetaObject::connect(obj, destroyindex, this, metaObject()->methodCount() + 0));
+	Q_ASSERT_DO(QMetaObject::connect(obj, destroyindex, this, metaObject()->methodCount() + 0));
 
 	ls->_whash.insert(obj, this);
 	// increment reference count since we are bound to a qobject
@@ -91,9 +90,9 @@ namespace QtLua {
 #ifdef QTLUA_QOBJECTWRAPPER_DEBUG
     qDebug() << "wrapped object has been destroyed" << _obj;
 #endif
-    assert(_obj = sender());
+    Q_ASSERT(_obj = sender());
 
-    assert_do(_ls->_whash.remove(_obj));
+    Q_ASSERT_DO(_ls->_whash.remove(_obj));
     _obj = 0;
     _drop();
   }
@@ -106,9 +105,9 @@ namespace QtLua {
 
     if (_obj)
       {
-	assert_do(_ls->_whash.remove(_obj));
+	Q_ASSERT_DO(_ls->_whash.remove(_obj));
 
-	assert_do(QMetaObject::disconnect(_obj, destroyindex, this, metaObject()->methodCount() + 0));
+	Q_ASSERT_DO(QMetaObject::disconnect(_obj, destroyindex, this, metaObject()->methodCount() + 0));
 
 	_lua_disconnect_all();
 
@@ -150,12 +149,12 @@ namespace QtLua {
       return -1;
 
     lua_slots_hash_t::iterator i = _lua_slots.find(id);
-    assert(i != _lua_slots.end());
+    Q_ASSERT(i != _lua_slots.end());
 
     Value::List lua_args;
 
     // first arg is sender object
-    assert(_obj == sender());
+    Q_ASSERT(_obj == sender());
     lua_args.push_back(Value(_ls, QObjectWrapper::get_wrapper(_ls, _obj)));
 
     // push more args from parameter type informations
@@ -217,8 +216,8 @@ namespace QtLua {
 	if (i.value()._sigindex == sigindex && value == i.value()._value)
 	  {
 	    bool ok = QMetaObject::disconnect(_obj, sigindex, this, metaObject()->methodCount() + i.key());
-	    assert(ok);
-	    _lua_next_slot = std::min(_lua_next_slot, i.key());
+	    Q_ASSERT(ok);
+	    _lua_next_slot = qMin(_lua_next_slot, i.key());
 	    i = _lua_slots.erase(i);
 	    return true;
 	  }
@@ -241,8 +240,8 @@ namespace QtLua {
 	if (i.value()._sigindex == sigindex)
 	  {
 	    bool ok = QMetaObject::disconnect(_obj, sigindex, this, metaObject()->methodCount() + i.key());
-	    assert(ok);
-	    _lua_next_slot = std::min(_lua_next_slot, i.key());
+	    Q_ASSERT(ok);
+	    _lua_next_slot = qMin(_lua_next_slot, i.key());
 	    i = _lua_slots.erase(i);
 	  }
 	else
@@ -260,7 +259,7 @@ namespace QtLua {
     for (i = _lua_slots.begin(); i != _lua_slots.end(); )
       {
 	bool ok = QMetaObject::disconnect(_obj, i.value()._sigindex, this, metaObject()->methodCount() + i.key());
-	assert(ok);
+	Q_ASSERT(ok);
 	++i;
       }
     _lua_slots.clear();
@@ -292,7 +291,7 @@ namespace QtLua {
 
   void QObjectWrapper::reparent(QObject *parent)
   {
-    assert(_obj);
+    Q_ASSERT(_obj);
 
     if (!_reparent)
       QTLUA_THROW(QtLua::QObjectWrapper, "Parent change disallowed for the '%' QObject.",

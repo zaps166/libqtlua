@@ -123,7 +123,7 @@ namespace QtLua {
     : ValueBase(ls)
     , _id(lv._id)
   {
-    assert(lv._st == ls);
+    Q_ASSERT(lv._st == ls);
     lv._st = 0;
   }
 

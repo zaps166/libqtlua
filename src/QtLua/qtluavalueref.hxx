@@ -22,8 +22,6 @@
 #ifndef QTLUAVALUEREF_HXX_
 #define QTLUAVALUEREF_HXX_
 
-#include <cassert>
-
 #include "qtluavalue.hxx"
 
 #include "State"
@@ -43,7 +41,7 @@ namespace QtLua {
     , _table_id(_id_counter++)
     , _key_id(_id_counter++)
   {
-    assert(table._st == key._st);
+    Q_ASSERT(table._st == key._st);
     copy_table_key(table._id, key._id);
   }
 
@@ -54,7 +52,7 @@ namespace QtLua {
     , _table_id(table._id)
     , _key_id(_id_counter++)
   {
-    assert(table._st == key._st);
+    Q_ASSERT(table._st == key._st);
     table._st = 0;
     copy_key(key._id);
   }
@@ -75,7 +73,7 @@ namespace QtLua {
     , _table_id(_id_counter++)
     , _key_id(key._id)
   {
-    assert(table._st == key._st);
+    Q_ASSERT(table._st == key._st);
     key._st = 0;
     copy_table(table._id);
   }
@@ -85,7 +83,7 @@ namespace QtLua {
     , _table_id(table._id)
     , _key_id(key._id)
   {
-    assert(table._st == key._st);
+    Q_ASSERT(table._st == key._st);
     table._st = 0;
     key._st = 0;
   }

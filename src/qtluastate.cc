@@ -18,8 +18,6 @@
 
 */
 
-#include <cstdlib>
-
 #include <QStringList>
 #include <QDebug>
 
@@ -88,7 +86,7 @@ int State::lua_cmd_iterator(lua_State *st)
     luaL_error(st, "%s", e.constData());
   }
 
-  std::abort();
+  ::abort();
 }
 
 int State::lua_cmd_each(lua_State *st)
@@ -216,7 +214,7 @@ int State::lua_meta_item_##n(lua_State *st)				\
     else if (b.type() == Value::TUserData)				\
       b.to_userdata()->meta_operation(this_, op, a, b).push_value(st);	\
     else								\
-      std::abort();							\
+      ::abort();							\
 									\
   } catch (String &e) {							\
     QTLUA_RESTORE_THREAD(this_);					\
@@ -675,25 +673,22 @@ ValueRef State::operator[] (const Value &key)
 
 void State::check_empty_stack() const
 {
-  assert(!lua_gettop(_lst));
+  Q_ASSERT(!lua_gettop(_lst));
 }
 
 State::State()
 {
-  assert(Value::TNone == LUA_TNONE);
-  assert(Value::TNil == LUA_TNIL);
-  assert(Value::TBool == LUA_TBOOLEAN);
-  assert(Value::TNumber == LUA_TNUMBER);
-  assert(Value::TString == LUA_TSTRING);
-  assert(Value::TTable == LUA_TTABLE);
-  assert(Value::TFunction == LUA_TFUNCTION);
-  assert(Value::TUserData == LUA_TUSERDATA);
-  assert(Value::TThread == LUA_TTHREAD);
+  Q_ASSERT(Value::TNone == LUA_TNONE);
+  Q_ASSERT(Value::TNil == LUA_TNIL);
+  Q_ASSERT(Value::TBool == LUA_TBOOLEAN);
+  Q_ASSERT(Value::TNumber == LUA_TNUMBER);
+  Q_ASSERT(Value::TString == LUA_TSTRING);
+  Q_ASSERT(Value::TTable == LUA_TTABLE);
+  Q_ASSERT(Value::TFunction == LUA_TFUNCTION);
+  Q_ASSERT(Value::TUserData == LUA_TUSERDATA);
+  Q_ASSERT(Value::TThread == LUA_TTHREAD);
 
   _mst = _lst = luaL_newstate();
-
-  if (!_mst)
-    throw std::bad_alloc();
 
   // creat metatable for UserData events
 

@@ -27,8 +27,6 @@
 #endif
 
 #include <QtGlobal> // for Q_UNUSED
-#include <stdint.h>
-#include <cassert>
 
 namespace QtLua {
 
@@ -239,7 +237,7 @@ namespace QtLua {
       if (tmp)
 	tmp->_drop();
       _obj = &obj;
-      assert(_obj);
+      Q_ASSERT(_obj);
       _obj->_inc();
       return *this;
     }
@@ -304,14 +302,14 @@ namespace QtLua {
     /** Access object */
     X & operator*() const
     {
-      assert(_obj);
+      Q_ASSERT(_obj);
       return *_obj;
     }
 
     /** Access object */
     X * operator->() const
     {
-      assert(_obj);
+      Q_ASSERT(_obj);
       return _obj;
     }
 
@@ -410,7 +408,7 @@ namespace QtLua {
       intptr_t count = y->_state >> 2;
 #endif
 
-      assert(count >= 0);
+      Q_ASSERT(count >= 0);
 
       if (y->_state & REF_DELETE)
 	{
@@ -428,7 +426,7 @@ namespace QtLua {
 
     void ref_allocated()
     {
-      assert(!(_state & REF_DELEGATE));
+      Q_ASSERT(!(_state & REF_DELEGATE));
       _state |= REF_DELETE;
     }
 
@@ -453,7 +451,7 @@ namespace QtLua {
       while (o->_state & REF_DELEGATE)
 	o = (RefobjBase*)(o->_state & REF_MASK);
 
-      assert(!_state && !((uintptr_t)o & 3));
+      Q_ASSERT(!_state && !((uintptr_t)o & 3));
       _state = REF_DELEGATE | (uintptr_t)o;
     }
 
@@ -506,13 +504,13 @@ namespace QtLua {
     Refobj & operator=(const Refobj &r)
     {
       Q_UNUSED(r)
-      assert(ref_count() == 0 || !"Can not overwrite object with live references");
+      Q_ASSERT(ref_count() == 0 || !"Can not overwrite object with live references");
       return *this;
     }
 
     ~Refobj()
     {
-      assert(ref_count() == 0 || !"Can not destruct object with live references");
+      Q_ASSERT(ref_count() == 0 || !"Can not destruct object with live references");
     }
   };
 

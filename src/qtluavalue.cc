@@ -18,9 +18,6 @@
 
 */
 
-#include <cstdlib>
-#include <cassert>
-
 #include <QtLua/Value>
 #include <QtLua/UserData>
 #include <QtLua/String>
@@ -234,7 +231,7 @@ Value::Value(const State *ls, const Value &lv)
   if (!_st)
     return;
 
-  assert(_st == lv._st);
+  Q_ASSERT(_st == lv._st);
 
   lua_State *lst = _st->_lst;
   lua_pushnumber(lst, _id);

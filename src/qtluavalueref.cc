@@ -18,9 +18,6 @@
 
 */
 
-#include <cassert>
-#include <cstdlib>
-
 #include <QtLua/ValueRef>
 
 extern "C" {
@@ -75,7 +72,7 @@ namespace QtLua {
 
   void ValueRef::cleanup()
   {
-    assert(_st);
+    Q_ASSERT(_st);
     lua_State *lst = _st->_lst;
 
     lua_pushnumber(lst, _table_id);

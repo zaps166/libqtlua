@@ -18,8 +18,6 @@
 
 */
 
-#include <cstdlib>
-
 #include <QtLua/Value>
 #include <QtLua/Iterator>
 #include <internal/QObjectWrapper>
@@ -70,7 +68,7 @@ namespace QtLua {
 	_it++;
 	break;
       case CurEnd:
-	std::abort();
+	::abort();
       }
 
     update();
@@ -120,7 +118,7 @@ namespace QtLua {
 	return Value(_ls, _it.key());
 
       default:
-	std::abort();
+	::abort();
       }
   }
 
@@ -138,14 +136,14 @@ namespace QtLua {
 	return Value(_ls, _it.value());
 
       default:
-	std::abort();
+	::abort();
       }
   }
 
   ValueRef QObjectIterator::get_value_ref()
   {
     // Not used from lua script
-    std::abort();
+    ::abort();
     return ValueRef(Value(), Value());
   }
 

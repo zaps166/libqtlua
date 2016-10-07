@@ -18,8 +18,6 @@
 
 */
 
-#include <cstdlib>
-
 #include <QtLua/Value>
 #include <QtLua/Iterator>
 
@@ -41,7 +39,7 @@ namespace QtLua {
 
   void EnumIterator::next()
   {
-    assert(_index < _me.keyCount());
+    Q_ASSERT(_index < _me.keyCount());
     _index++;
   }
 
@@ -57,7 +55,7 @@ namespace QtLua {
 
   ValueRef EnumIterator::get_value_ref()
   {
-    std::abort();
+    ::abort();
     return ValueRef(Value(), Value());
   }
 

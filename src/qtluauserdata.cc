@@ -18,9 +18,6 @@
 
 */
 
-
-#include <cstdarg>
-
 #ifdef __GNUC__
 #include <cxxabi.h>
 #endif
@@ -240,7 +237,7 @@ Value UserData::yield(State *ls) const
     return Value(ls);
   ls->_yield_on_return = true;
   int r = lua_pushthread(lst);
-  assert(r != 1);
+  Q_ASSERT(r != 1);
   Value res(-1, ls);
   lua_pop(lst, 1);
   return res;

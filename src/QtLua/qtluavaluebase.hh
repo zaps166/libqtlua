@@ -75,8 +75,6 @@ class ValueBase
     friend class UserData;
 
   public:
-    typedef std::forward_iterator_tag iterator_category;
-
     /** @internal */
     inline iterator_(const Ref<Iterator> &i);
     /** Create a non initialized iterator */

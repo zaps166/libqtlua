@@ -18,9 +18,6 @@
 
 */
 
-#include <cstdlib>
-#include <cassert>
-
 #include <QDebug>
 #include <QMetaMethod>
 
@@ -327,7 +324,7 @@ void ValueBase::table_shift(int pos, int count, const Value &init, int len)
 	  lua_rawgeti(lst, -2, i);
 	  lua_rawseti(lst, -3, i + count);
 	}
-      for (i = std::min(pos, len + 1); i < pos + count; i++)
+      for (i = qMin(pos, len + 1); i < pos + count; i++)
 	{
 	  lua_pushvalue(lst, -1);
 	  lua_rawseti(lst, -3, i);
@@ -487,7 +484,7 @@ lua_Number ValueBase::to_number() const
     }
 
   convert_error(TNumber);
-  std::abort();
+  ::abort();
 }
 
 String ValueBase::to_string() const
@@ -508,7 +505,7 @@ String ValueBase::to_string() const
     }
 
   convert_error(TString);
-  std::abort();
+  ::abort();
 }
 
 String ValueBase::to_string_p(bool quote_string) const
@@ -653,7 +650,7 @@ QByteArray ValueBase::to_bytecode() const
     }
 
   convert_error(TUserData);
-  std::abort();
+  ::abort();
 }
 
 int ValueBase::len() const

@@ -21,8 +21,6 @@
 #ifndef QTLUAMETATYPE_HH_
 #define QTLUAMETATYPE_HH_
 
-#include <string>
-
 #include <QMetaObject>
 #include <QMetaType>
 #include <QMap>
@@ -154,7 +152,7 @@ namespace QtLua {
   {
   public:
     MetaTypeQObjectStar()
-      : MetaType<X*>((std::string(X::staticMetaObject.className())+"*").c_str())
+      : MetaType<X*>(QByteArray(X::staticMetaObject.className()) + "*")
     {
     }
 
