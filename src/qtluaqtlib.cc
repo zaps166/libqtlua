@@ -52,18 +52,17 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
-
 #include <QDebug>
 
 #include <QtLua/State>
 #include <QtLua/Function>
-#include <internal/QObjectWrapper>
+#include <QtLua/Pixmap>
 #include <QtLua/QHashProxy>
 
 #include <internal/Method>
-#include <internal/qtluapixmap.hh>
 #include <internal/MetaCache>
 #include <internal/QMetaObjectWrapper>
+#include <internal/QObjectWrapper>
 #include <internal/qtluaqtlib.hh>
 
 namespace QtLua {

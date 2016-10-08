@@ -32,12 +32,12 @@
 #include <QPixmap>
 #include <QDebug>
 
+#include <QtLua/Pixmap>
 #include <QtLua/String>
 #include <QtLua/MetaType>
 
 #include <internal/QObjectWrapper>
 #include <internal/QMetaValue>
-#include <internal/qtluapixmap.hh>
 
 namespace QtLua {
 

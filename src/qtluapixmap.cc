@@ -1,5 +1,5 @@
-#include "internal/qtluapixmap.hh"
-#include "QtLua/Function"
+#include <QtLua/Pixmap>
+#include <QtLua/Function>
 
 namespace QtLua {
 

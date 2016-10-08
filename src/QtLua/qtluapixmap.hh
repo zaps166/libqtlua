@@ -1,7 +1,7 @@
 #ifndef QTLUAPIXMAP_HH_
 #define QTLUAPIXMAP_HH_
 
-#include "QtLua/UserData"
+#include "qtluauserdata.hh"
 
 #include <QPixmap>
 
