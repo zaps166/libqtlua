@@ -25,39 +25,38 @@
 
 namespace QtLua {
 
-  EnumIterator::EnumIterator(State *ls, QMetaEnum me)
-    : _ls(ls),
-      _me(me),
-      _index(0)
-  {
-  }
-
-  bool EnumIterator::more() const
-  {
-    return _index < _me.keyCount();
-  }
-
-  void EnumIterator::next()
-  {
-    Q_ASSERT(_index < _me.keyCount());
-    _index++;
-  }
-
-  Value EnumIterator::get_key() const
-  {
-    return Value(_ls, _me.key(_index));
-  }
-
-  Value EnumIterator::get_value() const
-  {
-    return Value(_ls, _me.value(_index));
-  }
-
-  ValueRef EnumIterator::get_value_ref()
-  {
-    ::abort();
-    return ValueRef(Value(), Value());
-  }
-
+EnumIterator::EnumIterator(State *ls, QMetaEnum me)
+	: _ls(ls)
+	, _me(me)
+	, _index(0)
+{
 }
 
+bool EnumIterator::more() const
+{
+	return _index < _me.keyCount();
+}
+
+void EnumIterator::next()
+{
+	Q_ASSERT(_index < _me.keyCount());
+	_index++;
+}
+
+Value EnumIterator::get_key() const
+{
+	return Value(_ls, _me.key(_index));
+}
+
+Value EnumIterator::get_value() const
+{
+	return Value(_ls, _me.value(_index));
+}
+
+ValueRef EnumIterator::get_value_ref()
+{
+	::abort();
+	return ValueRef(Value(), Value());
+}
+
+}

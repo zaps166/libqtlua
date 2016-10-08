@@ -28,21 +28,21 @@
 
 namespace QtLua {
 
-  /** @module {Container proxies} @internal */
-  template <typename T>
-  struct QHashProxyKeytype
-  {
-    static inline void completion_patch(String &path, String &entry, int &offset);
-  };
+/** @module {Container proxies} @internal */
+template <typename T>
+struct QHashProxyKeytype
+{
+	static inline void completion_patch(String &path, String &entry, int &offset);
+};
 
-  /** @module {Container proxies} @internal */
-  template <>
-  struct QHashProxyKeytype<String>
-  {
-    static inline void completion_patch(String &path, String &entry, int &offset);
-  };
+/** @module {Container proxies} @internal */
+template <>
+struct QHashProxyKeytype<String>
+{
+	static inline void completion_patch(String &path, String &entry, int &offset);
+};
 
-  /**
+/**
    * @short QHash and QMap read only access wrapper for lua script
    * @header QtLua/QHashProxy
    * @module {Container proxies}
@@ -58,54 +58,54 @@ template <class Container>
 class QHashProxyRo : public UserData
 {
 public:
-  QTLUA_REFTYPE(QHashProxyRo)
+	QTLUA_REFTYPE(QHashProxyRo)
 
-  /** Create a @ref QHashProxy object with no attached container */
-  QHashProxyRo();
-  /** Create a @ref QHashProxy object and attach given container */
-  QHashProxyRo(Container &hash);
+	/** Create a @ref QHashProxy object with no attached container */
+	QHashProxyRo();
+	/** Create a @ref QHashProxy object and attach given container */
+	QHashProxyRo(Container &hash);
 
-  /** Attach or detach container. argument may be NULL */
-  void set_container(Container *hash);
+	/** Attach or detach container. argument may be NULL */
+	void set_container(Container *hash);
 
-  Value meta_index(State *ls, const Value &key);
-  bool meta_contains(State *ls, const Value &key);
-  Ref<Iterator> new_iterator(State *ls);
-  Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
-  bool support(Value::Operation c) const;
+	Value meta_index(State *ls, const Value &key);
+	bool meta_contains(State *ls, const Value &key);
+	Ref<Iterator> new_iterator(State *ls);
+	Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
+	bool support(Value::Operation c) const;
 
 private:
-  void completion_patch(String &path, String &entry, int &offset);
-  String get_type_name() const;
+	void completion_patch(String &path, String &entry, int &offset);
+	String get_type_name() const;
 
-  /**
+	/**
    * @short QHashProxyRo iterator class
    * @internal
    */
-  class ProxyIterator : public Iterator
-  {
-  public:
-    QTLUA_REFTYPE(ProxyIterator)
-    ProxyIterator(State *ls, const Ref<QHashProxyRo> &proxy);
+	class ProxyIterator : public Iterator
+	{
+	public:
+		QTLUA_REFTYPE(ProxyIterator)
+		ProxyIterator(State *ls, const Ref<QHashProxyRo> &proxy);
 
-  private:
-    bool more() const;
-    void next();
-    Value get_key() const;
-    Value get_value() const;
-    ValueRef get_value_ref();
+	private:
+		bool more() const;
+		void next();
+		Value get_key() const;
+		Value get_value() const;
+		ValueRef get_value_ref();
 
-    QPointer<State> _ls;
-    Ref<QHashProxyRo> _proxy;
-    typename Container::iterator _it;
-  };
+		QPointer<State> _ls;
+		Ref<QHashProxyRo> _proxy;
+		typename Container::iterator _it;
+	};
 
 protected:
-  /** @internal */
-  Container *_hash;
+	/** @internal */
+	Container *_hash;
 };
 
-  /**
+/**
    * @short QHash and QMap access wrapper for lua script
    * @header QtLua/QHashProxy
    * @module {Container proxies}
@@ -136,21 +136,20 @@ protected:
 template <class Container>
 class QHashProxy : public QHashProxyRo<Container>
 {
-  using QHashProxyRo<Container>::_hash;
+	using QHashProxyRo<Container>::_hash;
 
 public:
-  QTLUA_REFTYPE(QHashProxy)
+	QTLUA_REFTYPE(QHashProxy)
 
-  /** Create a @ref QHashProxy object */
-  QHashProxy();
-  /** Create a @ref QHashProxy object */
-  QHashProxy(Container &hash);
+	/** Create a @ref QHashProxy object */
+	QHashProxy();
+	/** Create a @ref QHashProxy object */
+	QHashProxy(Container &hash);
 
-  void meta_newindex(State *ls, const Value &key, const Value &value);
-  bool support(enum Value::Operation c);
+	void meta_newindex(State *ls, const Value &key, const Value &value);
+	bool support(enum Value::Operation c);
 };
 
 }
 
 #endif
-

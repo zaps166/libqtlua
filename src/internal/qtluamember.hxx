@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAMEMBER_HXX_
 #define QTLUAMEMBER_HXX_
 
@@ -26,18 +25,17 @@
 
 namespace QtLua {
 
-  Member::Member(const QMetaObject *mo, int index)
-    : _mo(mo),
-      _index(index)
-  {
-  }
+Member::Member(const QMetaObject *mo, int index)
+	: _mo(mo)
+	, _index(index)
+{
+}
 
-  int Member::get_index() const
-  {
-    return _index;
-  }
+int Member::get_index() const
+{
+	return _index;
+}
 
 }
 
 #endif
-

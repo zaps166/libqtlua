@@ -26,62 +26,64 @@
 
 namespace QtLua {
 
-  void QMetaValue::init(int type)
-  {
-    _type = type;
-    if (type == QMetaType::Void)
-      {
-        _data = 0;
-        return;
-      }
+void QMetaValue::init(int type)
+{
+	_type = type;
+	if (type == QMetaType::Void)
+	{
+		_data = 0;
+		return;
+	}
 #if QT_VERSION < 0x050000
-    _data = QMetaType::construct(_type);
+	_data = QMetaType::construct(_type);
 #else
-    _data = QMetaType::create(_type, 0);
+	_data = QMetaType::create(_type, 0);
 #endif
-    if (!_data)
-      QTLUA_THROW(QtLua::QMetaValue, "Failed to construct an object of type '%' using the QMetaType API.",
-		  .arg(QMetaType::typeName(_type)));
-  }
+	if (!_data)
+		QTLUA_THROW(QtLua::QMetaValue, "Failed to construct an object of type '%' using the QMetaType API.",
+					.arg(QMetaType::typeName(_type)));
+}
 
-  QMetaValue::QMetaValue(int type, const Value &value)
-  {
-    init(type);
-    try {
-      raw_set_object(_type, _data, value);
-    } catch (...) {
-      QMetaType::destroy(_type, _data);
-      throw;
-    }
-  }
+QMetaValue::QMetaValue(int type, const Value &value)
+{
+	init(type);
+	try
+	{
+		raw_set_object(_type, _data, value);
+	}
+	catch (...)
+	{
+		QMetaType::destroy(_type, _data);
+		throw;
+	}
+}
 
-  QVariant QMetaValue::to_qvariant() const
-  {    
-    return _type != QMetaType::Void ? QVariant(_type, _data) : QVariant();
-  }
+QVariant QMetaValue::to_qvariant() const
+{
+	return _type != QMetaType::Void ? QVariant(_type, _data) : QVariant();
+}
 
-  QMetaValue::QMetaValue(int type)
-  {
-    init(type);
-  }
+QMetaValue::QMetaValue(int type)
+{
+	init(type);
+}
 
-  Value QMetaValue::to_value(State *ls) const
-  {
-    return raw_get_object(ls, _type, _data);
-  }
+Value QMetaValue::to_value(State *ls) const
+{
+	return raw_get_object(ls, _type, _data);
+}
 
-  QMetaValue::~QMetaValue()
-  {
-    if (_type != QMetaType::Void)
-      QMetaType::destroy(_type, _data);
-  }
+QMetaValue::~QMetaValue()
+{
+	if (_type != QMetaType::Void)
+		QMetaType::destroy(_type, _data);
+}
 
-  void * QMetaValue::get_data() const
-  {
-    return _data;
-  }
+void *QMetaValue::get_data() const
+{
+	return _data;
+}
 
 }
 
 #endif
-

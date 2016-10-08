@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAVALUEREF_HH_
 #define QTLUAVALUEREF_HH_
 
@@ -26,9 +25,9 @@
 
 namespace QtLua {
 
-  class State;
+class State;
 
-  /**
+/**
    * @short Lua value reference object class
    * @header QtLua/ValueRef
    * @module {Base}
@@ -41,76 +40,75 @@ namespace QtLua {
    * @ref Value::iterator classes to allow modification of lua tables with
    * the C++ square bracket operator functions.
    */
-  class ValueRef : public ValueBase
-  {
-    friend class Value;
-    friend class State;
+class ValueRef : public ValueBase
+{
+	friend class Value;
+	friend class State;
 
-  public:
-    /** Construct reference with given table and key. */
-    inline ValueRef(const Value &table, const Value &key);
+public:
+	/** Construct reference with given table and key. */
+	inline ValueRef(const Value &table, const Value &key);
 
-    /** Construct reference with given table and key. */
-    template <typename T>
-    inline ValueRef(const Value &table, const T &key);
+	/** Construct reference with given table and key. */
+	template <typename T>
+	inline ValueRef(const Value &table, const T &key);
 
-    inline ~ValueRef();
+	inline ~ValueRef();
 
 #ifdef Q_COMPILER_RVALUE_REFS
-    /** Construct reference with given table and key. @multiple */
-    inline ValueRef( Value &&table, const Value &key);
+	/** Construct reference with given table and key. @multiple */
+	inline ValueRef(Value &&table, const Value &key);
 
-    inline ValueRef(const Value &table, Value &&key);
+	inline ValueRef(const Value &table, Value &&key);
 
-    template <typename T>
-    inline ValueRef(Value &&table, const T &key);
+	template <typename T>
+	inline ValueRef(Value &&table, const T &key);
 
-    inline ValueRef(Value &&table, Value &&key);
+	inline ValueRef(Value &&table, Value &&key);
 
-    /** */
-    inline ValueRef(ValueRef &&ref);
+	/** */
+	inline ValueRef(ValueRef &&ref);
 #endif
 
-    inline ValueRef(const ValueRef &ref);
+	inline ValueRef(const ValueRef &ref);
 
-    Value value() const;
+	Value value() const;
 
-    /** Assign new value to referenced value. @multiple */
-    inline const Value & operator=(const Value &v) const;
+	/** Assign new value to referenced value. @multiple */
+	inline const Value &operator=(const Value &v) const;
 
-    inline Value operator=(Bool n) const;
+	inline Value operator=(Bool n) const;
 
-    inline Value operator=(double n) const;
-    inline Value operator=(float n) const;
-    inline Value operator=(int n) const;
-    inline Value operator=(unsigned int n) const;
+	inline Value operator=(double n) const;
+	inline Value operator=(float n) const;
+	inline Value operator=(int n) const;
+	inline Value operator=(unsigned int n) const;
 
-    inline Value operator=(const String &str) const;
-    inline Value operator=(const QString &str) const;
-    inline Value operator=(const char *str) const;
+	inline Value operator=(const String &str) const;
+	inline Value operator=(const QString &str) const;
+	inline Value operator=(const char *str) const;
 
-    inline Value operator=(const Ref<UserData> &ud) const;
-    inline Value operator=(UserData *ud) const;
-    inline Value operator=(QObject *obj) const;
-    inline Value operator=(const QVariant &qv) const;
-    /** */
+	inline Value operator=(const Ref<UserData> &ud) const;
+	inline Value operator=(UserData *ud) const;
+	inline Value operator=(QObject *obj) const;
+	inline Value operator=(const QVariant &qv) const;
+	/** */
 
-  private:
-    inline const ValueRef & operator=(const ValueRef &v) const;
-    void table_set(const Value &v) const;
+private:
+	inline const ValueRef &operator=(const ValueRef &v) const;
+	void table_set(const Value &v) const;
 
-    void copy_table_key(double tid, double kid);
-    void copy_table(double id);
-    void copy_key(double id);
+	void copy_table_key(double tid, double kid);
+	void copy_table(double id);
+	void copy_key(double id);
 
-    void push_value(lua_State *st) const;
-    void cleanup();
+	void push_value(lua_State *st) const;
+	void cleanup();
 
-    double _table_id;
-    double _key_id;
-  };
+	double _table_id;
+	double _key_id;
+};
 
 }
 
 #endif
-

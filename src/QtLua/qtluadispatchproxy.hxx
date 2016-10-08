@@ -26,101 +26,100 @@
 
 namespace QtLua {
 
-  template <class T>
-  unsigned int DispatchProxy::add_target(T *t, Value::Operations mask, bool new_keys)
-  {
-    _targets.push_back(new Target<T>(t, mask, new_keys)); 
-    return _targets.size() - 1;
-  }
+template <class T>
+unsigned int DispatchProxy::add_target(T *t, Value::Operations mask, bool new_keys)
+{
+	_targets.push_back(new Target<T>(t, mask, new_keys));
+	return _targets.size() - 1;
+}
 
-  template <class T>
-  unsigned int DispatchProxy::insert_target(T *t, unsigned int pos,
-					    Value::Operations mask, bool new_keys)
-  {
-    _targets.insert(pos, new Target<T>(t, mask, new_keys)); 
-    return pos;
-  }
+template <class T>
+unsigned int DispatchProxy::insert_target(T *t, unsigned int pos,
+										  Value::Operations mask, bool new_keys)
+{
+	_targets.insert(pos, new Target<T>(t, mask, new_keys));
+	return pos;
+}
 
-  template <class T>
-  void DispatchProxy::remove_target(T *t)
-  {
-    for (int i = 0; i < _targets.size(); )
-      {
-	TargetBase *b = _targets[i];
-	if (b->_ud == t && dynamic_cast<Target<T>*>(b))
-	  _targets.removeAt(i);
-	else
-	  i++;
-      }
-  }
+template <class T>
+void DispatchProxy::remove_target(T *t)
+{
+	for (int i = 0; i < _targets.size();)
+	{
+		TargetBase *b = _targets[i];
+		if (b->_ud == t && dynamic_cast<Target<T> *>(b))
+			_targets.removeAt(i);
+		else
+			i++;
+	}
+}
 
-  DispatchProxy::TargetBase::TargetBase(UserData *ud, Value::Operations ops, bool new_keys)
-    : _ud(ud)
-    , _ops(ops)
-    , _new_keys(new_keys)
-  {
-  }
+DispatchProxy::TargetBase::TargetBase(UserData *ud, Value::Operations ops, bool new_keys)
+	: _ud(ud)
+	, _ops(ops)
+	, _new_keys(new_keys)
+{
+}
 
-  DispatchProxy::TargetBase::~TargetBase()
-  {
-  }
+DispatchProxy::TargetBase::~TargetBase()
+{
+}
 
-  template <class T>
-  DispatchProxy::Target<T>::Target(UserData *ud, Value::Operations ops, bool new_keys)
-    : TargetBase(ud, ops, new_keys)
-  {
-  }
+template <class T>
+DispatchProxy::Target<T>::Target(UserData *ud, Value::Operations ops, bool new_keys)
+	: TargetBase(ud, ops, new_keys)
+{
+}
 
-  template <class T>
-  Value DispatchProxy::Target<T>::_meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b) const
-  {
-    return static_cast<T*>(_ud)->T::meta_operation(ls, op, a, b);
-  }
+template <class T>
+Value DispatchProxy::Target<T>::_meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b) const
+{
+	return static_cast<T *>(_ud)->T::meta_operation(ls, op, a, b);
+}
 
-  template <class T>
-  Value DispatchProxy::Target<T>::_meta_index(State *ls, const Value &key) const
-  {
-    return static_cast<T*>(_ud)->T::meta_index(ls, key);
-  }
+template <class T>
+Value DispatchProxy::Target<T>::_meta_index(State *ls, const Value &key) const
+{
+	return static_cast<T *>(_ud)->T::meta_index(ls, key);
+}
 
-  template <class T>
-  bool DispatchProxy::Target<T>::_meta_contains(State *ls, const Value &key) const
-  {
-    return static_cast<T*>(_ud)->T::meta_contains(ls, key);
-  }
+template <class T>
+bool DispatchProxy::Target<T>::_meta_contains(State *ls, const Value &key) const
+{
+	return static_cast<T *>(_ud)->T::meta_contains(ls, key);
+}
 
-  template <class T>
-  void DispatchProxy::Target<T>::_meta_newindex(State *ls, const Value &key, const Value &value) const
-  {
-    return static_cast<T*>(_ud)->T::meta_newindex(ls, key, value);
-  }
+template <class T>
+void DispatchProxy::Target<T>::_meta_newindex(State *ls, const Value &key, const Value &value) const
+{
+	return static_cast<T *>(_ud)->T::meta_newindex(ls, key, value);
+}
 
-  template <class T>
-  Value::List DispatchProxy::Target<T>::_meta_call(State *ls, const Value::List &args) const
-  {
-    return static_cast<T*>(_ud)->T::meta_call(ls, args);
-  }
+template <class T>
+Value::List DispatchProxy::Target<T>::_meta_call(State *ls, const Value::List &args) const
+{
+	return static_cast<T *>(_ud)->T::meta_call(ls, args);
+}
 
-  template <class T>
-  Ref<Iterator> DispatchProxy::Target<T>::_new_iterator(State *ls) const
-  {
-    return static_cast<T*>(_ud)->T::new_iterator(ls);
-  }
+template <class T>
+Ref<Iterator> DispatchProxy::Target<T>::_new_iterator(State *ls) const
+{
+	return static_cast<T *>(_ud)->T::new_iterator(ls);
+}
 
-  template <class T>
-  bool DispatchProxy::Target<T>::_support(enum Value::Operation c) const
-  {
-    return static_cast<T*>(_ud)->T::support(c);
-  }
+template <class T>
+bool DispatchProxy::Target<T>::_support(enum Value::Operation c) const
+{
+	return static_cast<T *>(_ud)->T::support(c);
+}
 
-  DispatchProxy::ProxyIterator::ProxyIterator(State *ls, const DispatchProxy &dp)
-    : _state(ls),
-      _dp(dp),
-      _index(0)
-  {
-  }
+DispatchProxy::ProxyIterator::ProxyIterator(State *ls, const DispatchProxy &dp)
+	: _state(ls)
+	, _dp(dp)
+	, _index(0)
+{
+}
 
 }
 
 #endif
-

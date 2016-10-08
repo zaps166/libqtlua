@@ -28,126 +28,125 @@
 
 namespace QtLua {
 
-  meta_cache_t MetaCache::_meta_cache;
+meta_cache_t MetaCache::_meta_cache;
 
-  MetaCache::MetaCache(const QMetaObject *mo)
-    : _mo(mo)
-  {
-    // Fill a set with existing member names in parent classes to
-    // detect names collisions
+MetaCache::MetaCache(const QMetaObject *mo)
+	: _mo(mo)
+{
+	// Fill a set with existing member names in parent classes to
+	// detect names collisions
 
-    QSet<String> existing;
+	QSet<String> existing;
 
-    for (const QMetaObject *tmp = mo->superClass(); tmp; tmp = tmp->superClass())
-      {
-	const member_cache_t &mt = get_meta(tmp).get_member_table();
+	for (const QMetaObject *tmp = mo->superClass(); tmp; tmp = tmp->superClass())
+	{
+		const member_cache_t &mt = get_meta(tmp).get_member_table();
 
-	for (member_cache_t::const_iterator i = mt.begin(); i != mt.end(); i++)
-	  existing.insert(i.key());
-      }
+		for (member_cache_t::const_iterator i = mt.begin(); i != mt.end(); i++)
+			existing.insert(i.key());
+	}
 
-    // Add method members
-    for (int i = 0; i < mo->methodCount(); i++)
-      {
-	int index = mo->methodOffset() + i;
-	QMetaMethod mm = mo->method(index);
+	// Add method members
+	for (int i = 0; i < mo->methodCount(); i++)
+	{
+		int index = mo->methodOffset() + i;
+		QMetaMethod mm = mo->method(index);
 
 #if QT_VERSION < 0x050000
-	if (!mm.signature())
-	  continue;
-	String signature(mm.signature());
+		if (!mm.signature())
+			continue;
+		String signature(mm.signature());
 #else
-	String signature(mm.methodSignature());
-	if (signature.isNull())
-	  continue;	  
+		String signature(mm.methodSignature());
+		if (signature.isNull())
+			continue;
 #endif
 
-	String name(signature.constData(), signature.indexOf('('));
+		String name(signature.constData(), signature.indexOf('('));
 
-	while (existing.contains(name) || _member_cache.contains(name))
-	  name += "_m";
+		while (existing.contains(name) || _member_cache.contains(name))
+			name += "_m";
 
-	_member_cache.insert(name, QTLUA_REFNEW(Method, mo, index));
-      }
+		_member_cache.insert(name, QTLUA_REFNEW(Method, mo, index));
+	}
 
-    // Add enum members
-    for (int i = 0; i < mo->enumeratorCount(); i++)
-      {
-	int index = mo->enumeratorOffset() + i;
-	QMetaEnum me = mo->enumerator(index);
-
-	if (!me.isValid())
-	  continue;
-
-	String name(me.name());
-
-	while (existing.contains(name) || _member_cache.contains(name))
-	  name += "_e";
-
-	_member_cache.insert(name, QTLUA_REFNEW(Enum, mo, index));
-      }
-
-    // Add property members
-    for (int i = 0; i < mo->propertyCount(); i++)
-      {
-	int index = mo->propertyOffset() + i;
-	QMetaProperty mp = mo->property(index);
-
-	if (!mp.isValid())
-	  continue;
-
-	String name(mp.name());
-
-	while (existing.contains(name) || _member_cache.contains(name))
-	  name += "_p";
-
-	_member_cache.insert(name, QTLUA_REFNEW(Property, mo, index));
-      }
-  }
-
-  Member::ptr MetaCache::get_member(const String &name) const
-  {
-    const MetaCache *mc = this;
-    Member::ptr m;
-
-    for (m = _member_cache.value(name);
-	 !m.valid() && mc->_mo->superClass();
-	 m = (mc = &MetaCache::get_meta(mc->_mo->superClass()))->get_member(name))
-      ;
-
-    return m;
-  }
-
-  int MetaCache::get_enum_value(const String &name) const
-  {
-    for (const QMetaObject *mo = _mo; mo; mo = mo->superClass())
-      {
+	// Add enum members
 	for (int i = 0; i < mo->enumeratorCount(); i++)
-	  {
-	    int index = mo->enumeratorOffset() + i;
-	    QMetaEnum me = mo->enumerator(index);
+	{
+		int index = mo->enumeratorOffset() + i;
+		QMetaEnum me = mo->enumerator(index);
 
-	    if (!me.isValid())
-	      continue;
+		if (!me.isValid())
+			continue;
 
-	    int value = me.keyToValue(name);
-	    if (value >= 0)
-	      return value;
-	  }
-      }
+		String name(me.name());
 
-    return -1;
-  }
+		while (existing.contains(name) || _member_cache.contains(name))
+			name += "_e";
 
-  MetaCache & MetaCache::get_meta(const QMetaObject *mo)
-  {
-    meta_cache_t::iterator i = _meta_cache.find(mo);
+		_member_cache.insert(name, QTLUA_REFNEW(Enum, mo, index));
+	}
 
-    if (i != _meta_cache.end())
-      return i.value();
+	// Add property members
+	for (int i = 0; i < mo->propertyCount(); i++)
+	{
+		int index = mo->propertyOffset() + i;
+		QMetaProperty mp = mo->property(index);
 
-    return _meta_cache.insert(mo, MetaCache(mo)).value();
-  }
+		if (!mp.isValid())
+			continue;
 
+		String name(mp.name());
+
+		while (existing.contains(name) || _member_cache.contains(name))
+			name += "_p";
+
+		_member_cache.insert(name, QTLUA_REFNEW(Property, mo, index));
+	}
 }
 
+Member::ptr MetaCache::get_member(const String &name) const
+{
+	const MetaCache *mc = this;
+	Member::ptr m;
+
+	for (m = _member_cache.value(name);
+		 !m.valid() && mc->_mo->superClass();
+		 m = (mc = &MetaCache::get_meta(mc->_mo->superClass()))->get_member(name))
+		;
+
+	return m;
+}
+
+int MetaCache::get_enum_value(const String &name) const
+{
+	for (const QMetaObject *mo = _mo; mo; mo = mo->superClass())
+	{
+		for (int i = 0; i < mo->enumeratorCount(); i++)
+		{
+			int index = mo->enumeratorOffset() + i;
+			QMetaEnum me = mo->enumerator(index);
+
+			if (!me.isValid())
+				continue;
+
+			int value = me.keyToValue(name);
+			if (value >= 0)
+				return value;
+		}
+	}
+
+	return -1;
+}
+
+MetaCache &MetaCache::get_meta(const QMetaObject *mo)
+{
+	meta_cache_t::iterator i = _meta_cache.find(mo);
+
+	if (i != _meta_cache.end())
+		return i.value();
+
+	return _meta_cache.insert(mo, MetaCache(mo)).value();
+}
+
+}

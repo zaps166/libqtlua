@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAUSERDATA_HH_
 #define QTLUAUSERDATA_HH_
 
@@ -64,22 +63,22 @@ class Iterator;
 
 class UserData : public QtLua::Refobj<UserData>
 {
-  friend class State;
-  friend class ValueBase;
-  friend class Value;
-  friend class ValueRef;
-  friend uint qHash(const Value &lv);
+	friend class State;
+	friend class ValueBase;
+	friend class Value;
+	friend class ValueRef;
+	friend uint qHash(const Value &lv);
 
 public:
-  QTLUA_REFTYPE(UserData)
+	QTLUA_REFTYPE(UserData)
 
-  virtual inline ~UserData();
+	virtual inline ~UserData();
 
-  /** Get a bare C++ typename from type */
-  template <class X>
-  static String type_name();
+	/** Get a bare C++ typename from type */
+	template <class X>
+	static String type_name();
 
-  /**
+	/**
    * This function is called when a lua operator is used with a @ref
    * UserData object. The default implementation throws an error
    * message. The @ref support function must be reimplemented along
@@ -90,9 +89,9 @@ public:
    * @param b Second value involved in operation for binary operators.
    * @returns Operation result value.
    */
-  virtual Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
+	virtual Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
 
-  /** 
+	/** 
    * This function is called when a table read access operation is
    * attempted on a userdata object. The default implementation throws
    * an error message. The @ref support function must be
@@ -102,9 +101,9 @@ public:
    * @param key Value used as table index.
    * @returns Table access result value.
    */
-  virtual Value meta_index(State *ls, const Value &key);
+	virtual Value meta_index(State *ls, const Value &key);
 
-  /**
+	/**
    * This function is called when a table write access operation is
    * attempted on a userdata object. The default implementation throws
    * an error message. The @ref support function must be
@@ -114,9 +113,9 @@ public:
    * @param key Value used as table index.
    * @param value Value to put in table.
    */
-  virtual void meta_newindex(State *ls, const Value &key, const Value &value);
+	virtual void meta_newindex(State *ls, const Value &key, const Value &value);
 
-  /**
+	/**
    * This function returns @tt true if either the @ref Value::OpIndex
    * operation or the @ref Value::OpNewindex operation is supported and
    * an entry is associated to the given key.
@@ -124,9 +123,9 @@ public:
    * The default implementation returns @tt{!meta_index(ls,
    * key).is_nil()} or @tt false if @ref meta_index throws.
    */
-  virtual bool meta_contains(State *ls, const Value &key);
+	virtual bool meta_contains(State *ls, const Value &key);
 
-  /**
+	/**
    * This function is called when a function invokation operation is
    * performed on a userdata object. The default implementation throws
    * an error message. The @ref support function must be
@@ -136,9 +135,9 @@ public:
    * @param args List of passed arguments.
    * @returns List of returned values.
    */
-  virtual Value::List meta_call(State *ls, const Value::List &args);
+	virtual Value::List meta_call(State *ls, const Value::List &args);
 
-  /**
+	/**
    * This function may return an @ref Iterator object used to iterate
    * over an userdata object. The default implementation throws an
    * error message. The @ref support function must be reimplemented
@@ -147,34 +146,34 @@ public:
    *
    * @returns an @ref Iterator based iterator object.
    */
-  virtual Ref<Iterator> new_iterator(State *ls);
+	virtual Ref<Iterator> new_iterator(State *ls);
 
-  /**
+	/**
    * This function returns an object type name. The default
    * implementation returns the C++ object type name. This is used
    * for error messages and pretty printing.
    *
    * @returns Pretty print object type.
    */
-  virtual String get_type_name() const;
+	virtual String get_type_name() const;
 
-  /**
+	/**
    * This function returns an string value describing object value or
    * content. The default implementation returns an hexadecimal
    * object pointer. This is used for mainly for pretty printing.
    */
-  virtual String get_value_str() const;
+	virtual String get_value_str() const;
 
-  /** Check given operation support. @see Value::support */
-  virtual bool support(enum Value::Operation c) const;
+	/** Check given operation support. @see Value::support */
+	virtual bool support(enum Value::Operation c) const;
 
-  /** Userdata compare for equality, default implementation compares the @tt this pointers */
-  virtual bool operator==(const UserData &ud);
+	/** Userdata compare for equality, default implementation compares the @tt this pointers */
+	virtual bool operator==(const UserData &ud);
 
-  /** Userdata compare less than, default implementation compares the @tt this pointers */
-  virtual bool operator<(const UserData &ud);
+	/** Userdata compare less than, default implementation compares the @tt this pointers */
+	virtual bool operator<(const UserData &ud);
 
-  /**
+	/**
    * This helper function can be used to check arguments types passed
    * to the @ref meta_call functions. This function throw an error
    * message if checking fails.
@@ -195,11 +194,10 @@ public:
    *   longer than @tt min_count. Last specified type is expected for
    *   all arguments above @tt{max(min_count, -max_count)}.
    */
-  static void meta_call_check_args(const Value::List &args, int min_count, int max_count, ...);
+	static void meta_call_check_args(const Value::List &args, int min_count, int max_count, ...);
 
 protected:
-
-  /**
+	/**
    * When @this is invoked from the @ref meta_call function, QtLua
    * will request lua to @em yield when the @ref meta_call function
    * returns.
@@ -216,9 +214,9 @@ protected:
    * mean (like call to the @tt {coroutine.create} lua 5.0 function) a
    * boolean @tt true value is returned instead of the thread value.
    */
-  Value yield(State *ls) const;
+	Value yield(State *ls) const;
 
-  /**
+	/**
    * This function may be reimplemented to further modify completion
    * result on console line when completed to a @ref UserData
    * value. This is usefull to append a dot or a pair of brackets
@@ -228,18 +226,17 @@ protected:
    * @param entry Completion result userdata name. May append to this string directly.
    * @param offset Cursor offset. May be decreased to place cursor between inserted brackets for instance.
    */
-  virtual void completion_patch(String &path, String &entry, int &offset);
+	virtual void completion_patch(String &path, String &entry, int &offset);
 
 private:
-
-  template <bool pop>
-  static QtLua::Ref<UserData> get_ud_(lua_State *st, int i);
-  /** Get @ref QtLua::UserData reference from lua stack element. */
-  static QtLua::Ref<UserData> get_ud(lua_State *st, int i);
-  /** Get @ref QtLua::UserData reference from lua stack element and pop stack */
-  static QtLua::Ref<UserData> pop_ud(lua_State *st);
-  /** Push a reference to QtLua::UserData on lua stack. */
-  void push_ud(lua_State *st);
+	template <bool pop>
+	static QtLua::Ref<UserData> get_ud_(lua_State *st, int i);
+	/** Get @ref QtLua::UserData reference from lua stack element. */
+	static QtLua::Ref<UserData> get_ud(lua_State *st, int i);
+	/** Get @ref QtLua::UserData reference from lua stack element and pop stack */
+	static QtLua::Ref<UserData> pop_ud(lua_State *st);
+	/** Push a reference to QtLua::UserData on lua stack. */
+	void push_ud(lua_State *st);
 };
 
 }
@@ -247,4 +244,3 @@ private:
 Q_DECLARE_METATYPE(QtLua::UserData::ptr)
 
 #endif
-

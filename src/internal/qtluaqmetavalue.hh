@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAQMETAVALUE_HH_
 #define QTLUAQMETAVALUE_HH_
 
@@ -36,31 +35,29 @@ namespace QtLua {
  * @module {Base}
  * @internal
  */
-  class QMetaValue
-  {
-    int _type;
-    void *_data;
+class QMetaValue
+{
+	int _type;
+	void *_data;
 
-    inline void init(int type);
+	inline void init(int type);
 
-  public:
-    static Value raw_get_object(State *ls, int type, const void *data);
-    static void raw_set_object(int type, void *data, const Value &v);
+public:
+	static Value raw_get_object(State *ls, int type, const void *data);
+	static void raw_set_object(int type, void *data, const Value &v);
 
-  public:
+public:
+	inline void *get_data() const;
 
-    inline void * get_data() const;
+	inline QMetaValue(int type, const Value &value);
+	inline QVariant to_qvariant() const;
 
-    inline QMetaValue(int type, const Value &value);
-    inline QVariant to_qvariant() const;
+	inline QMetaValue(int type);
+	inline Value to_value(State *ls) const;
 
-    inline QMetaValue(int type);
-    inline Value to_value(State *ls) const;
-
-    inline ~QMetaValue();
-  };
+	inline ~QMetaValue();
+};
 
 }
 
 #endif
-

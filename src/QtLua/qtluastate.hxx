@@ -27,60 +27,59 @@
 
 namespace QtLua {
 
-  Value State::operator[] (const Value &key) const
-  {
-    return at(key);
-  }
+Value State::operator[](const Value &key) const
+{
+	return at(key);
+}
 
-  Value State::operator[] (const String &key) const
-  {
-    return (*this)[Value(this, key)];
-  }
+Value State::operator[](const String &key) const
+{
+	return (*this)[Value(this, key)];
+}
 
-  Value State::at(const String &key) const
-  {
-    return (*this)[key];
-  }
+Value State::at(const String &key) const
+{
+	return (*this)[key];
+}
 
-  ValueRef State::operator[] (const String &key)
-  {
-    return (*this)[Value(this, key)];
-  }
+ValueRef State::operator[](const String &key)
+{
+	return (*this)[Value(this, key)];
+}
 
-  void State::output_str(const String &str)
-  {
-    emit output(str.to_qstring());
-  }
+void State::output_str(const String &str)
+{
+	emit output(str.to_qstring());
+}
 
-  lua_State * State::get_lua_state() const
-  {
-    return _lst;
-  }
+lua_State *State::get_lua_state() const
+{
+	return _lst;
+}
 
-  template <class QObject_T>
-  static inline QObject * create_qobject()
-  {
-    return new QObject_T();
-  }
+template <class QObject_T>
+static inline QObject *create_qobject()
+{
+	return new QObject_T();
+}
 
-  template <class QObject_T>
-  void State::register_qobject_meta()
-  {
-    qtlib_register_meta(&QObject_T::staticMetaObject, &create_qobject<QObject_T>);
-  }
+template <class QObject_T>
+void State::register_qobject_meta()
+{
+	qtlib_register_meta(&QObject_T::staticMetaObject, &create_qobject<QObject_T>);
+}
 
-  template <class QObject_T>
-  void State::register_qobject_meta_noconstruct()
-  {
-    qtlib_register_meta(&QObject_T::staticMetaObject, 0);
-  }
+template <class QObject_T>
+void State::register_qobject_meta_noconstruct()
+{
+	qtlib_register_meta(&QObject_T::staticMetaObject, 0);
+}
 
-  void State::add_function(Function *function)
-  {
-    _functions.append(function);
-  }
+void State::add_function(Function *function)
+{
+	_functions.append(function);
+}
 
 }
 
 #endif
-

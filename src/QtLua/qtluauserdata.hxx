@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAUSERDATA_HXX_
 #define QTLUAUSERDATA_HXX_
 
@@ -30,22 +29,21 @@
 
 namespace QtLua {
 
-  UserData::~UserData()
-  {
-  }
+UserData::~UserData()
+{
+}
 
-  template <class X>
-  inline String UserData::type_name()
-  {
+template <class X>
+inline String UserData::type_name()
+{
 #ifdef __GNUC__
-    int s;
-    return String(abi::__cxa_demangle(typeid(X).name(), 0, 0, &s));
+	int s;
+	return String(abi::__cxa_demangle(typeid(X).name(), 0, 0, &s));
 #else
-    return String(typeid(X).name());
+	return String(typeid(X).name());
 #endif
-  }
+}
 
 }
 
 #endif
-

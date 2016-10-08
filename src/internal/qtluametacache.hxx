@@ -26,50 +26,49 @@
 
 namespace QtLua {
 
-  MetaCache::MetaCache(const MetaCache &mc)
-    : _member_cache(mc._member_cache),
-      _mo(mc._mo)
-  {
-  }
+MetaCache::MetaCache(const MetaCache &mc)
+	: _member_cache(mc._member_cache)
+	, _mo(mc._mo)
+{
+}
 
-  const member_cache_t & MetaCache::get_member_table() const
-  {
-    return _member_cache;
-  }
+const member_cache_t &MetaCache::get_member_table() const
+{
+	return _member_cache;
+}
 
-  const QMetaObject * MetaCache::get_meta_object() const
-  {
-    return _mo;
-  }
+const QMetaObject *MetaCache::get_meta_object() const
+{
+	return _mo;
+}
 
-  Member::ptr MetaCache::get_member_throw(const String &name) const
-  {
-    Member::ptr m = get_member(name);
+Member::ptr MetaCache::get_member_throw(const String &name) const
+{
+	Member::ptr m = get_member(name);
 
-    if (!m.valid())
-      QTLUA_THROW(QtLua::MetaCache, "Unknow QObject member '%'.", .arg(name));
+	if (!m.valid())
+		QTLUA_THROW(QtLua::MetaCache, "Unknow QObject member '%'.", .arg(name));
 
-    return m;
-  }
+	return m;
+}
 
-  template <class X>
-  typename X::ptr MetaCache::get_member_throw(const String &name) const
-  {
-    typename X::ptr x = get_member_throw(name).dynamiccast<X>();
+template <class X>
+typename X::ptr MetaCache::get_member_throw(const String &name) const
+{
+	typename X::ptr x = get_member_throw(name).dynamiccast<X>();
 
-    if (!x.valid())
-      QTLUA_THROW(QtLua::MetaCache, "The type of the QObject member '%' is not '%'.",
-		  .arg(name).arg(UserData::type_name<X>()));
+	if (!x.valid())
+		QTLUA_THROW(QtLua::MetaCache, "The type of the QObject member '%' is not '%'.",
+					.arg(name).arg(UserData::type_name<X>()));
 
-    return x;
-  }
+	return x;
+}
 
-  MetaCache & MetaCache::get_meta(const QObject &obj)
-  {
-    return get_meta(obj.metaObject());
-  }
+MetaCache &MetaCache::get_meta(const QObject &obj)
+{
+	return get_meta(obj.metaObject());
+}
 
 }
 
 #endif
-

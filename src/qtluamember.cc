@@ -23,32 +23,31 @@
 
 namespace QtLua {
 
-  void Member::assign(QObjectWrapper &obj, const Value &value)
-  {
-    Q_UNUSED(obj)
-    Q_UNUSED(value)
-    QTLUA_THROW(QtLua::Member, "Can not assign a value to the '%' member of the QObject.",
-		.arg(get_type_name()));
-  }
-
-  Value Member::access(QObjectWrapper &qow)
-  {
-    return Value(qow.get_state(), *this);
-  }
-
-  bool Member::check_class(const QMetaObject *mo) const
-  {
-    const QMetaObject *m = mo;
-
-    while (m)
-      {
-	if (!strcmp(_mo->className(), m->className()))
-	  return true;
-	m = m->superClass();
-      }
-
-    return false;
-  }
-
+void Member::assign(QObjectWrapper &obj, const Value &value)
+{
+	Q_UNUSED(obj)
+	Q_UNUSED(value)
+	QTLUA_THROW(QtLua::Member, "Can not assign a value to the '%' member of the QObject.",
+				.arg(get_type_name()));
 }
 
+Value Member::access(QObjectWrapper &qow)
+{
+	return Value(qow.get_state(), *this);
+}
+
+bool Member::check_class(const QMetaObject *mo) const
+{
+	const QMetaObject *m = mo;
+
+	while (m)
+	{
+		if (!strcmp(_mo->className(), m->className()))
+			return true;
+		m = m->superClass();
+	}
+
+	return false;
+}
+
+}

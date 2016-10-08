@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAITERATOR_HXX_
 #define QTLUAITERATOR_HXX_
 
@@ -26,8 +25,6 @@
 #include "qtluavalueref.hxx"
 
 namespace QtLua {
-
 }
 
 #endif
-

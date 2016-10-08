@@ -27,125 +27,124 @@
 
 namespace QtLua {
 
-  QObjectIterator::QObjectIterator(State *ls, const QMetaObject *mo)
-    : _ls(ls)
-  {
-    _cur = CurMember;
-    _mc = &MetaCache::get_meta(mo);
-    _it = _mc->get_member_table().begin();
-
-    update();
-  }
-
-  QObjectIterator::QObjectIterator(State *ls, const QObjectWrapper::ptr &qow)
-    : _ls(ls),
-      _qow(qow)
-  {
-    _cur = CurChildren;
-    _child_id = 0;
-
-    QObject &obj = _qow->get_object();
-
-    _mc = &MetaCache::get_meta(obj.metaObject());
-    _it = _mc->get_member_table().begin();
-
-    update();
-  }
-
-  bool QObjectIterator::more() const
-  {
-    return _cur != CurEnd;
-  }
-
-  void QObjectIterator::next()
-  {
-    switch (_cur)
-      {
-      case CurChildren:
-	_child_id++;
-	break;
-      case CurMember:
-	_it++;
-	break;
-      case CurEnd:
-	::abort();
-      }
-
-    update();
-  }
-
-  void QObjectIterator::update()
-  {
-    switch (_cur)
-      {
-      case CurChildren:
-	if (_qow->_obj && _child_id < _qow->_obj->children().size())
-	  return;
-
+QObjectIterator::QObjectIterator(State *ls, const QMetaObject *mo)
+	: _ls(ls)
+{
 	_cur = CurMember;
+	_mc = &MetaCache::get_meta(mo);
+	_it = _mc->get_member_table().begin();
 
-      case CurMember:
-	while (_it == _mc->get_member_table().end())
-	  {
-	    const QMetaObject *super = _mc->get_meta_object()->superClass();
-
-	    if (!super)
-	      {
-		_cur = CurEnd;
-		break;
-	      }
-
-	    _mc = &MetaCache::get_meta(super);
-	    _it = _mc->get_member_table().begin();
-	  }
-
-      case CurEnd:
-	break;
-      }
-  }
-
-  Value QObjectIterator::get_key() const
-  {
-    switch (_cur)
-      {
-      case CurChildren:
-	if (!_ls || !_qow->_obj)
-	  return Value(_ls);
-	else
-	  return Value(_ls, QObjectWrapper::qobject_name(*_qow->_obj->children().at(_child_id)));
-
-      case CurMember:
-	return Value(_ls, _it.key());
-
-      default:
-	::abort();
-      }
-  }
-
-  Value QObjectIterator::get_value() const
-  {
-    switch (_cur)
-      {
-      case CurChildren:
-	if (!_ls || !_qow->_obj)
-	  return Value(_ls);
-	else
-	  return Value(_ls, QObjectWrapper::get_wrapper(_ls, _qow->_obj->children().at(_child_id)));
-
-      case CurMember:
-	return Value(_ls, _it.value());
-
-      default:
-	::abort();
-      }
-  }
-
-  ValueRef QObjectIterator::get_value_ref()
-  {
-    // Not used from lua script
-    ::abort();
-    return ValueRef(Value(), Value());
-  }
-
+	update();
 }
 
+QObjectIterator::QObjectIterator(State *ls, const QObjectWrapper::ptr &qow)
+	: _ls(ls)
+	, _qow(qow)
+{
+	_cur = CurChildren;
+	_child_id = 0;
+
+	QObject &obj = _qow->get_object();
+
+	_mc = &MetaCache::get_meta(obj.metaObject());
+	_it = _mc->get_member_table().begin();
+
+	update();
+}
+
+bool QObjectIterator::more() const
+{
+	return _cur != CurEnd;
+}
+
+void QObjectIterator::next()
+{
+	switch (_cur)
+	{
+	case CurChildren:
+		_child_id++;
+		break;
+	case CurMember:
+		_it++;
+		break;
+	case CurEnd:
+		::abort();
+	}
+
+	update();
+}
+
+void QObjectIterator::update()
+{
+	switch (_cur)
+	{
+	case CurChildren:
+		if (_qow->_obj && _child_id < _qow->_obj->children().size())
+			return;
+
+		_cur = CurMember;
+
+	case CurMember:
+		while (_it == _mc->get_member_table().end())
+		{
+			const QMetaObject *super = _mc->get_meta_object()->superClass();
+
+			if (!super)
+			{
+				_cur = CurEnd;
+				break;
+			}
+
+			_mc = &MetaCache::get_meta(super);
+			_it = _mc->get_member_table().begin();
+		}
+
+	case CurEnd:
+		break;
+	}
+}
+
+Value QObjectIterator::get_key() const
+{
+	switch (_cur)
+	{
+	case CurChildren:
+		if (!_ls || !_qow->_obj)
+			return Value(_ls);
+		else
+			return Value(_ls, QObjectWrapper::qobject_name(*_qow->_obj->children().at(_child_id)));
+
+	case CurMember:
+		return Value(_ls, _it.key());
+
+	default:
+		::abort();
+	}
+}
+
+Value QObjectIterator::get_value() const
+{
+	switch (_cur)
+	{
+	case CurChildren:
+		if (!_ls || !_qow->_obj)
+			return Value(_ls);
+		else
+			return Value(_ls, QObjectWrapper::get_wrapper(_ls, _qow->_obj->children().at(_child_id)));
+
+	case CurMember:
+		return Value(_ls, _it.value());
+
+	default:
+		::abort();
+	}
+}
+
+ValueRef QObjectIterator::get_value_ref()
+{
+	// Not used from lua script
+	::abort();
+	return ValueRef(Value(), Value());
+}
+
+}

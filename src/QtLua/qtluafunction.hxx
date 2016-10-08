@@ -27,40 +27,39 @@
 namespace QtLua {
 
 template <class X>
-X Function::get_arg(const Value::List &args, int n, const X & default_)
+X Function::get_arg(const Value::List &args, int n, const X &default_)
 {
-  return n >= args.size() ? default_ : args[n];
+	return n >= args.size() ? default_ : args[n];
 }
 
 template <class X>
 X Function::get_arg(const Value::List &args, int n)
 {
-  if (n >= args.size())
-    QTLUA_THROW(QtLua::Function, "The argument % is missing, an argument of type '%' is expected.",
-		.arg(n).arg(UserData::type_name<X>()));
+	if (n >= args.size())
+		QTLUA_THROW(QtLua::Function, "The argument % is missing, an argument of type '%' is expected.",
+					.arg(n).arg(UserData::type_name<X>()));
 
-  return args[n];
+	return args[n];
 }
 
 template <class X>
 Ref<X> Function::get_arg_ud(const Value::List &args, int n)
 {
-  return get_arg<const Value &>(args, n).to_userdata_cast<X>();
+	return get_arg<const Value &>(args, n).to_userdata_cast<X>();
 }
 
 template <class X>
-X* Function::get_arg_cl(const Value::List &args, int n)
+X *Function::get_arg_cl(const Value::List &args, int n)
 {
-  return get_arg<const Value &>(args, n).to_class_cast<X>();
+	return get_arg<const Value &>(args, n).to_class_cast<X>();
 }
 
 template <class X>
-X* Function::get_arg_qobject(const Value::List &args, int n)
+X *Function::get_arg_qobject(const Value::List &args, int n)
 {
-  return get_arg<const Value &>(args, n).to_qobject_cast<X>();
+	return get_arg<const Value &>(args, n).to_qobject_cast<X>();
 }
 
 }
 
 #endif
-

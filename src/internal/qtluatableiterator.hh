@@ -42,26 +42,25 @@ namespace QtLua {
 class TableIterator : public Iterator
 {
 public:
-  QTLUA_REFTYPE(TableIterator)
+	QTLUA_REFTYPE(TableIterator)
 
-  TableIterator(State *st, int index);
-  ~TableIterator();
+	TableIterator(State *st, int index);
+	~TableIterator();
 
 private:
-  bool more() const;
-  void next();
-  void fetch();
-  Value get_key() const;
-  Value get_value() const;
-  ValueRef get_value_ref();
+	bool more() const;
+	void next();
+	void fetch();
+	Value get_key() const;
+	Value get_value() const;
+	ValueRef get_value_ref();
 
-  QPointer<State> _st;
-  Value _key;
-  Value _value;
-  bool _more;
+	QPointer<State> _st;
+	Value _key;
+	Value _value;
+	bool _more;
 };
 
 }
 
 #endif
-

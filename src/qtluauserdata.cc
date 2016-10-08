@@ -35,213 +35,215 @@ namespace QtLua {
 
 void UserData::push_ud(lua_State *st)
 {
-  // allocate lua user data to store reference to 'this'
-  new (lua_newuserdata(st, sizeof (UserData::ptr))) UserData::ptr(*this);
+	// allocate lua user data to store reference to 'this'
+	new (lua_newuserdata(st, sizeof(UserData::ptr))) UserData::ptr(*this);
 
-  // attach metatable
-  lua_pushlightuserdata(st, &State::_key_item_metatable);
-  lua_rawget(st, LUA_REGISTRYINDEX);
-  lua_setmetatable(st, -2);
+	// attach metatable
+	lua_pushlightuserdata(st, &State::_key_item_metatable);
+	lua_rawget(st, LUA_REGISTRYINDEX);
+	lua_setmetatable(st, -2);
 }
 
 template <bool pop>
 inline QtLua::Ref<UserData> UserData::get_ud_(lua_State *st, int i)
 {
 #ifndef QTLUA_NO_USERDATA_CHECK
-  if (lua_getmetatable(st, i))
-    {
-      lua_pushlightuserdata(st, &State::_key_item_metatable);
-      lua_rawget(st, LUA_REGISTRYINDEX);
-
-      if (lua_rawequal(st, -2, -1))
+	if (lua_getmetatable(st, i))
 	{
-	  lua_pop(st, 2);
+		lua_pushlightuserdata(st, &State::_key_item_metatable);
+		lua_rawget(st, LUA_REGISTRYINDEX);
+
+		if (lua_rawequal(st, -2, -1))
+		{
+			lua_pop(st, 2);
 #endif
-	  UserData::ptr	*item = static_cast<UserData::ptr *>(lua_touserdata(st, i));
+			UserData::ptr *item = static_cast<UserData::ptr *>(lua_touserdata(st, i));
 
-	  if (pop)
-	    lua_pop(st, 1);
+			if (pop)
+				lua_pop(st, 1);
 
-	  return *item;
+			return *item;
 #ifndef QTLUA_NO_USERDATA_CHECK
+		}
+
+		lua_pop(st, 1);
 	}
 
-      lua_pop(st, 1);
-    }
+	lua_pop(st, 1);
 
-  lua_pop(st, 1);
+	if (pop)
+		lua_pop(st, 1);
 
-  if (pop)
-    lua_pop(st, 1);
-
-  QTLUA_THROW(QtLua::UserData, "The `lua::userdata' value is not a `QtLua::UserData'.");
+	QTLUA_THROW(QtLua::UserData, "The `lua::userdata' value is not a `QtLua::UserData'.");
 #endif
 }
 
 QtLua::Ref<UserData> UserData::get_ud(lua_State *st, int i)
 {
-  return get_ud_<false>(st, i);
+	return get_ud_<false>(st, i);
 }
 
 QtLua::Ref<UserData> UserData::pop_ud(lua_State *st)
 {
-  return get_ud_<true>(st, -1);
+	return get_ud_<true>(st, -1);
 }
 
 String UserData::get_type_name() const
 {
 #ifdef __GNUC__
-  int s;
-  return abi::__cxa_demangle(typeid(*this).name(), 0, 0, &s);
+	int s;
+	return abi::__cxa_demangle(typeid(*this).name(), 0, 0, &s);
 #else
-  return typeid(*this).name();
+	return typeid(*this).name();
 #endif
 }
 
 String UserData::get_value_str() const
 {
-  return QString().sprintf("%p", this);
+	return QString().sprintf("%p", this);
 }
 
 Value UserData::meta_operation(State *ls, Value::Operation op,
-			       const Value &a, const Value &b) 
+							   const Value &a, const Value &b)
 {
-  Q_UNUSED(ls)
-  Q_UNUSED(a)
-  Q_UNUSED(b)
-  QTLUA_THROW(QtLua::UserData, "The operation '%' is not handled by the '%' class.",
-	      .arg((int)op).arg(get_type_name()));
+	Q_UNUSED(ls)
+	Q_UNUSED(a)
+	Q_UNUSED(b)
+	QTLUA_THROW(QtLua::UserData, "The operation '%' is not handled by the '%' class.",
+				.arg((int)op).arg(get_type_name()));
 }
 
-void UserData::meta_newindex(State *ls, const Value &key, const Value &value) 
+void UserData::meta_newindex(State *ls, const Value &key, const Value &value)
 {
-  Q_UNUSED(ls)
-  Q_UNUSED(key)
-  Q_UNUSED(value)
-  QTLUA_THROW(QtLua::UserData, "The table newindex operation not is handled by the '%' class.",
-	      .arg(get_type_name()));
+	Q_UNUSED(ls)
+	Q_UNUSED(key)
+	Q_UNUSED(value)
+	QTLUA_THROW(QtLua::UserData, "The table newindex operation not is handled by the '%' class.",
+				.arg(get_type_name()));
 }
 
-Value UserData::meta_index(State *ls, const Value &key) 
+Value UserData::meta_index(State *ls, const Value &key)
 {
-  Q_UNUSED(ls)
-  Q_UNUSED(key)
-  QTLUA_THROW(QtLua::UserData, "The table index operation is not handled by the '%' class.",
-	      .arg(get_type_name()));
+	Q_UNUSED(ls)
+	Q_UNUSED(key)
+	QTLUA_THROW(QtLua::UserData, "The table index operation is not handled by the '%' class.",
+				.arg(get_type_name()));
 }
 
 bool UserData::meta_contains(State *ls, const Value &key)
 {
-  try {
-    return !meta_index(ls, key).is_nil();
-  } catch (String &e) {
-    return false;
-  }
+	try
+	{
+		return !meta_index(ls, key).is_nil();
+	}
+	catch (String &e)
+	{
+		return false;
+	}
 }
 
-Value::List UserData::meta_call(State *ls, const Value::List &args) 
+Value::List UserData::meta_call(State *ls, const Value::List &args)
 {
-  Q_UNUSED(ls)
-  Q_UNUSED(args)
-  QTLUA_THROW(QtLua::UserData, "The call operation is not handled by the '%' class.",
-	      .arg(get_type_name()));
+	Q_UNUSED(ls)
+	Q_UNUSED(args)
+	QTLUA_THROW(QtLua::UserData, "The call operation is not handled by the '%' class.",
+				.arg(get_type_name()));
 }
 
 Ref<Iterator> UserData::new_iterator(State *ls)
 {
-  Q_UNUSED(ls)
-  QTLUA_THROW(QtLua::UserData, "Table iteration is not handled by the '%' class",
-	      .arg(get_type_name()));
+	Q_UNUSED(ls)
+	QTLUA_THROW(QtLua::UserData, "Table iteration is not handled by the '%' class",
+				.arg(get_type_name()));
 }
 
 bool UserData::support(Value::Operation c) const
 {
-  Q_UNUSED(c)
-  return false;
+	Q_UNUSED(c)
+	return false;
 }
 
 void UserData::meta_call_check_args(const Value::List &args,
-				    int min_count, int max_count, ...) 
+									int min_count, int max_count, ...)
 {
-  int i;
-  va_list ap;
-  bool lua_vaarg = max_count < 0;
+	int i;
+	va_list ap;
+	bool lua_vaarg = max_count < 0;
 
-  if (lua_vaarg)
-    max_count = -max_count;
+	if (lua_vaarg)
+		max_count = -max_count;
 
-  if (args.count() < min_count)
-    switch (min_count)
-      {
-      case 1:
-	QTLUA_THROW(QtLua::UserData, "Missing call argument, at least 1 argument is expected.",
-		    .arg(min_count));
-      default:
-	QTLUA_THROW(QtLua::UserData, "Missing call arguments, at least % arguments are expected.",
-		    .arg(min_count));
-      }
+	if (args.count() < min_count)
+		switch (min_count)
+		{
+		case 1:
+			QTLUA_THROW(QtLua::UserData, "Missing call argument, at least 1 argument is expected.",
+						.arg(min_count));
+		default:
+			QTLUA_THROW(QtLua::UserData, "Missing call arguments, at least % arguments are expected.",
+						.arg(min_count));
+		}
 
-  if (!lua_vaarg && max_count && args.count() > max_count)
-    switch (max_count)
-      {
-      case 1:
-	QTLUA_THROW(QtLua::UserData, "Too many call arguments, a single argument is allowed.",
-		    .arg(max_count));
-      default:
-	QTLUA_THROW(QtLua::UserData, "Too many call arguments, at most % arguments are allowed.",
-		    .arg(max_count));
-      }
+	if (!lua_vaarg && max_count && args.count() > max_count)
+		switch (max_count)
+		{
+		case 1:
+			QTLUA_THROW(QtLua::UserData, "Too many call arguments, a single argument is allowed.",
+						.arg(max_count));
+		default:
+			QTLUA_THROW(QtLua::UserData, "Too many call arguments, at most % arguments are allowed.",
+						.arg(max_count));
+		}
 
-  va_start(ap, max_count);
+	va_start(ap, max_count);
 
-  Value::ValueType	type = Value::TNone;
+	Value::ValueType type = Value::TNone;
 
-  for (i = 0; i < args.size(); i++)
-    {
-      if (i < min_count || i < max_count)
-	type = (Value::ValueType)va_arg(ap, int);
-
-      if (type != Value::TNone && type != args[i].type())
+	for (i = 0; i < args.size(); i++)
 	{
-	  va_end(ap);
-	  QTLUA_THROW(QtLua::UserData, "Bad value type for call argument %, `lua::%' expected instead of '%'.",
-		      .arg(i+1).arg(lua_typename(0, type)).arg(args[i].type_name()));
-	}
-    }
+		if (i < min_count || i < max_count)
+			type = (Value::ValueType)va_arg(ap, int);
 
-  va_end(ap);
+		if (type != Value::TNone && type != args[i].type())
+		{
+			va_end(ap);
+			QTLUA_THROW(QtLua::UserData, "Bad value type for call argument %, `lua::%' expected instead of '%'.",
+						.arg(i + 1).arg(lua_typename(0, type)).arg(args[i].type_name()));
+		}
+	}
+
+	va_end(ap);
 }
 
 bool UserData::operator==(const UserData &ud)
 {
-  return this == &ud;
+	return this == &ud;
 }
 
 bool UserData::operator<(const UserData &ud)
 {
-  return this < &ud;
+	return this < &ud;
 }
 
 void UserData::completion_patch(String &path, String &entry, int &offset)
 {
-  Q_UNUSED(path)
-  Q_UNUSED(entry)
-  Q_UNUSED(offset)
+	Q_UNUSED(path)
+	Q_UNUSED(entry)
+	Q_UNUSED(offset)
 }
 
 Value UserData::yield(State *ls) const
 {
-  lua_State *lst = ls->_lst;
+	lua_State *lst = ls->_lst;
 
-  if (ls->_mst == lst)
-    return Value(ls);
-  ls->_yield_on_return = true;
-  int r = lua_pushthread(lst);
-  Q_ASSERT(r != 1);
-  Value res(-1, ls);
-  lua_pop(lst, 1);
-  return res;
+	if (ls->_mst == lst)
+		return Value(ls);
+	ls->_yield_on_return = true;
+	int r = lua_pushthread(lst);
+	Q_ASSERT(r != 1);
+	Value res(-1, ls);
+	lua_pop(lst, 1);
+	return res;
 }
 
 }
-

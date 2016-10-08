@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAFUNCTION_HH_
 #define QTLUAFUNCTION_HH_
 
@@ -27,9 +26,9 @@
 
 namespace QtLua {
 
-  class State;
+class State;
 
-  /** 
+/** 
    * @short Functions like objects base class
    * @header QtLua/Function
    * @module {Base}
@@ -59,41 +58,43 @@ namespace QtLua {
    * @example examples/cpp/userdata/function.cc:2
    */
 
-  class Function : public UserData
-  {
-  public:
-    QTLUA_REFTYPE(Function)
+class Function : public UserData
+{
+public:
+	QTLUA_REFTYPE(Function)
 
-    /** @internal */
-    void register_(State *ls, const String &path);
+	/** @internal */
+	void register_(State *ls, const String &path);
 
-    /** @This contains class declaration for @ref #QTLUA_FUNCTION.
+/** @This contains class declaration for @ref #QTLUA_FUNCTION.
 	@showcontent
     */
-#define QTLUA_FUNCTION_DECL(name)					\
-    class QtLua_Function_##name : public QtLua::Function		\
-    {									\
-      QtLua::Value::List meta_call(QtLua::State *ls, const QtLua::Value::List &args); \
-    public:								\
-      QtLua_Function_##name();						\
-      QtLua_Function_##name(QtLua::State *ls, const QtLua::String &path); \
-    };
+#define QTLUA_FUNCTION_DECL(name)                                                       \
+	class QtLua_Function_##name : public QtLua::Function                                \
+	{                                                                                   \
+		QtLua::Value::List meta_call(QtLua::State *ls, const QtLua::Value::List &args); \
+                                                                                        \
+	public:                                                                             \
+		QtLua_Function_##name();                                                        \
+		QtLua_Function_##name(QtLua::State *ls, const QtLua::String &path);             \
+	};
 
-    /** @This contains functions definition for @ref #QTLUA_FUNCTION.
+/** @This contains functions definition for @ref #QTLUA_FUNCTION.
 	@showcontent
     */
-#define QTLUA_FUNCTION_BODY(name)			\
-    QtLua_Function_##name						\
-    ::QtLua_Function_##name() { }					\
-    									\
-    QtLua_Function_##name						\
-    ::QtLua_Function_##name(QtLua::State *ls, const QtLua::String &path)\
-    { register_(ls, path); }						\
-									\
-    QtLua::Value::List QtLua_Function_##name				\
-    ::meta_call(QtLua::State *ls, const QtLua::Value::List &args)
+#define QTLUA_FUNCTION_BODY(name)                                                             \
+	QtLua_Function_##name::QtLua_Function_##name()                                            \
+	{                                                                                         \
+	}                                                                                         \
+                                                                                              \
+	QtLua_Function_##name::QtLua_Function_##name(QtLua::State *ls, const QtLua::String &path) \
+	{                                                                                         \
+		register_(ls, path);                                                                  \
+	}                                                                                         \
+                                                                                              \
+	QtLua::Value::List QtLua_Function_##name::meta_call(QtLua::State *ls, const QtLua::Value::List &args)
 
-    /** This macro declares a new a @ref Function class named
+/** This macro declares a new a @ref Function class named
 	@tt{QtLua_Function_}@em{name} with functions to handle
 	description, help and function call. User provided code is
 	used for reimplementation of the @ref UserData::meta_call
@@ -102,27 +103,25 @@ namespace QtLua {
 	@example examples/cpp/userdata/function.cc:1|6
 	@showcontent
     */
-#define QTLUA_FUNCTION(name)				\
-    QTLUA_FUNCTION_DECL(name)						\
-    QTLUA_FUNCTION_BODY(name)
+#define QTLUA_FUNCTION(name)  \
+	QTLUA_FUNCTION_DECL(name) \
+	QTLUA_FUNCTION_BODY(name)
 
-    /** @This declares and registers a @ref Function object on a QtLua
+/** @This declares and registers a @ref Function object on a QtLua
 	@ref State object as a global variable.  @showcontent */
-#define QTLUA_FUNCTION_REGISTER(state, prefix, name)	\
-  state->add_function(new QtLua_Function_##name(state, prefix #name))
+#define QTLUA_FUNCTION_REGISTER(state, prefix, name) \
+	state->add_function(new QtLua_Function_##name(state, prefix #name))
 
-    /** @This declares and registers a @ref Function object on a QtLua
+/** @This declares and registers a @ref Function object on a QtLua
 	@ref State object as a global variable.  @showcontent */
-#define QTLUA_FUNCTION_REGISTER2(state, path, name)	\
-  state->add_function(new QtLua_Function_##name(state, path))
+#define QTLUA_FUNCTION_REGISTER2(state, path, name) \
+	state->add_function(new QtLua_Function_##name(state, path))
 
-  protected:
+protected:
+	virtual Value::List meta_call(State *ls, const Value::List &args) = 0;
 
-    virtual Value::List meta_call(State *ls, const Value::List &args) = 0;
-
-  public:
-
-    /**
+public:
+	/**
      * This function may be called from the @ref meta_call function to
      * perform lua to C++ argument conversion and checking.
      *
@@ -142,10 +141,10 @@ namespace QtLua {
      * @see __get_arg2__
      * @alias get_arg1
      */
-    template <class X>
-    static inline X get_arg(const Value::List &args, int n, const X & default_);
+	template <class X>
+	static inline X get_arg(const Value::List &args, int n, const X &default_);
 
-    /**
+	/**
      * This function does the same as the @ref __get_arg1__ function
      * but throws if the argument is not available instead of returning a
      * default value.
@@ -154,10 +153,10 @@ namespace QtLua {
      * @see get_arg_ud
      * @alias get_arg2
      */
-    template <class X>
-    static inline X get_arg(const Value::List &args, int n);
+	template <class X>
+	static inline X get_arg(const Value::List &args, int n);
 
-    /**
+	/**
      * This function may be called from the @ref meta_call function to
      * perform lua to C++ argument conversion and checking.
      *
@@ -172,10 +171,10 @@ namespace QtLua {
      * @xsee{Qt/Lua types conversion}
      * @see __get_arg2__
      */
-    template <class X>
-    static inline Ref<X> get_arg_ud(const Value::List &args, int n);
+	template <class X>
+	static inline Ref<X> get_arg_ud(const Value::List &args, int n);
 
-    /**
+	/**
      * This function may be called from the @ref meta_call function to
      * perform lua to C++ argument conversion and checking.
      *
@@ -191,10 +190,10 @@ namespace QtLua {
      * @xsee{Qt/Lua types conversion}
      * @see __get_arg2__
      */
-    template <class X>
-    static inline X* get_arg_cl(const Value::List &args, int n);
+	template <class X>
+	static inline X *get_arg_cl(const Value::List &args, int n);
 
-    /**
+	/**
      * This function may be called from the @ref meta_call function to
      * perform lua to C++ argument conversion and checking.
      *
@@ -209,17 +208,16 @@ namespace QtLua {
      * @xsee{Qt/Lua types conversion}
      * @see __get_arg2__
      */
-    template <class X>
-    static inline X* get_arg_qobject(const Value::List &args, int n);
+	template <class X>
+	static inline X *get_arg_qobject(const Value::List &args, int n);
 
-  private:
-    String get_value_str() const;
-    String get_type_name() const;
-    bool support(Value::Operation c) const;
-    void completion_patch(String &path, String &entry, int &offset);
-  };
+private:
+	String get_value_str() const;
+	String get_type_name() const;
+	bool support(Value::Operation c) const;
+	void completion_patch(String &path, String &entry, int &offset);
+};
 
 }
 
 #endif
-

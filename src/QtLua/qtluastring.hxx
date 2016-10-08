@@ -23,81 +23,80 @@
 
 namespace QtLua {
 
-  String::String()
-  {
-  }
+String::String()
+{
+}
 
-  String::String(const char *s)
-    : QByteArray(s)
-  {
-  }
+String::String(const char *s)
+	: QByteArray(s)
+{
+}
 
-  String::String(const char *s, int size)
-    : QByteArray(s, size)
-  {
-  }
+String::String(const char *s, int size)
+	: QByteArray(s, size)
+{
+}
 
-  String::String(const QByteArray &s)
-    : QByteArray(s)
-  {
-  }
+String::String(const QByteArray &s)
+	: QByteArray(s)
+{
+}
 
-  String::String(const QString &s)
-    : QByteArray(s.toUtf8())
-  {
-  }
+String::String(const QString &s)
+	: QByteArray(s.toUtf8())
+{
+}
 
-  String & String::arg(const QByteArray &a)
-  {
-    int i = indexOf('%');
+String &String::arg(const QByteArray &a)
+{
+	int i = indexOf('%');
 
-    if (i >= 0)
-      replace(i, 1, a);
+	if (i >= 0)
+		replace(i, 1, a);
 
-    return *this;
-  }
+	return *this;
+}
 
-  String & String::arg(const QString &a)
-  {
-    int i = indexOf('%');
+String &String::arg(const QString &a)
+{
+	int i = indexOf('%');
 
-    if (i >= 0)
-      replace(i, 1, a.toUtf8());
+	if (i >= 0)
+		replace(i, 1, a.toUtf8());
 
-    return *this;
-  }
+	return *this;
+}
 
-  String & String::arg(const char *a)
-  {
-    int i = indexOf('%');
+String &String::arg(const char *a)
+{
+	int i = indexOf('%');
 
-    if (i >= 0)
-      replace(i, 1, a);
+	if (i >= 0)
+		replace(i, 1, a);
 
-    return *this;
-  }
+	return *this;
+}
 
-  String & String::arg(int a)
-  {
-    int i = indexOf('%');
+String &String::arg(int a)
+{
+	int i = indexOf('%');
 
-    if (i >= 0)
-      replace(i, 1, QByteArray::number(a));
+	if (i >= 0)
+		replace(i, 1, QByteArray::number(a));
 
-    return *this;
-  }
+	return *this;
+}
 
-  String::operator const char * () const
-  {
-    return constData();
-  }
+String::operator const char *() const
+{
+	return constData();
+}
 
-  QString String::to_qstring () const
-  {
-    return QString::fromUtf8(constData(), size());
-  }
+QString String::to_qstring() const
+{
+	return QString::fromUtf8(constData(), size());
+}
 
 }
 
 #endif
-

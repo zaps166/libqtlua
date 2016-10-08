@@ -25,59 +25,58 @@
 
 namespace QtLua {
 
-  template <typename X>
-  MetaType<X>::MetaType(const char *name)
-    {
-      if ((_type = QMetaType::type(name)))
+template <typename X>
+MetaType<X>::MetaType(const char *name)
+{
+	if ((_type = QMetaType::type(name)))
 	{
-	  if (types_map.contains(_type))
-	    QTLUA_THROW(QtLua::MetaType, "A lua conversion handler is already registered for the '%' type.", .arg(_type));
+		if (types_map.contains(_type))
+			QTLUA_THROW(QtLua::MetaType, "A lua conversion handler is already registered for the '%' type.", .arg(_type));
 	}
-      else
+	else
 	{
-	  _type = qRegisterMetaType<X>(name);
+		_type = qRegisterMetaType<X>(name);
 	}
 
-      types_map.insert(_type, reinterpret_cast<metatype_void_t*>(this));
-    }
+	types_map.insert(_type, reinterpret_cast<metatype_void_t *>(this));
+}
 
-  template <typename X>
-  MetaType<X>::MetaType(int type)
-    {
-      _type = type;
+template <typename X>
+MetaType<X>::MetaType(int type)
+{
+	_type = type;
 
-      if (types_map.contains(type))
-	QTLUA_THROW(QtLua::MetaType, "A lua conversion handler is already registered for type handle '%'.", .arg(_type));
+	if (types_map.contains(type))
+		QTLUA_THROW(QtLua::MetaType, "A lua conversion handler is already registered for type handle '%'.", .arg(_type));
 
-      types_map.insert(type, reinterpret_cast<metatype_void_t*>(this));
-    }
+	types_map.insert(type, reinterpret_cast<metatype_void_t *>(this));
+}
 
-  template <typename X>
-  MetaType<X>::~MetaType()
-    {
-      types_map.remove(_type);
-    }
+template <typename X>
+MetaType<X>::~MetaType()
+{
+	types_map.remove(_type);
+}
 
-  template <typename X>
-  int MetaType<X>::get_type()
-  {
-    return _type;
-  }
+template <typename X>
+int MetaType<X>::get_type()
+{
+	return _type;
+}
 
-  template <class X>
-  QtLua::Value MetaTypeQObjectStar<X>::qt2lua(QtLua::State *ls, X* const * qtvalue)
-  {
-    return Value(ls, static_cast<QObject*>(*qtvalue));
-  }
+template <class X>
+QtLua::Value MetaTypeQObjectStar<X>::qt2lua(QtLua::State *ls, X *const *qtvalue)
+{
+	return Value(ls, static_cast<QObject *>(*qtvalue));
+}
 
-  template <class X>
-  bool MetaTypeQObjectStar<X>::lua2qt(X** qtvalue, const QtLua::ValueBase &luavalue)
-  {
-    *qtvalue = luavalue.to_qobject_cast<X>();
-    return true;
-  }
+template <class X>
+bool MetaTypeQObjectStar<X>::lua2qt(X **qtvalue, const QtLua::ValueBase &luavalue)
+{
+	*qtvalue = luavalue.to_qobject_cast<X>();
+	return true;
+}
 
 }
 
 #endif
-

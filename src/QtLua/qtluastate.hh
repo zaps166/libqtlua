@@ -33,47 +33,46 @@ struct lua_State;
 
 namespace QtLua {
 
-  class Function;
+class Function;
 
-  /** @internal */
-  typedef QObject * qobject_creator();
+/** @internal */
+typedef QObject *qobject_creator();
 
-  /** @internal */
-  template <class QObject_T>
-  static inline QObject * create_qobject();
+/** @internal */
+template <class QObject_T>
+static inline QObject *create_qobject();
 
-  /** @internal */
-  void qtlib_register_meta(const QMetaObject *mo, qobject_creator *creator);
+/** @internal */
+void qtlib_register_meta(const QMetaObject *mo, qobject_creator *creator);
 
-  class UserData;
-  class QObjectWrapper;
-  class TableIterator;
+class UserData;
+class QObjectWrapper;
+class TableIterator;
 
-  /** @internal */
-  typedef QHash<QObject *, QObjectWrapper *> wrapper_hash_t;
+/** @internal */
+typedef QHash<QObject *, QObjectWrapper *> wrapper_hash_t;
 
-  /** Specify lua standard libraries and QtLua lua libraries to load
+/** Specify lua standard libraries and QtLua lua libraries to load
       with the @ref State::openlib function. */
-  enum Library
-    {
-      BaseLib,		//< standard lua base library
-      CoroutineLib,	//< standard lua coroutine library, included in base before lua 5.2
-      PackageLib,	//< standard lua package library
-      StringLib,	//< standard lua string library
-      TableLib,		//< standard lua table library
-      MathLib,		//< standard lua math library
-      IoLib,		//< standard lua io library
-      OsLib,		//< standard lua os library
-      DebugLib,		//< standard lua debug library
-      Bit32Lib,		//< standard lua bit library or luajit bit library
-      JitLib,		//< luajit jit library
-      FfiLib,		//< luajit ffi library
-      QtLuaLib,		//< lua library with base functions, see the @xref{Predefined lua functions} section.
-      QtLib,		//< lua library with wrapped Qt functions, see the @xref{Qt related functions} section.
-      AllLibs,		//< All libraries wildcard
-    };
+enum Library {
+	BaseLib, //< standard lua base library
+	CoroutineLib, //< standard lua coroutine library, included in base before lua 5.2
+	PackageLib, //< standard lua package library
+	StringLib, //< standard lua string library
+	TableLib, //< standard lua table library
+	MathLib, //< standard lua math library
+	IoLib, //< standard lua io library
+	OsLib, //< standard lua os library
+	DebugLib, //< standard lua debug library
+	Bit32Lib, //< standard lua bit library or luajit bit library
+	JitLib, //< luajit jit library
+	FfiLib, //< luajit ffi library
+	QtLuaLib, //< lua library with base functions, see the @xref{Predefined lua functions} section.
+	QtLib, //< lua library with wrapped Qt functions, see the @xref{Qt related functions} section.
+	AllLibs, //< All libraries wildcard
+};
 
-  /**
+/**
    * @short Lua interpreter state wrapper class
    * @header QtLua/State
    * @module {Base}
@@ -92,21 +91,20 @@ namespace QtLua {
 
 class State : public QObject
 {
-  Q_OBJECT
+	Q_OBJECT
 
-  friend class QObjectWrapper;
-  friend class UserData;
-  friend class ValueBase;
-  friend class Value;
-  friend class ValueRef;
-  friend class TableIterator;
-  friend uint qHash(const Value &lv);
+	friend class QObjectWrapper;
+	friend class UserData;
+	friend class ValueBase;
+	friend class Value;
+	friend class ValueRef;
+	friend class TableIterator;
+	friend uint qHash(const Value &lv);
 
 public:
+	State();
 
-  State();
-
-  /** 
+	/** 
    * Lua interpreter state is checked for remaining @ref Value objects
    * with references to @ref UserData objects when destroyed.
    *
@@ -117,35 +115,35 @@ public:
    * QtLua takes care of clearing all global variables before
    * performing this sanity check.
    */
-  ~State();
+	~State();
 
-  /** 
+	/** 
    * Execute a lua chuck read from @ref QIODevice .
    * @xsee{Error handling and exceptions}
    */
-  Value::List exec_chunk(QIODevice &io);
+	Value::List exec_chunk(QIODevice &io);
 
-  /**
+	/**
    * Execute a lua script string.
    * @xsee{Error handling and exceptions}
    */
-  Value::List exec_statements(const String &statements);
+	Value::List exec_statements(const String &statements);
 
-  /** Initiate a garbage collection cycle. This is useful to ensure
+	/** Initiate a garbage collection cycle. This is useful to ensure
       all unused @ref UserData based objects are destroyed. */
-  void gc_collect();
+	void gc_collect();
 
-  /** Set a global variable. If path contains '.', intermediate tables
+	/** Set a global variable. If path contains '.', intermediate tables
       will be created on the fly. The @ref __operator_sqb2__ function may be
       used if no intermediate table access is needed. */
-  void set_global(const String &path, const Value &value);
+	void set_global(const String &path, const Value &value);
 
-  /** Get global variable. If path contains '.', intermediate tables
+	/** Get global variable. If path contains '.', intermediate tables
       will be accessed. The @ref __operator_sqb1__ function may be used if no
       intermediate table access is needed. */
-  Value get_global(const String &path) const;
+	Value get_global(const String &path) const;
 
-  /**
+	/**
    * Index operation on global table. This function return a @ref
    * Value object which is a @strong copy of the requested global
    * variable. This value can be modified but will not change the
@@ -154,27 +152,27 @@ public:
    * @example examples/cpp/value/global.cc:i1|i2|1
    * @alias operator_sqb1 @see __at_value__
    */
-  inline Value operator[] (const Value &key) const;
+	inline Value operator[](const Value &key) const;
 
-  /**
+	/**
    * Index operation on global table.
    * @see __operator_sqb1__ @alias at_value
    */
-  Value at(const Value &key) const;
+	Value at(const Value &key) const;
 
-  /**
+	/**
    * Index operation on global table, shortcut for string key access.
    * @see __operator_sqb1__ @alias at_string
    */
-  inline Value at(const String &key) const;
+	inline Value at(const String &key) const;
 
-  /**
+	/**
    * Index operation on global table, shortcut for string key access.
    * @see __operator_sqb1__ @see __at_string__
    */
-  inline Value operator[] (const String &key) const;
+	inline Value operator[](const String &key) const;
 
-  /**
+	/**
    * Index operation on global table. This function return a @ref
    * ValueRef object which is a modifiable reference to requested
    * global variable. It can be assigned to modify original lua value:
@@ -182,141 +180,140 @@ public:
    * @example examples/cpp/value/global.cc:i1|2
    * @alias operator_sqb2 @see __at_value__
    */
-  ValueRef operator[] (const Value &key);
+	ValueRef operator[](const Value &key);
 
-  /**
+	/**
    * Index operation on global table, shortcut for string key access.
    * @see __operator_sqb2__ @see __at_string__
    */
-  inline ValueRef operator[] (const String &key);
+	inline ValueRef operator[](const String &key);
 
-  /** 
+	/** 
    * This function open a lua standard library or QtLua lua library.
    * The function returns true if the library is available.
    * @see QtLua::Library
    * @xsee{QtLua lua libraries}
    */
-  bool openlib(Library lib);
+	bool openlib(Library lib);
 
-  /**
+	/**
    * @This returns a pointer to the internal Lua state.
    */
-  inline lua_State *get_lua_state() const;
+	inline lua_State *get_lua_state() const;
 
-  /**
+	/**
    * @This adds a new entry to the @tt{qt.meta} lua table. This allows
    * lua script to access QObject members and create new objects of
    * this type using the @tt{qt.new_qobject} lua function.
    */
-  template <class QObject_T>
-  static inline void register_qobject_meta();
+	template <class QObject_T>
+	static inline void register_qobject_meta();
 
-  /**
+	/**
    * @This adds a new entry to the @tt{qt.meta} lua table. This allows
    * lua script to access QObject members.
    */
-  template <class QObject_T>
-  static inline void register_qobject_meta_noconstruct();
+	template <class QObject_T>
+	static inline void register_qobject_meta_noconstruct();
 
-  /**
+	/**
    * @internal @This adds a new lua function.
    */
-  inline void add_function(Function *function);
+	inline void add_function(Function *function);
 
-  /**
+	/**
    * @internal @This asserts internal lua stack is empty.
    */
-  void check_empty_stack() const;
+	void check_empty_stack() const;
 
-  /**
+	/**
    * @this returns lua version. Result is 500 for lua pior to version 5.1.
    */
-  int lua_version() const;
+	int lua_version() const;
 
 public slots:
 
-  /**
+	/**
    * This slot function execute the given script string and initiate a
    * garbage collection cycle. It will catch and print lua
    * errors using the @ref output signal.
    */
-  void exec(const QString &statements);
+	void exec(const QString &statements);
 
-  /**
+	/**
    * Lua global variables completion handler.
    */
-  void fill_completion_list(const QString &prefix, QStringList &list, int &cursor_offset);
+	void fill_completion_list(const QString &prefix, QStringList &list, int &cursor_offset);
 
-  /**
+	/**
    * @internal This function return a lua value from an expression.
    */
-  Value eval_expr(bool use_lua, const String &expr);
+	Value eval_expr(bool use_lua, const String &expr);
 
 signals:
 
-  /**
+	/**
    * Text output signal. This signal is used to report errors and display output of the
    * lua @tt{print()} function. @xsee {Predefined lua functions}
    */
-  void output(const QString &str);
+	void output(const QString &str);
 
 private:
+	inline void output_str(const String &str);
 
-  inline void output_str(const String &str);
+	// get pointer to lua state object from lua state
+	static State *get_this(lua_State *st);
 
-  // get pointer to lua state object from lua state
-  static State *get_this(lua_State *st);
+	void fill_completion_list_r(String &path, const String &prefix,
+								QStringList &list, const Value &tbl,
+								int &cursor_offset);
 
-  void fill_completion_list_r(String &path, const String &prefix,
-			      QStringList &list, const Value &tbl,
-			      int &cursor_offset);
+	void set_global_r(const String &name, const Value &value, int tblidx);
+	void get_global_r(const String &name, Value &value, int tblidx) const;
 
-  void set_global_r(const String &name, const Value &value, int tblidx);
-  void get_global_r(const String &name, Value &value, int tblidx) const;
+	void reg_c_function(const char *name, int (*fcn)(lua_State *));
 
-  void reg_c_function(const char *name, int (*fcn)(lua_State *));
+	static void lua_pgettable(lua_State *st, int index);
+	static void lua_psettable(lua_State *st, int index);
+	static int lua_pnext(lua_State *st, int index);
 
-  static void lua_pgettable(lua_State *st, int index);
-  static void lua_psettable(lua_State *st, int index);
-  static int lua_pnext(lua_State *st, int index);
+	// lua c functions
+	static int lua_cmd_iterator(lua_State *st);
+	static int lua_cmd_each(lua_State *st);
+	static int lua_cmd_print(lua_State *st);
+	static int lua_cmd_list(lua_State *st);
+	static int lua_cmd_qtype(lua_State *st);
 
-  // lua c functions
-  static int lua_cmd_iterator(lua_State *st);
-  static int lua_cmd_each(lua_State *st);
-  static int lua_cmd_print(lua_State *st);
-  static int lua_cmd_list(lua_State *st);
-  static int lua_cmd_qtype(lua_State *st);
+	// lua meta methods functions
+	static int lua_meta_item_add(lua_State *st);
+	static int lua_meta_item_sub(lua_State *st);
+	static int lua_meta_item_mul(lua_State *st);
+	static int lua_meta_item_div(lua_State *st);
+	static int lua_meta_item_mod(lua_State *st);
+	static int lua_meta_item_pow(lua_State *st);
+	static int lua_meta_item_unm(lua_State *st);
+	static int lua_meta_item_concat(lua_State *st);
+	static int lua_meta_item_len(lua_State *st);
+	static int lua_meta_item_eq(lua_State *st);
+	static int lua_meta_item_lt(lua_State *st);
+	static int lua_meta_item_le(lua_State *st);
+	static int lua_meta_item_index(lua_State *st);
+	static int lua_meta_item_newindex(lua_State *st);
+	static int lua_meta_item_call(lua_State *st);
+	static int lua_meta_item_gc(lua_State *st);
 
-  // lua meta methods functions
-  static int lua_meta_item_add(lua_State *st);
-  static int lua_meta_item_sub(lua_State *st);
-  static int lua_meta_item_mul(lua_State *st);
-  static int lua_meta_item_div(lua_State *st);
-  static int lua_meta_item_mod(lua_State *st);
-  static int lua_meta_item_pow(lua_State *st);
-  static int lua_meta_item_unm(lua_State *st);
-  static int lua_meta_item_concat(lua_State *st);
-  static int lua_meta_item_len(lua_State *st);
-  static int lua_meta_item_eq(lua_State *st);
-  static int lua_meta_item_lt(lua_State *st);
-  static int lua_meta_item_le(lua_State *st);
-  static int lua_meta_item_index(lua_State *st);
-  static int lua_meta_item_newindex(lua_State *st);
-  static int lua_meta_item_call(lua_State *st);
-  static int lua_meta_item_gc(lua_State *st);
+	// static member addresses are used as lua registry table keys
+	static char _key_item_metatable;
+	static char _key_this;
 
-  // static member addresses are used as lua registry table keys
-  static char _key_item_metatable;
-  static char _key_this;
+	// QObjects wrappers are referenced here
+	wrapper_hash_t _whash;
 
-  // QObjects wrappers are referenced here
-  wrapper_hash_t _whash;
+	lua_State *_mst; //< main thread state
+	lua_State *_lst; //< current thread state
+	bool _yield_on_return;
 
-  lua_State	*_mst;      //< main thread state
-  lua_State	*_lst;      //< current thread state
-  bool          _yield_on_return;
-
-  QList<Function *> _functions;
+	QList<Function *> _functions;
 };
 
 }

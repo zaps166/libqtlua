@@ -27,9 +27,13 @@
 namespace QtLua {
 
 /** @internal */
-#define QTLUA_THROW(context, str, ...) do { throw QtLua::String(#context ": " str) __VA_ARGS__; } while (0)
+#define QTLUA_THROW(context, str, ...)                      \
+	do                                                      \
+	{                                                       \
+		throw QtLua::String(#context ": " str) __VA_ARGS__; \
+	} while (0)
 
-  /**
+/**
    * @short Character string class
    * @header QtLua/String
    * @module {Base}
@@ -43,34 +47,33 @@ namespace QtLua {
    * This class is also used as exceptions type for exceptions
    * associated with lua errors.
    */
-  class String : public QByteArray
-  {
-  public:
-    /** Create an empty string */
-    inline String();
-    /** Create a string from @tt{const char *} */
-    inline String(const char *s);
-    /** Create a string from @tt{const char *} with given length */
-    inline String(const char *s, int size);
-    /** Create a string from @ref QByteArray */
-    inline String(const QByteArray &s);
-    /** Copy constructor */
-    inline String(const QString &s);
-    /** Replace next @tt % character in string with given string  */
-    inline String & arg(const QByteArray &arg);
-    /** Replace next @tt % character in string with given string  */
-    inline String & arg(const QString &arg);
-    /** Replace next @tt % character in string with given integer  */
-    inline String & arg(const char *arg);
-    /** Replace next @tt % character in string with given integer  */
-    inline String & arg(int arg);
-    /** @tt{const char *} cast operator */
-    inline operator const char * () const;
-    /** @ref QString cast operator */
-    inline QString to_qstring() const;
-  };
+class String : public QByteArray
+{
+public:
+	/** Create an empty string */
+	inline String();
+	/** Create a string from @tt{const char *} */
+	inline String(const char *s);
+	/** Create a string from @tt{const char *} with given length */
+	inline String(const char *s, int size);
+	/** Create a string from @ref QByteArray */
+	inline String(const QByteArray &s);
+	/** Copy constructor */
+	inline String(const QString &s);
+	/** Replace next @tt % character in string with given string  */
+	inline String &arg(const QByteArray &arg);
+	/** Replace next @tt % character in string with given string  */
+	inline String &arg(const QString &arg);
+	/** Replace next @tt % character in string with given integer  */
+	inline String &arg(const char *arg);
+	/** Replace next @tt % character in string with given integer  */
+	inline String &arg(int arg);
+	/** @tt{const char *} cast operator */
+	inline operator const char *() const;
+	/** @ref QString cast operator */
+	inline QString to_qstring() const;
+};
 
 }
 
 #endif
-

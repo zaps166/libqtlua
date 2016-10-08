@@ -29,107 +29,112 @@ extern "C" {
 }
 
 namespace QtLua {
-  
-TableIterator::TableIterator(State *st, int index)
-  : _st(st),
-    _key(Value(st)),
-    _value(Value(st)),
-    _more(true)
-{
-  lua_State *lst = _st->_lst;
-  lua_pushlightuserdata(lst, this);
-  if (index < 0
-#if LUA_VERSION_NUM < 502
-      && index != LUA_GLOBALSINDEX
-#endif
-      )
-    index--;
-  lua_pushvalue(lst, index);
-  Q_ASSERT(lua_type(lst, -1) == Value::TTable);
-  lua_rawset(lst, LUA_REGISTRYINDEX);
 
-  fetch();
+TableIterator::TableIterator(State *st, int index)
+	: _st(st)
+	, _key(Value(st))
+	, _value(Value(st))
+	, _more(true)
+{
+	lua_State *lst = _st->_lst;
+	lua_pushlightuserdata(lst, this);
+	if (index < 0
+#if LUA_VERSION_NUM < 502
+		&& index != LUA_GLOBALSINDEX
+#endif
+		)
+		index--;
+	lua_pushvalue(lst, index);
+	Q_ASSERT(lua_type(lst, -1) == Value::TTable);
+	lua_rawset(lst, LUA_REGISTRYINDEX);
+
+	fetch();
 }
 
 TableIterator::~TableIterator()
 {
-  if (_st)
-    {
-      lua_pushlightuserdata(_st->_lst, this);
-      lua_pushnil(_st->_lst);
-      lua_rawset(_st->_lst, LUA_REGISTRYINDEX);
-    }
+	if (_st)
+	{
+		lua_pushlightuserdata(_st->_lst, this);
+		lua_pushnil(_st->_lst);
+		lua_rawset(_st->_lst, LUA_REGISTRYINDEX);
+	}
 }
 
 bool TableIterator::more() const
 {
-  return _st && _more;
+	return _st && _more;
 }
 
 void TableIterator::next()
 {
-  fetch();
+	fetch();
 }
 
 void TableIterator::fetch()
 {
-  if (!_st)
-    return;
+	if (!_st)
+		return;
 
-  Q_ASSERT(_more);
+	Q_ASSERT(_more);
 
-  lua_State *lst = _st->_lst;
-  lua_pushlightuserdata(lst, this);
-  lua_rawget(lst, LUA_REGISTRYINDEX);
+	lua_State *lst = _st->_lst;
+	lua_pushlightuserdata(lst, this);
+	lua_rawget(lst, LUA_REGISTRYINDEX);
 
-  try {
-    _key.push_value(lst);
-  } catch (...) {
-    lua_pop(lst, 1);
-    throw;
-  }
+	try
+	{
+		_key.push_value(lst);
+	}
+	catch (...)
+	{
+		lua_pop(lst, 1);
+		throw;
+	}
 
-  try {
-    if (State::lua_pnext(lst, -2))
-      {
-	_key = Value(-2, _st);
-	_value = Value(-1, _st);
-	lua_pop(lst, 2);
-      }
-    else
-      {
-	_more = false;
-      }
-  } catch (...) {
-    lua_pop(lst, 2);
-    throw;
-  }
+	try
+	{
+		if (State::lua_pnext(lst, -2))
+		{
+			_key = Value(-2, _st);
+			_value = Value(-1, _st);
+			lua_pop(lst, 2);
+		}
+		else
+		{
+			_more = false;
+		}
+	}
+	catch (...)
+	{
+		lua_pop(lst, 2);
+		throw;
+	}
 
-  lua_pop(lst, 1);
+	lua_pop(lst, 1);
 }
 
 Value TableIterator::get_key() const
 {
-  return _key;
+	return _key;
 }
 
 Value TableIterator::get_value() const
 {
-  return _value;
+	return _value;
 }
 
 ValueRef TableIterator::get_value_ref()
 {
-  if (!_st)
-    QTLUA_THROW(QtLua::TableIterator, "State object has been destoyed.");
+	if (!_st)
+		QTLUA_THROW(QtLua::TableIterator, "State object has been destoyed.");
 
-  lua_pushlightuserdata(_st->_lst, this);
-  lua_rawget(_st->_lst, LUA_REGISTRYINDEX);
-  Value val(1, _st);
-  ValueRef ref(val, _key);
-  lua_pop(_st->_lst, 1);
-  return ref;
+	lua_pushlightuserdata(_st->_lst, this);
+	lua_rawget(_st->_lst, LUA_REGISTRYINDEX);
+	Value val(1, _st);
+	ValueRef ref(val, _key);
+	lua_pop(_st->_lst, 1);
+	return ref;
 }
 
 }
-

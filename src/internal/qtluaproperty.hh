@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAPROPERTY_HH_
 #define QTLUAPROPERTY_HH_
 
@@ -38,16 +37,16 @@ namespace QtLua {
  * This internal class implements the wrapper which enables read/write
  * access to properties of @ref QObject objects from lua.
  */
-  class Property : public Member
-  {
-  public:
-    QTLUA_REFTYPE(Property)
+class Property : public Member
+{
+public:
+	QTLUA_REFTYPE(Property)
 
-    Property(const QMetaObject *mo, int index);
+	Property(const QMetaObject *mo, int index);
 
-  private:
-    void assign(QObjectWrapper &qow, const Value &value);
-    Value access(QObjectWrapper &qow);
+private:
+	void assign(QObjectWrapper &qow, const Value &value);
+	Value access(QObjectWrapper &qow);
 
 #if 0
     // FIXME handle enumerator
@@ -56,11 +55,10 @@ namespace QtLua {
     bool support(Value::Operation c) const;
 #endif
 
-    String get_value_str() const;
-    String get_type_name() const;
-  };
+	String get_value_str() const;
+	String get_type_name() const;
+};
 
 }
 
 #endif
-

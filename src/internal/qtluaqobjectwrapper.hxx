@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAQOBJECTWRAPPER_HXX_
 #define QTLUAQOBJECTWRAPPER_HXX_
 
@@ -26,41 +25,40 @@
 
 namespace QtLua {
 
-  QObject & QObjectWrapper::get_object()
-  {
-    if (!_obj)
-      QTLUA_THROW(QtLua::QObjectWrapper, "The wrapper has no associated QObject.");
+QObject &QObjectWrapper::get_object()
+{
+	if (!_obj)
+		QTLUA_THROW(QtLua::QObjectWrapper, "The wrapper has no associated QObject.");
 
-    return *_obj;
-  }
+	return *_obj;
+}
 
-  void QObjectWrapper::set_reparent(bool reparent)
-  {
-    _reparent = reparent;
-  }
+void QObjectWrapper::set_reparent(bool reparent)
+{
+	_reparent = reparent;
+}
 
-  void QObjectWrapper::set_delete(bool delete_)
-  {
-    _delete = delete_;
-  }
+void QObjectWrapper::set_delete(bool delete_)
+{
+	_delete = delete_;
+}
 
-  bool QObjectWrapper::valid() const
-  {
-    return _obj;
-  }
+bool QObjectWrapper::valid() const
+{
+	return _obj;
+}
 
-  State * QObjectWrapper::get_state()
-  {
-    return _ls;
-  }
+State *QObjectWrapper::get_state()
+{
+	return _ls;
+}
 
-  QObjectWrapper::LuaSlot::LuaSlot(const Value &v, int sigindex)
-    : _value(v),
-      _sigindex(sigindex)
-  {
-  }
+QObjectWrapper::LuaSlot::LuaSlot(const Value &v, int sigindex)
+	: _value(v)
+	, _sigindex(sigindex)
+{
+}
 
 }
 
 #endif
-

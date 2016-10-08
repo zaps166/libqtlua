@@ -26,36 +26,35 @@ namespace QtLua {
 
 String Function::get_type_name() const
 {
-  return "QtLua::Function";
+	return "QtLua::Function";
 }
 
 String Function::get_value_str() const
 {
-  return get_type_name();
+	return get_type_name();
 }
 
 void Function::register_(State *ls, const String &path)
 {
-  ls->set_global(path, Value(ls, *this));
+	ls->set_global(path, Value(ls, *this));
 }
 
 void Function::completion_patch(String &path, String &entry, int &offset)
 {
-  Q_UNUSED(path)
-  entry += "()";
-  offset--;
+	Q_UNUSED(path)
+	entry += "()";
+	offset--;
 }
 
 bool Function::support(Value::Operation c) const
 {
-  switch (c)
-    {
-    case Value::OpCall:
-      return true;
-    default:
-      return false;
-    }
+	switch (c)
+	{
+	case Value::OpCall:
+		return true;
+	default:
+		return false;
+	}
 }
 
 }
-

@@ -28,12 +28,12 @@
 
 namespace QtLua {
 
-  class MetaCache;
-  class QObjectWrapper;
-  class Member;
+class MetaCache;
+class QObjectWrapper;
+class Member;
 
-  typedef QMap<String, Ref<Member> > member_cache_t;
-  typedef QHash<const QMetaObject *, MetaCache> meta_cache_t;
+typedef QMap<String, Ref<Member> > member_cache_t;
+typedef QHash<const QMetaObject *, MetaCache> meta_cache_t;
 
 /**
  * @short Cache of existing Qt meta member wrappers
@@ -47,46 +47,45 @@ namespace QtLua {
  * created @ref Member based wrappers.
  */
 
-  class MetaCache
-  {
-    friend class QObjectWrapper;
+class MetaCache
+{
+	friend class QObjectWrapper;
 
-    MetaCache(const QMetaObject *mo);
+	MetaCache(const QMetaObject *mo);
 
-  public:
-    /** Copy constructor */
-    inline MetaCache(const MetaCache &mc);
+public:
+	/** Copy constructor */
+	inline MetaCache(const MetaCache &mc);
 
-    /** Get cache meta information for a QObject */
-    inline static MetaCache & get_meta(const QObject &obj);
-    /** Get cache meta information for a QMetaObject */
-    static MetaCache & get_meta(const QMetaObject *mo);
+	/** Get cache meta information for a QObject */
+	inline static MetaCache &get_meta(const QObject &obj);
+	/** Get cache meta information for a QMetaObject */
+	static MetaCache &get_meta(const QMetaObject *mo);
 
-    /** Recursively search for memeber in class and parent classes */
-    Ref<Member> get_member(const String &name) const;
-    /** Recursively search for memeber in class and parent classes, throw if not found */
-    inline Ref<Member> get_member_throw(const String &name) const;
-    /** Recursively search for memeber in class and parent classes and
+	/** Recursively search for memeber in class and parent classes */
+	Ref<Member> get_member(const String &name) const;
+	/** Recursively search for memeber in class and parent classes, throw if not found */
+	inline Ref<Member> get_member_throw(const String &name) const;
+	/** Recursively search for memeber in class and parent classes and
 	try to cast to given type, throw if fail. */
-    template <class X>
-    typename X::ptr get_member_throw(const String &name) const;
+	template <class X>
+	typename X::ptr get_member_throw(const String &name) const;
 
-    /** Recursively search for enum value in class and parent classes, return -1 if not found */
-    int get_enum_value(const String &name) const;
+	/** Recursively search for enum value in class and parent classes, return -1 if not found */
+	int get_enum_value(const String &name) const;
 
-    /** Get member table */
-    inline const member_cache_t & get_member_table() const;
+	/** Get member table */
+	inline const member_cache_t &get_member_table() const;
 
-    /** Get associated QMetaObject pointer */
-    inline const QMetaObject * get_meta_object() const;
+	/** Get associated QMetaObject pointer */
+	inline const QMetaObject *get_meta_object() const;
 
-  private:
-    member_cache_t _member_cache;
-    const QMetaObject *_mo;
-    static meta_cache_t _meta_cache;
-  };
+private:
+	member_cache_t _member_cache;
+	const QMetaObject *_mo;
+	static meta_cache_t _meta_cache;
+};
 
 }
 
 #endif
-

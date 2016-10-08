@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAMEMBER_HH_
 #define QTLUAMEMBER_HH_
 
@@ -30,8 +29,8 @@
 
 namespace QtLua {
 
-  class QObjectWrapper;
-  class Value;
+class QObjectWrapper;
+class Value;
 
 /**
  * @short Qt meta member wrappers class
@@ -42,26 +41,25 @@ namespace QtLua {
  * This is the base class for @ref Method, @ref Property and @ref Enum
  * wrapper classes.
  */
-  class Member : public UserData
-  {
-  public:
-    QTLUA_REFTYPE(Member)
+class Member : public UserData
+{
+public:
+	QTLUA_REFTYPE(Member)
 
-    inline Member(const QMetaObject *mo, int index);
-    inline Member();
+	inline Member(const QMetaObject *mo, int index);
+	inline Member();
 
-    inline int get_index() const;
-    bool check_class(const QMetaObject *mo) const;
+	inline int get_index() const;
+	bool check_class(const QMetaObject *mo) const;
 
-    virtual void assign(QObjectWrapper &qow, const Value &value);
-    virtual Value access(QObjectWrapper &qow);
+	virtual void assign(QObjectWrapper &qow, const Value &value);
+	virtual Value access(QObjectWrapper &qow);
 
-  protected:
-    const QMetaObject *_mo;
-    int _index;
-  };
+protected:
+	const QMetaObject *_mo;
+	int _index;
+};
 
 }
 
 #endif
-

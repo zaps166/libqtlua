@@ -24,47 +24,46 @@
 
 namespace QtLua {
 
-  Enum::Enum(const QMetaObject *mo, int index)
-    : Member(mo, index)
-  { 
-  }
-
-  Value Enum::meta_index(State *ls, const Value &key)
-  {
-    int value = _mo->enumerator(_index).keyToValue(key.to_string().constData());
-    return value < 0 ? Value(ls) : Value(ls, value);
-  }
-
-  Ref<Iterator> Enum::new_iterator(State *ls)
-  {
-    return QTLUA_REFNEW(EnumIterator, ls, _mo->enumerator(_index));
-  }
-
-  bool Enum::support(Value::Operation c) const
-  {
-    switch (c)
-      {
-      case Value::OpIndex:
-      case Value::OpIterate:
-	return true;
-      default:
-	return false;
-      }
-  }
-
-  String Enum::get_value_str() const
-  {
-    QMetaEnum me = _mo->enumerator(_index);
-
-    return String(me.scope()) + "::" + me.name();
-  }
-
-  void Enum::completion_patch(String &path, String &entry, int &offset)
-  {
-    Q_UNUSED(path)
-    Q_UNUSED(offset)
-    entry += ".";
-  }
-
+Enum::Enum(const QMetaObject *mo, int index)
+	: Member(mo, index)
+{
 }
 
+Value Enum::meta_index(State *ls, const Value &key)
+{
+	int value = _mo->enumerator(_index).keyToValue(key.to_string().constData());
+	return value < 0 ? Value(ls) : Value(ls, value);
+}
+
+Ref<Iterator> Enum::new_iterator(State *ls)
+{
+	return QTLUA_REFNEW(EnumIterator, ls, _mo->enumerator(_index));
+}
+
+bool Enum::support(Value::Operation c) const
+{
+	switch (c)
+	{
+	case Value::OpIndex:
+	case Value::OpIterate:
+		return true;
+	default:
+		return false;
+	}
+}
+
+String Enum::get_value_str() const
+{
+	QMetaEnum me = _mo->enumerator(_index);
+
+	return String(me.scope()) + "::" + me.name();
+}
+
+void Enum::completion_patch(String &path, String &entry, int &offset)
+{
+	Q_UNUSED(path)
+	Q_UNUSED(offset)
+	entry += ".";
+}
+
+}

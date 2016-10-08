@@ -18,15 +18,12 @@
 
 */
 
-
 #ifndef QTLUAPROPERTY_HXX_
 #define QTLUAPROPERTY_HXX_
 
 #include <internal/qtluamember.hxx>
 
 namespace QtLua {
-
 }
 
 #endif
-

@@ -28,7 +28,7 @@
 
 namespace QtLua {
 
-  /**
+/**
    * @short C array read only access wrapper for lua script
    * @header QtLua/ArrayProxy
    * @module {Container proxies}
@@ -44,54 +44,54 @@ template <class T>
 class ArrayProxyRo : public UserData
 {
 public:
-  QTLUA_REFTYPE(ArrayProxyRo)
+	QTLUA_REFTYPE(ArrayProxyRo)
 
-  /** Create a @ref ArrayProxy object with no attached array */
-  ArrayProxyRo();
-  /** Create a @ref ArrayProxy object and attach given array */
-  ArrayProxyRo(const T *array, unsigned int size);
+	/** Create a @ref ArrayProxy object with no attached array */
+	ArrayProxyRo();
+	/** Create a @ref ArrayProxy object and attach given array */
+	ArrayProxyRo(const T *array, unsigned int size);
 
-  /** Attach or detach container. argument may be NULL */
-  void set_container(const T *array, unsigned int size);
+	/** Attach or detach container. argument may be NULL */
+	void set_container(const T *array, unsigned int size);
 
-  Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
-  Value meta_index(State *ls, const Value &key);
-  bool meta_contains(State *ls, const Value &key);
-  Ref<Iterator> new_iterator(State *ls);
-  bool support(Value::Operation c) const;
+	Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
+	Value meta_index(State *ls, const Value &key);
+	bool meta_contains(State *ls, const Value &key);
+	Ref<Iterator> new_iterator(State *ls);
+	bool support(Value::Operation c) const;
 
 private:
-  void completion_patch(String &path, String &entry, int &offset);
-  String get_type_name() const;
+	void completion_patch(String &path, String &entry, int &offset);
+	String get_type_name() const;
 
-  /**
+	/**
    * @short ArrayProxyRo iterator class
    * @internal
    */
-  class ProxyIterator : public Iterator
-  {
-  public:
-    QTLUA_REFTYPE(ProxyIterator)
-    ProxyIterator(State *ls, const Ref<ArrayProxyRo> &proxy);
+	class ProxyIterator : public Iterator
+	{
+	public:
+		QTLUA_REFTYPE(ProxyIterator)
+		ProxyIterator(State *ls, const Ref<ArrayProxyRo> &proxy);
 
-  private:
-    bool more() const;
-    void next();
-    Value get_key() const;
-    Value get_value() const;
-    ValueRef get_value_ref();
+	private:
+		bool more() const;
+		void next();
+		Value get_key() const;
+		Value get_value() const;
+		ValueRef get_value_ref();
 
-    QPointer<State> _ls;
-    Ref<ArrayProxyRo> _proxy;
-    unsigned int _it;
-  };
+		QPointer<State> _ls;
+		Ref<ArrayProxyRo> _proxy;
+		unsigned int _it;
+	};
 
 protected:
-  const T *_array;
-  unsigned int _size;
+	const T *_array;
+	unsigned int _size;
 };
 
-  /**
+/**
    * @short C array access wrapper for lua script
    * @header QtLua/ArrayProxy
    * @module {Container proxies}
@@ -120,25 +120,24 @@ protected:
 template <class T>
 class ArrayProxy : public ArrayProxyRo<T>
 {
-  using ArrayProxyRo<T>::_array;
-  using ArrayProxyRo<T>::_size;
+	using ArrayProxyRo<T>::_array;
+	using ArrayProxyRo<T>::_size;
 
 public:
-  QTLUA_REFTYPE(ArrayProxy)
+	QTLUA_REFTYPE(ArrayProxy)
 
-  /** Create a @ref ArrayProxy object */
-  ArrayProxy();
-  /** Create a @ref ArrayProxy object */
-  ArrayProxy(T *array, unsigned int size);
+	/** Create a @ref ArrayProxy object */
+	ArrayProxy();
+	/** Create a @ref ArrayProxy object */
+	ArrayProxy(T *array, unsigned int size);
 
-  /** Attach or detach associated array. argument may be NULL */
-  void set_container(T *array, unsigned int size);
+	/** Attach or detach associated array. argument may be NULL */
+	void set_container(T *array, unsigned int size);
 
-  void meta_newindex(State *ls, const Value &key, const Value &value);
-  bool support(enum Value::Operation c);
+	void meta_newindex(State *ls, const Value &key, const Value &value);
+	bool support(enum Value::Operation c);
 };
 
 }
 
 #endif
-

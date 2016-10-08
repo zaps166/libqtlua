@@ -28,14 +28,14 @@
 
 namespace QtLua {
 
-  struct meta_object_table_s
-  {
-    const QMetaObject *_mo;
-    qobject_creator *_creator;
-  };
+struct meta_object_table_s
+{
+	const QMetaObject *_mo;
+	qobject_creator *_creator;
+};
 
-  /** @internal */
-  extern const meta_object_table_s meta_object_table[];
+/** @internal */
+extern const meta_object_table_s meta_object_table[];
 
 /**
  * @short QMetaObject wrapper class
@@ -49,31 +49,30 @@ namespace QtLua {
  * @see QObjectWrapper
  */
 
-  class QMetaObjectWrapper : public UserData
-  {
-  public:
-    QTLUA_REFTYPE(QMetaObjectWrapper)
+class QMetaObjectWrapper : public UserData
+{
+public:
+	QTLUA_REFTYPE(QMetaObjectWrapper)
 
-    QMetaObjectWrapper(const QMetaObject *mo, qobject_creator *creator = 0);
+	QMetaObjectWrapper(const QMetaObject *mo, qobject_creator *creator = 0);
 
-    /** @This invoke constructor of QObject. Class constructors which
+	/** @This invoke constructor of QObject. Class constructors which
 	can be invoked with no arguments and constructors which are
 	declared with the @tt Q_INVOKABLE modifier can be used. */
-    QObject *create(const Value::List &lua_args) const;
+	QObject *create(const Value::List &lua_args) const;
 
-  private:
-    Value meta_index(State *ls, const Value &key);
-    Ref<Iterator> new_iterator(State *ls);
-    bool support(Value::Operation c) const;
+private:
+	Value meta_index(State *ls, const Value &key);
+	Ref<Iterator> new_iterator(State *ls);
+	bool support(Value::Operation c) const;
 
-    void completion_patch(String &path, String &entry, int &offset);
-    String get_value_str() const;
+	void completion_patch(String &path, String &entry, int &offset);
+	String get_value_str() const;
 
-    const QMetaObject *_mo;
-    qobject_creator *_creator;
-  };
-
+	const QMetaObject *_mo;
+	qobject_creator *_creator;
 };
 
-#endif
+}
 
+#endif

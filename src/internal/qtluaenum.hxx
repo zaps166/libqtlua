@@ -18,15 +18,12 @@
 
 */
 
-
 #ifndef QTLUAENUM_HXX_
 #define QTLUAENUM_HXX_
 
 #include <internal/qtluamember.hxx>
 
 namespace QtLua {
-
 }
 
 #endif
-

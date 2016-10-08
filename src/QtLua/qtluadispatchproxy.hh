@@ -26,7 +26,7 @@
 
 namespace QtLua {
 
-  /**
+/**
    * @short Expose multiple UserData objects as a single composite object.
    * @header QtLua/DispatchProxy
    * @module {Base}
@@ -54,12 +54,12 @@ class DispatchProxy : public UserData
 {
 
 public:
-  QTLUA_REFTYPE(DispatchProxy)
+	QTLUA_REFTYPE(DispatchProxy)
 
-  DispatchProxy();
-  ~DispatchProxy();
+	DispatchProxy();
+	~DispatchProxy();
 
-  /** 
+	/** 
    * This function register a new target object which will be used to
    * provide support for some operations. It returns the position of
    * the new entry. The @tt mask parameter can be used to prevent use
@@ -72,42 +72,42 @@ public:
    * if either the @ref UserData::meta_index function or the @ref
    * UserData::meta_newindex function is reimplemented.
    */
-  template <class T>
-  unsigned int add_target(T *t, Value::Operations mask = Value::OpAll,
-			  bool new_keys = true);
+	template <class T>
+	unsigned int add_target(T *t, Value::Operations mask = Value::OpAll,
+							bool new_keys = true);
 
-  /**
+	/**
    * This function performs the same way as the @ref add_target
    * function but inserts the new target entry at specified position.
    */
-  template <class T>
-  unsigned int insert_target(T *t, unsigned int pos = 0,
-			     Value::Operations mask = Value::OpAll,
-			     bool new_keys = true);
+	template <class T>
+	unsigned int insert_target(T *t, unsigned int pos = 0,
+							   Value::Operations mask = Value::OpAll,
+							   bool new_keys = true);
 
-  /**
+	/**
    * This function removes an entry from target objects list.
    */
-  template <class T>
-  void remove_target(T *t);
+	template <class T>
+	void remove_target(T *t);
 
-  /** 
+	/** 
    * This function handles the requested operation by relying on the
    * first registered object which @ref UserData::support {supports}
    * the operation and had associated operations enabled when
    * registered with the @ref add_target function.
    */
-  Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
+	Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
 
-  /** 
+	/** 
    * This function handles the @ref Value::OpIndex operation by
    * querying all registered objects which @ref UserData::support
    * {support} this operation and had this operation enabled when
    * registered with the @ref add_target function.
    */
-  Value meta_index(State *ls, const Value &key);
+	Value meta_index(State *ls, const Value &key);
 
-  /**
+	/**
    * This function handles the @ref Value::OpNewindex operation by
    * writing to the first registered object which @ref
    * UserData::support {supports} this operation and had this operation
@@ -124,25 +124,25 @@ public:
    * before the call to @ref meta_newindex is forwarded. This avoids
    * shadowing a table entry.
    */
-  void meta_newindex(State *ls, const Value &key, const Value &value);
+	void meta_newindex(State *ls, const Value &key, const Value &value);
 
-  /** 
+	/** 
    * This function queries all registered object which @ref
    * UserData::support {support} the @ref Value::OpIndex or @ref
    * Value::OpNewindex operations and had one of these operations
    * enabled when registered with the @ref add_target function.
    */
-  bool meta_contains(State *ls, const Value &key);
+	bool meta_contains(State *ls, const Value &key);
 
-  /** 
+	/** 
    * This function handles the @ref Value::OpCall operation by relying
    * on the first registered object which @ref UserData::support
    * {supports} this operation and had this operation enabled when
    * registered with the @ref add_target function.
    */
-  Value::List meta_call(State *ls, const Value::List &args);
+	Value::List meta_call(State *ls, const Value::List &args);
 
-  /**
+	/**
    * This function handles the @ref Value::OpIterate operation by
    * relying on all registered objects which @ref UserData::support
    * {support} this operation and had this operation enabled when
@@ -150,82 +150,79 @@ public:
    * underlying objects are created in registration order to expose
    * all entries.
    */
-  Ref<Iterator> new_iterator(State *ls);
+	Ref<Iterator> new_iterator(State *ls);
 
-  /**
+	/**
    * This function check if one of the underlying objects can handle
    * the specified operation and had this operation enabled when
    * registered with the @ref add_target function.
    */
-  bool support(enum Value::Operation c) const;
+	bool support(enum Value::Operation c) const;
 
 private:
+	struct TargetBase
+	{
+		inline TargetBase(UserData *ud, Value::Operations ops, bool new_keys);
+		virtual inline ~TargetBase();
 
-  struct TargetBase
-  {
-    inline TargetBase(UserData *ud, Value::Operations ops, bool new_keys);
-    virtual inline ~TargetBase();
+		virtual Value _meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b) const = 0;
+		virtual Value _meta_index(State *ls, const Value &key) const = 0;
+		virtual bool _meta_contains(State *ls, const Value &key) const = 0;
+		virtual void _meta_newindex(State *ls, const Value &key, const Value &value) const = 0;
+		virtual Value::List _meta_call(State *ls, const Value::List &args) const = 0;
+		virtual Ref<Iterator> _new_iterator(State *ls) const = 0;
+		virtual bool _support(enum Value::Operation c) const = 0;
 
-    virtual Value _meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b) const = 0;
-    virtual Value _meta_index(State *ls, const Value &key) const = 0;
-    virtual bool _meta_contains(State *ls, const Value &key) const = 0;
-    virtual void _meta_newindex(State *ls, const Value &key, const Value &value) const = 0;
-    virtual Value::List _meta_call(State *ls, const Value::List &args) const = 0;
-    virtual Ref<Iterator> _new_iterator(State *ls) const = 0;
-    virtual bool _support(enum Value::Operation c) const = 0;
+		UserData *_ud;
+		Value::Operations _ops;
+		bool _new_keys;
+	};
 
-    UserData *        _ud;
-    Value::Operations _ops;
-    bool              _new_keys;
-  };
+	template <class T>
+	struct Target : public TargetBase
+	{
+		inline Target(UserData *ud, Value::Operations ops, bool new_keys);
 
-  template <class T>
-  struct Target : public TargetBase
-  {
-    inline Target(UserData *ud, Value::Operations ops, bool new_keys);
+		/** @override */
+		Value _meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b) const;
+		/** @override */
+		Value _meta_index(State *ls, const Value &key) const;
+		/** @override */
+		bool _meta_contains(State *ls, const Value &key) const;
+		/** @override */
+		void _meta_newindex(State *ls, const Value &key, const Value &value) const;
+		/** @override */
+		Value::List _meta_call(State *ls, const Value::List &args) const;
+		/** @override */
+		Ref<Iterator> _new_iterator(State *ls) const;
+		/** @override */
+		bool _support(enum Value::Operation c) const;
+	};
 
-    /** @override */
-    Value _meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b) const;
-    /** @override */
-    Value _meta_index(State *ls, const Value &key) const;
-    /** @override */
-    bool _meta_contains(State *ls, const Value &key) const;
-    /** @override */
-    void _meta_newindex(State *ls, const Value &key, const Value &value) const;
-    /** @override */
-    Value::List _meta_call(State *ls, const Value::List &args) const;
-    /** @override */
-    Ref<Iterator> _new_iterator(State *ls) const;
-    /** @override */
-    bool _support(enum Value::Operation c) const;
-  };
+	class ProxyIterator : public Iterator
+	{
+		friend class DispatchProxy;
 
-  class ProxyIterator : public Iterator
-  {
-    friend class DispatchProxy;
+		inline ProxyIterator(State *ls, const DispatchProxy &dp);
 
-    inline ProxyIterator(State *ls, const DispatchProxy &dp);
+		bool _more();
+		bool more() const;
+		void next();
+		Value get_key() const;
+		Value get_value() const;
+		ValueRef get_value_ref();
 
-    bool _more();
-    bool more() const;
-    void next();
-    Value get_key() const;
-    Value get_value() const;
-    ValueRef get_value_ref();
+		QPointer<State> _state;
+		const DispatchProxy &_dp;
+		int _index;
+		Ref<Iterator> _cur;
+	};
 
-    QPointer<State> _state;
-    const DispatchProxy &_dp;
-    int _index;
-    Ref<Iterator> _cur;
-  };
+	friend class ProxyIterator;
 
-  friend class ProxyIterator;
-
-  QList<TargetBase*> _targets;
-
+	QList<TargetBase *> _targets;
 };
 
 }
 
 #endif
-

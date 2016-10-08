@@ -45,14 +45,14 @@ namespace QtLua {
 char State::_key_item_metatable;
 char State::_key_this;
 
-  /* save current thread lua_State and set new lua_State */
-#define QTLUA_SWITCH_THREAD(this_, st)	     \
-    lua_State *prev_th = this_->_lst; \
-    this_->_lst = st;
+/* save current thread lua_State and set new lua_State */
+#define QTLUA_SWITCH_THREAD(this_, st) \
+	lua_State *prev_th = this_->_lst;  \
+	this_->_lst = st;
 
-  /* restore old thread State */
-#define QTLUA_RESTORE_THREAD(this_)     \
-    this_->_lst = prev_th;
+/* restore old thread State */
+#define QTLUA_RESTORE_THREAD(this_) \
+	this_->_lst = prev_th;
 
 /************************************************************************
 	lua c functions
@@ -60,191 +60,204 @@ char State::_key_this;
 
 int State::lua_cmd_iterator(lua_State *st)
 {
-  State		*this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
+	State *this_ = get_this(st);
+	QTLUA_SWITCH_THREAD(this_, st);
 
-  try {
-    Iterator::ptr	i = Value(1, this_).to_userdata_cast<Iterator>();
+	try
+	{
+		Iterator::ptr i = Value(1, this_).to_userdata_cast<Iterator>();
 
-    if (i->more())
-      {
-	i->get_key().push_value(st);
-	i->get_value().push_value(st);
-	i->next();
-	QTLUA_RESTORE_THREAD(this_);
-	return 2;
-      }
-    else
-      {
-	lua_pushnil(st);
-	QTLUA_RESTORE_THREAD(this_);
-	return 1;
-      }
+		if (i->more())
+		{
+			i->get_key().push_value(st);
+			i->get_value().push_value(st);
+			i->next();
+			QTLUA_RESTORE_THREAD(this_);
+			return 2;
+		}
+		else
+		{
+			lua_pushnil(st);
+			QTLUA_RESTORE_THREAD(this_);
+			return 1;
+		}
+	}
+	catch (String &e)
+	{
+		QTLUA_RESTORE_THREAD(this_);
+		luaL_error(st, "%s", e.constData());
+	}
 
-  } catch (String &e) {
-    QTLUA_RESTORE_THREAD(this_);
-    luaL_error(st, "%s", e.constData());
-  }
-
-  ::abort();
+	::abort();
 }
 
 int State::lua_cmd_each(lua_State *st)
 {
-  State               *this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
+	State *this_ = get_this(st);
+	QTLUA_SWITCH_THREAD(this_, st);
 
-  int idx = 1;
+	int idx = 1;
 
-  try {
-    Value		table;
+	try
+	{
+		Value table;
 
-    if (lua_gettop(st) < 1)
-      table = Value::new_global_env(this_);
-    else
-      table = Value(idx, this_);
+		if (lua_gettop(st) < 1)
+			table = Value::new_global_env(this_);
+		else
+			table = Value(idx, this_);
 
-    Iterator::ptr	i = table.new_iterator();
+		Iterator::ptr i = table.new_iterator();
 
-    lua_pushcfunction(st, lua_cmd_iterator);
-    i->push_ud(st);
-    lua_pushnil(st);
+		lua_pushcfunction(st, lua_cmd_iterator);
+		i->push_ud(st);
+		lua_pushnil(st);
+	}
+	catch (String &e)
+	{
+		QTLUA_RESTORE_THREAD(this_);
+		luaL_error(st, "%s", e.constData());
+	}
 
-  } catch (String &e) {
-    QTLUA_RESTORE_THREAD(this_);
-    luaL_error(st, "%s", e.constData());
-  }
-
-  QTLUA_RESTORE_THREAD(this_);
-  return 3;
+	QTLUA_RESTORE_THREAD(this_);
+	return 3;
 }
 
 int State::lua_cmd_print(lua_State *st)
 {
-  State *this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
+	State *this_ = get_this(st);
+	QTLUA_SWITCH_THREAD(this_, st);
 
-  try {
-    for (int i = 1; i <= lua_gettop(st); i++)
-      {
-	String s = Value::to_string_p(st, i, true);
-	this_->output_str((i > 1 ? "\t" : "") + s);
-      }
-    this_->output_str("\n");
+	try
+	{
+		for (int i = 1; i <= lua_gettop(st); i++)
+		{
+			String s = Value::to_string_p(st, i, true);
+			this_->output_str((i > 1 ? "\t" : "") + s);
+		}
+		this_->output_str("\n");
+	}
+	catch (String &e)
+	{
+		QTLUA_RESTORE_THREAD(this_);
+		luaL_error(st, "%s", e.constData());
+	}
 
-  } catch (String &e) {
-    QTLUA_RESTORE_THREAD(this_);
-    luaL_error(st, "%s", e.constData());
-  }
-
-  QTLUA_RESTORE_THREAD(this_);
-  return 0;
+	QTLUA_RESTORE_THREAD(this_);
+	return 0;
 }
 
 int State::lua_cmd_list(lua_State *st)
 {
-  State	*this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
+	State *this_ = get_this(st);
+	QTLUA_SWITCH_THREAD(this_, st);
 
-  try {
-    Value		table;
+	try
+	{
+		Value table;
 
-    if (lua_gettop(st) < 1)
-      table = Value::new_global_env(this_);
-    else
-      table = Value(1, this_);
+		if (lua_gettop(st) < 1)
+			table = Value::new_global_env(this_);
+		else
+			table = Value(1, this_);
 
-    for (Value::const_iterator i = table.begin(); i != table.end(); i++)
-      {
-	try {
-	  this_->output_str(String("\033[18m") + i.value().type_name_u() + "\033[2m " +
-			    i.key().to_string_p(false) + " = " + i.value().to_string_p(true) + "\n");
-	} catch (String &e) {
-	  this_->output_str(String("\033[18m[Error]\033[2m " +
-				   i.key().to_string_p(false) + " = " + e + "\n"));
+		for (Value::const_iterator i = table.begin(); i != table.end(); i++)
+		{
+			try
+			{
+				this_->output_str(String("\033[18m") + i.value().type_name_u() + "\033[2m " + i.key().to_string_p(false) + " = " + i.value().to_string_p(true) + "\n");
+			}
+			catch (String &e)
+			{
+				this_->output_str(String("\033[18m[Error]\033[2m " + i.key().to_string_p(false) + " = " + e + "\n"));
+			}
+		}
 	}
-      }
+	catch (String &e)
+	{
+		QTLUA_RESTORE_THREAD(this_);
+		luaL_error(st, "%s", e.constData());
+	}
 
-  } catch (String &e) {
-    QTLUA_RESTORE_THREAD(this_);
-    luaL_error(st, "%s", e.constData());
-  }
-
-  QTLUA_RESTORE_THREAD(this_);
-  return 0;
+	QTLUA_RESTORE_THREAD(this_);
+	return 0;
 }
 
 int State::lua_cmd_qtype(lua_State *st)
 {
-  State *this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
+	State *this_ = get_this(st);
+	QTLUA_SWITCH_THREAD(this_, st);
 
-  if (lua_gettop(st) < 1)
-    {
-      this_->output_str("Usage: qtype(value)\n");
-      QTLUA_RESTORE_THREAD(this_);
-      return 0;
-    }
+	if (lua_gettop(st) < 1)
+	{
+		this_->output_str("Usage: qtype(value)\n");
+		QTLUA_RESTORE_THREAD(this_);
+		return 0;
+	}
 
-  Value v(1, this_);
-  String type(v.type_name_u());
-  lua_pushstring(st, type.constData());
+	Value v(1, this_);
+	String type(v.type_name_u());
+	lua_pushstring(st, type.constData());
 
-  QTLUA_RESTORE_THREAD(this_);
-  return 1;
+	QTLUA_RESTORE_THREAD(this_);
+	return 1;
 }
 
 // lua item metatable methods
 
-#define LUA_META_2OP_FUNC(n, op)					\
-									\
-int State::lua_meta_item_##n(lua_State *st)				\
-{									\
-  int		x = lua_gettop(st);					\
-  State		*this_ = get_this(st);					\
-  QTLUA_SWITCH_THREAD(this_, st);					\
-									\
-  try {									\
-    Value	a(1, this_);						\
-    Value	b(2, this_);						\
-									\
-    if (a.type() == Value::TUserData)					\
-      a.to_userdata()->meta_operation(this_, op, a, b).push_value(st);	\
-    else if (b.type() == Value::TUserData)				\
-      b.to_userdata()->meta_operation(this_, op, a, b).push_value(st);	\
-    else								\
-      ::abort();							\
-									\
-  } catch (String &e) {							\
-    QTLUA_RESTORE_THREAD(this_);					\
-    luaL_error(st, "%s", e.constData());				\
-  }									\
-									\
-  QTLUA_RESTORE_THREAD(this_);						\
-  return lua_gettop(st) - x;						\
-}
+#define LUA_META_2OP_FUNC(n, op)                                                 \
+                                                                                 \
+	int State::lua_meta_item_##n(lua_State *st)                                  \
+	{                                                                            \
+		int x = lua_gettop(st);                                                  \
+		State *this_ = get_this(st);                                             \
+		QTLUA_SWITCH_THREAD(this_, st);                                          \
+                                                                                 \
+		try                                                                      \
+		{                                                                        \
+			Value a(1, this_);                                                   \
+			Value b(2, this_);                                                   \
+                                                                                 \
+			if (a.type() == Value::TUserData)                                    \
+				a.to_userdata()->meta_operation(this_, op, a, b).push_value(st); \
+			else if (b.type() == Value::TUserData)                               \
+				b.to_userdata()->meta_operation(this_, op, a, b).push_value(st); \
+			else                                                                 \
+				::abort();                                                       \
+		}                                                                        \
+		catch (String & e)                                                       \
+		{                                                                        \
+			QTLUA_RESTORE_THREAD(this_);                                         \
+			luaL_error(st, "%s", e.constData());                                 \
+		}                                                                        \
+                                                                                 \
+		QTLUA_RESTORE_THREAD(this_);                                             \
+		return lua_gettop(st) - x;                                               \
+	}
 
-#define LUA_META_1OP_FUNC(n, op)					\
-									\
-int State::lua_meta_item_##n(lua_State *st)				\
-{									\
-  int		x = lua_gettop(st);					\
-  State		*this_ = get_this(st);					\
-  QTLUA_SWITCH_THREAD(this_, st);					\
-									\
-  try {									\
-    Value	a(1, this_);						\
-									\
-     a.to_userdata()->meta_operation(this_, op, a, a).push_value(st);	\
-									\
-  } catch (String &e) {							\
-    QTLUA_RESTORE_THREAD(this_);					\
-    luaL_error(st, "%s", e.constData());				\
-  }									\
-									\
-  QTLUA_RESTORE_THREAD(this_);						\
-  return lua_gettop(st) - x;						\
-}
+#define LUA_META_1OP_FUNC(n, op)                                             \
+                                                                             \
+	int State::lua_meta_item_##n(lua_State *st)                              \
+	{                                                                        \
+		int x = lua_gettop(st);                                              \
+		State *this_ = get_this(st);                                         \
+		QTLUA_SWITCH_THREAD(this_, st);                                      \
+                                                                             \
+		try                                                                  \
+		{                                                                    \
+			Value a(1, this_);                                               \
+                                                                             \
+			a.to_userdata()->meta_operation(this_, op, a, a).push_value(st); \
+		}                                                                    \
+		catch (String & e)                                                   \
+		{                                                                    \
+			QTLUA_RESTORE_THREAD(this_);                                     \
+			luaL_error(st, "%s", e.constData());                             \
+		}                                                                    \
+                                                                             \
+		QTLUA_RESTORE_THREAD(this_);                                         \
+		return lua_gettop(st) - x;                                           \
+	}
 
 LUA_META_2OP_FUNC(add, Value::OpAdd)
 LUA_META_2OP_FUNC(sub, Value::OpSub)
@@ -261,182 +274,189 @@ LUA_META_2OP_FUNC(le, Value::OpLe)
 
 int State::lua_meta_item_index(lua_State *st)
 {
-  int		x = lua_gettop(st);
-  State		*this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
+	int x = lua_gettop(st);
+	State *this_ = get_this(st);
+	QTLUA_SWITCH_THREAD(this_, st);
 
-  try {
-    UserData::ptr ud = UserData::get_ud(st, 1);
+	try
+	{
+		UserData::ptr ud = UserData::get_ud(st, 1);
 
-    if (!ud.valid())
-      QTLUA_THROW(QtLua::UserData, "Can not index a null `QtLua::UserData' value.");
+		if (!ud.valid())
+			QTLUA_THROW(QtLua::UserData, "Can not index a null `QtLua::UserData' value.");
 
-    Value	op(2, this_);
+		Value op(2, this_);
 
-    Value v = ud->meta_index(this_, op);
-    v.push_value(st);
+		Value v = ud->meta_index(this_, op);
+		v.push_value(st);
+	}
+	catch (String &e)
+	{
+		QTLUA_RESTORE_THREAD(this_);
+		luaL_error(st, "%s", e.constData());
+	}
 
-  } catch (String &e) {
-    QTLUA_RESTORE_THREAD(this_);
-    luaL_error(st, "%s", e.constData());
-  }
-
-  QTLUA_RESTORE_THREAD(this_);
-  return lua_gettop(st) - x;
+	QTLUA_RESTORE_THREAD(this_);
+	return lua_gettop(st) - x;
 }
 
 int State::lua_meta_item_newindex(lua_State *st)
 {
-  int		x = lua_gettop(st);
-  State		*this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
+	int x = lua_gettop(st);
+	State *this_ = get_this(st);
+	QTLUA_SWITCH_THREAD(this_, st);
 
-  try {
-    UserData::ptr ud = UserData::get_ud(st, 1);
+	try
+	{
+		UserData::ptr ud = UserData::get_ud(st, 1);
 
-    if (!ud.valid())
-      QTLUA_THROW(QtLua::UserData, "Can not index a null `QtLua::UserData' value.");
+		if (!ud.valid())
+			QTLUA_THROW(QtLua::UserData, "Can not index a null `QtLua::UserData' value.");
 
-    Value	op1(2, this_);
-    Value	op2(3, this_);
+		Value op1(2, this_);
+		Value op2(3, this_);
 
-    ud->meta_newindex(this_, op1, op2);
+		ud->meta_newindex(this_, op1, op2);
+	}
+	catch (String &e)
+	{
+		QTLUA_RESTORE_THREAD(this_);
+		luaL_error(st, "%s", e.constData());
+	}
 
-  } catch (String &e) {
-    QTLUA_RESTORE_THREAD(this_);
-    luaL_error(st, "%s", e.constData());
-  }
-
-  QTLUA_RESTORE_THREAD(this_);
-  return lua_gettop(st) - x;
+	QTLUA_RESTORE_THREAD(this_);
+	return lua_gettop(st) - x;
 }
 
 int State::lua_meta_item_call(lua_State *st)
 {
-  int		n = lua_gettop(st);
-  State		*this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
-  bool          yield = false;
+	int n = lua_gettop(st);
+	State *this_ = get_this(st);
+	QTLUA_SWITCH_THREAD(this_, st);
+	bool yield = false;
 
-  try {
-    UserData::ptr ud = UserData::get_ud(st, 1);
+	try
+	{
+		UserData::ptr ud = UserData::get_ud(st, 1);
 
-    if (!ud.valid())
-      QTLUA_THROW(QtLua::UserData, "Can not call a null `QtLua::UserData' value.");
+		if (!ud.valid())
+			QTLUA_THROW(QtLua::UserData, "Can not call a null `QtLua::UserData' value.");
 
-    Value::List	args;
+		Value::List args;
 
-    for (int i = 2; i <= lua_gettop(st); i++)
-      args.append(Value(i, this_));
+		for (int i = 2; i <= lua_gettop(st); i++)
+			args.append(Value(i, this_));
 
-    bool oy = this_->_yield_on_return;
-    this_->_yield_on_return = false;
-    args = ud->meta_call(this_, args);
-    yield = this_->_yield_on_return;
-    this_->_yield_on_return = oy;
+		bool oy = this_->_yield_on_return;
+		this_->_yield_on_return = false;
+		args = ud->meta_call(this_, args);
+		yield = this_->_yield_on_return;
+		this_->_yield_on_return = oy;
 
-    if (!lua_checkstack(st, args.size()))
-      QTLUA_THROW(QtLua::State, "Unable to extend the lua stack to handle % return values",
-		  .arg(args.size()));
+		if (!lua_checkstack(st, args.size()))
+			QTLUA_THROW(QtLua::State, "Unable to extend the lua stack to handle % return values",
+						.arg(args.size()));
 
-    foreach(const Value &v, args)
-      v.push_value(st);
+		foreach (const Value &v, args)
+			v.push_value(st);
+	}
+	catch (String &e)
+	{
+		QTLUA_RESTORE_THREAD(this_);
+		luaL_error(st, "%s", e.constData());
+	}
 
-  } catch (String &e) {
-    QTLUA_RESTORE_THREAD(this_);
-    luaL_error(st, "%s", e.constData());
-  }
-
-  QTLUA_RESTORE_THREAD(this_);
-  int nresults = lua_gettop(st) - n;
-  return yield ? lua_yield(st, nresults) : nresults;
+	QTLUA_RESTORE_THREAD(this_);
+	int nresults = lua_gettop(st) - n;
+	return yield ? lua_yield(st, nresults) : nresults;
 }
 
 int State::lua_meta_item_gc(lua_State *st)
 {
-  State		*this_ = get_this(st);
-  QTLUA_SWITCH_THREAD(this_, st);
+	State *this_ = get_this(st);
+	QTLUA_SWITCH_THREAD(this_, st);
 
-  UserData::get_ud(st, 1).~Ref<UserData>();
+	UserData::get_ud(st, 1).~Ref<UserData>();
 
-  QTLUA_RESTORE_THREAD(this_);
-  return 0;
+	QTLUA_RESTORE_THREAD(this_);
+	return 0;
 }
 
 /************************************************************************/
 
 static int lua_gettable_wrapper(lua_State *st)
 {
-  lua_gettable(st, 1);
-  return 1;
+	lua_gettable(st, 1);
+	return 1;
 }
 
 void State::lua_pgettable(lua_State *st, int index)
 {
-  if (lua_type(st, index) == LUA_TTABLE)
-    {
-      if (!lua_getmetatable(st, index)) {
-	lua_rawget(st, index);
-	return;
-      }
-      lua_pop(st, 1);
-    }
+	if (lua_type(st, index) == LUA_TTABLE)
+	{
+		if (!lua_getmetatable(st, index))
+		{
+			lua_rawget(st, index);
+			return;
+		}
+		lua_pop(st, 1);
+	}
 
-  lua_pushcfunction(st, lua_gettable_wrapper);
-  if (index < 0
+	lua_pushcfunction(st, lua_gettable_wrapper);
+	if (index < 0
 #if LUA_VERSION_NUM < 502
-      && index != LUA_GLOBALSINDEX
+		&& index != LUA_GLOBALSINDEX
 #endif
-      )
-    index--;
-  lua_pushvalue(st, index);  // table
-  lua_pushvalue(st, -3);     // key
-  if (lua_pcall(st, 2, 1, 0))
-    {
-      String err(lua_tostring(st, -1));
-      lua_pop(st, 1);
-      throw err;
-    }
-  lua_remove(st, -2);     // replace key by value
+		)
+		index--;
+	lua_pushvalue(st, index); // table
+	lua_pushvalue(st, -3); // key
+	if (lua_pcall(st, 2, 1, 0))
+	{
+		String err(lua_tostring(st, -1));
+		lua_pop(st, 1);
+		throw err;
+	}
+	lua_remove(st, -2); // replace key by value
 }
 
 static int lua_settable_wrapper(lua_State *st)
 {
-  lua_settable(st, 1);
-  return 0;
+	lua_settable(st, 1);
+	return 0;
 }
 
 void State::lua_psettable(lua_State *st, int index)
 {
-  if (lua_type(st, index) == LUA_TTABLE)
-    {
-      if (!lua_getmetatable(st, index))
-	return lua_rawset(st, index);
-      lua_pop(st, 1);
-    }
+	if (lua_type(st, index) == LUA_TTABLE)
+	{
+		if (!lua_getmetatable(st, index))
+			return lua_rawset(st, index);
+		lua_pop(st, 1);
+	}
 
-  lua_pushcfunction(st, lua_settable_wrapper);
-  if (index < 0
+	lua_pushcfunction(st, lua_settable_wrapper);
+	if (index < 0
 #if LUA_VERSION_NUM < 502
-      && index != LUA_GLOBALSINDEX
+		&& index != LUA_GLOBALSINDEX
 #endif
-      )
-    index--;
-  lua_pushvalue(st, index);  // table
-  lua_pushvalue(st, -4);     // key
-  lua_pushvalue(st, -4);     // value
-  if (lua_pcall(st, 3, 0, 0))
-    {
-      String err(lua_tostring(st, -1));
-      lua_pop(st, 1);
-      throw err;
-    }
-  lua_pop(st, 2);     // remove key/value
+		)
+		index--;
+	lua_pushvalue(st, index); // table
+	lua_pushvalue(st, -4); // key
+	lua_pushvalue(st, -4); // value
+	if (lua_pcall(st, 3, 0, 0))
+	{
+		String err(lua_tostring(st, -1));
+		lua_pop(st, 1);
+		throw err;
+	}
+	lua_pop(st, 2); // remove key/value
 }
 
 static int lua_next_wrapper(lua_State *st)
 {
-  return lua_next(st, 1) ? 2 : 0;
+	return lua_next(st, 1) ? 2 : 0;
 }
 
 /** Protected lua_next, same behavior as lua_next. On error this
@@ -444,659 +464,710 @@ static int lua_next_wrapper(lua_State *st)
     key is not poped). */
 int State::lua_pnext(lua_State *st, int index)
 {
-  lua_pushcfunction(st, lua_next_wrapper);
-  if (index < 0
+	lua_pushcfunction(st, lua_next_wrapper);
+	if (index < 0
 #if LUA_VERSION_NUM < 502
-      && index != LUA_GLOBALSINDEX
+		&& index != LUA_GLOBALSINDEX
 #endif
-      )
-    index--;
-  lua_pushvalue(st, index);  // table
-  lua_pushvalue(st, -3);     // key
-  if (lua_pcall(st, 2, 2, 0))
-    {
-      String err(lua_tostring(st, -1));
-      lua_pop(st, 1);
-      throw err;
-    }
-  lua_remove(st, -3);	     // remove key
-  if (lua_isnil(st, -2))
-    {
-      lua_pop(st, 2);
-      return 0;
-    }
-  return 1;
+		)
+		index--;
+	lua_pushvalue(st, index); // table
+	lua_pushvalue(st, -3); // key
+	if (lua_pcall(st, 2, 2, 0))
+	{
+		String err(lua_tostring(st, -1));
+		lua_pop(st, 1);
+		throw err;
+	}
+	lua_remove(st, -3); // remove key
+	if (lua_isnil(st, -2))
+	{
+		lua_pop(st, 2);
+		return 0;
+	}
+	return 1;
 }
 
 /************************************************************************/
 
 void State::set_global_r(const String &name, const Value &value, int tblidx)
 {
-  int len = name.indexOf('.', 0);
+	int len = name.indexOf('.', 0);
 
-  if (len < 0)
-    {
-      // set value in table if last
-      lua_pushstring(_lst, name.constData());
-
-      try {
-	value.push_value(_lst);
-      } catch (...) {
-	lua_pop(_lst, 1);
-	throw;
-      }
-
-      try {
-	lua_psettable(_lst, tblidx);
-      } catch (...) {
-	lua_pop(_lst, 2);
-	throw;
-      }
-    }
-  else
-    {
-      // find intermediate value in path
-      String prefix(name.mid(0, len));
-
-      lua_pushstring(_lst, prefix.constData());
-
-      try {
-	lua_pgettable(_lst, tblidx);
-      } catch (...) {
-	lua_pop(_lst, 1);
-	throw;
-      }
-
-      if (lua_isnil(_lst, -1))
+	if (len < 0)
 	{
-	  // create intermediate table
-	  lua_pop(_lst, 1);
-	  lua_pushstring(_lst, prefix.constData());
-	  lua_newtable(_lst);
+		// set value in table if last
+		lua_pushstring(_lst, name.constData());
 
-	  try {
-	    set_global_r(name.mid(len + 1), value, lua_gettop(_lst));
-	    lua_psettable(_lst, tblidx);
-	  } catch (...) {
-	    lua_pop(_lst, 2);
-	    throw;
-	  }
+		try
+		{
+			value.push_value(_lst);
+		}
+		catch (...)
+		{
+			lua_pop(_lst, 1);
+			throw;
+		}
+
+		try
+		{
+			lua_psettable(_lst, tblidx);
+		}
+		catch (...)
+		{
+			lua_pop(_lst, 2);
+			throw;
+		}
 	}
-      else if (lua_istable(_lst, -1))
+	else
 	{
-	  // use existing intermediate table
-	  try {
-	    set_global_r(name.mid(len + 1), value, lua_gettop(_lst));
-	    lua_pop(_lst, 1);
-	  } catch (...) {
-	    lua_pop(_lst, 1);
-	    throw;
-	  }
+		// find intermediate value in path
+		String prefix(name.mid(0, len));
+
+		lua_pushstring(_lst, prefix.constData());
+
+		try
+		{
+			lua_pgettable(_lst, tblidx);
+		}
+		catch (...)
+		{
+			lua_pop(_lst, 1);
+			throw;
+		}
+
+		if (lua_isnil(_lst, -1))
+		{
+			// create intermediate table
+			lua_pop(_lst, 1);
+			lua_pushstring(_lst, prefix.constData());
+			lua_newtable(_lst);
+
+			try
+			{
+				set_global_r(name.mid(len + 1), value, lua_gettop(_lst));
+				lua_psettable(_lst, tblidx);
+			}
+			catch (...)
+			{
+				lua_pop(_lst, 2);
+				throw;
+			}
+		}
+		else if (lua_istable(_lst, -1))
+		{
+			// use existing intermediate table
+			try
+			{
+				set_global_r(name.mid(len + 1), value, lua_gettop(_lst));
+				lua_pop(_lst, 1);
+			}
+			catch (...)
+			{
+				lua_pop(_lst, 1);
+				throw;
+			}
+		}
+		else
+		{
+			// bad existing intermediate value
+			lua_pop(_lst, 1);
+			QTLUA_THROW(QtLua::State, "Can not set the global, the '%' key already exists.", .arg(name));
+		}
 	}
-      else
-	{
-	  // bad existing intermediate value
-	  lua_pop(_lst, 1);
-	  QTLUA_THROW(QtLua::State, "Can not set the global, the '%' key already exists.", .arg(name));
-	}
-    }
 }
 
 void State::set_global(const String &name, const Value &value)
 {
 #if LUA_VERSION_NUM < 502
-  set_global_r(name, value, LUA_GLOBALSINDEX);
+	set_global_r(name, value, LUA_GLOBALSINDEX);
 #else
-  try {
-    lua_pushglobaltable(_lst);
-    set_global_r(name, value, lua_gettop(_lst));
-    lua_pop(_lst, 1);
-  } catch (...) {
-    lua_pop(_lst, 1);
-    throw;
-  }
+	try
+	{
+		lua_pushglobaltable(_lst);
+		set_global_r(name, value, lua_gettop(_lst));
+		lua_pop(_lst, 1);
+	}
+	catch (...)
+	{
+		lua_pop(_lst, 1);
+		throw;
+	}
 #endif
 }
 
 void State::get_global_r(const String &name, Value &value, int tblidx) const
 {
-  int len = name.indexOf('.', 0);
+	int len = name.indexOf('.', 0);
 
-  if (len < 0)
-    {
-      // get value from table if last
-      lua_pushstring(_lst, name.constData());
-
-      try {
-	lua_pgettable(_lst, tblidx);
-      } catch (...) {
-	lua_pop(_lst, 1);
-	throw;
-      }
-
-      value = Value(-1, this);
-      lua_pop(_lst, 1);
-    }
-  else
-    {
-      // find intermediate value in path
-      String prefix(name.mid(0, len));
-
-      lua_pushstring(_lst, prefix.constData());
-
-      try {
-	lua_pgettable(_lst, tblidx);
-      } catch (...) {
-	lua_pop(_lst, 1);
-	throw;
-      }
-
-      if (!lua_istable(_lst, -1))
+	if (len < 0)
 	{
-	  lua_pop(_lst, 1);
-	  QTLUA_THROW(QtLua::State, "Can not get the global, '%' is not a table.", .arg(prefix));
+		// get value from table if last
+		lua_pushstring(_lst, name.constData());
+
+		try
+		{
+			lua_pgettable(_lst, tblidx);
+		}
+		catch (...)
+		{
+			lua_pop(_lst, 1);
+			throw;
+		}
+
+		value = Value(-1, this);
+		lua_pop(_lst, 1);
 	}
+	else
+	{
+		// find intermediate value in path
+		String prefix(name.mid(0, len));
 
-      try {
-	get_global_r(name.mid(len + 1), value, lua_gettop(_lst));
-      } catch (...) {
-	lua_pop(_lst, 1);
-	throw;
-      }
+		lua_pushstring(_lst, prefix.constData());
 
-      lua_pop(_lst, 1);
-    }
+		try
+		{
+			lua_pgettable(_lst, tblidx);
+		}
+		catch (...)
+		{
+			lua_pop(_lst, 1);
+			throw;
+		}
+
+		if (!lua_istable(_lst, -1))
+		{
+			lua_pop(_lst, 1);
+			QTLUA_THROW(QtLua::State, "Can not get the global, '%' is not a table.", .arg(prefix));
+		}
+
+		try
+		{
+			get_global_r(name.mid(len + 1), value, lua_gettop(_lst));
+		}
+		catch (...)
+		{
+			lua_pop(_lst, 1);
+			throw;
+		}
+
+		lua_pop(_lst, 1);
+	}
 }
 
 Value State::get_global(const String &path) const
 {
-  Value res(const_cast<State*>(this));
+	Value res(const_cast<State *>(this));
 
 #if LUA_VERSION_NUM < 502
-  get_global_r(path, res, LUA_GLOBALSINDEX);
+	get_global_r(path, res, LUA_GLOBALSINDEX);
 #else
-  try {
-    lua_pushglobaltable(_lst);
-    get_global_r(path, res, lua_gettop(_lst));
-    lua_pop(_lst, 1);
-  } catch (...) {
-    lua_pop(_lst, 1);
-    throw;
-  }
+	try
+	{
+		lua_pushglobaltable(_lst);
+		get_global_r(path, res, lua_gettop(_lst));
+		lua_pop(_lst, 1);
+	}
+	catch (...)
+	{
+		lua_pop(_lst, 1);
+		throw;
+	}
 #endif
 
-  return res;
+	return res;
 }
 
 Value State::at(const Value &key) const
 {
 #if LUA_VERSION_NUM < 502
-  key.push_value(_lst);
-  try {
-    lua_pgettable(_lst, LUA_GLOBALSINDEX);
-  } catch (...) {
-    lua_pop(_lst, 1);
-    throw;
-  }
+	key.push_value(_lst);
+	try
+	{
+		lua_pgettable(_lst, LUA_GLOBALSINDEX);
+	}
+	catch (...)
+	{
+		lua_pop(_lst, 1);
+		throw;
+	}
 
-  Value res(-1, this);
-  lua_pop(_lst, 1);
+	Value res(-1, this);
+	lua_pop(_lst, 1);
 #else
 
-  try {
-    lua_pushglobaltable(_lst);
-    key.push_value(_lst);
-  } catch (...) {
-    lua_pop(_lst, 1);
-    throw;
-  }
+	try
+	{
+		lua_pushglobaltable(_lst);
+		key.push_value(_lst);
+	}
+	catch (...)
+	{
+		lua_pop(_lst, 1);
+		throw;
+	}
 
-  try {
-    lua_pgettable(_lst, -2);
-  } catch (...) {
-    lua_pop(_lst, 2);
-    throw;
-  }
+	try
+	{
+		lua_pgettable(_lst, -2);
+	}
+	catch (...)
+	{
+		lua_pop(_lst, 2);
+		throw;
+	}
 
-  Value res(-1, this);
-  lua_pop(_lst, 2);
+	Value res(-1, this);
+	lua_pop(_lst, 2);
 #endif
 
-  return res;
+	return res;
 }
 
-ValueRef State::operator[] (const Value &key)
+ValueRef State::operator[](const Value &key)
 {
-  return ValueRef(Value::new_global_env(this), key);
+	return ValueRef(Value::new_global_env(this), key);
 }
 
 void State::check_empty_stack() const
 {
-  Q_ASSERT(!lua_gettop(_lst));
+	Q_ASSERT(!lua_gettop(_lst));
 }
 
 State::State()
 {
-  Q_ASSERT(Value::TNone == LUA_TNONE);
-  Q_ASSERT(Value::TNil == LUA_TNIL);
-  Q_ASSERT(Value::TBool == LUA_TBOOLEAN);
-  Q_ASSERT(Value::TNumber == LUA_TNUMBER);
-  Q_ASSERT(Value::TString == LUA_TSTRING);
-  Q_ASSERT(Value::TTable == LUA_TTABLE);
-  Q_ASSERT(Value::TFunction == LUA_TFUNCTION);
-  Q_ASSERT(Value::TUserData == LUA_TUSERDATA);
-  Q_ASSERT(Value::TThread == LUA_TTHREAD);
+	Q_ASSERT(Value::TNone == LUA_TNONE);
+	Q_ASSERT(Value::TNil == LUA_TNIL);
+	Q_ASSERT(Value::TBool == LUA_TBOOLEAN);
+	Q_ASSERT(Value::TNumber == LUA_TNUMBER);
+	Q_ASSERT(Value::TString == LUA_TSTRING);
+	Q_ASSERT(Value::TTable == LUA_TTABLE);
+	Q_ASSERT(Value::TFunction == LUA_TFUNCTION);
+	Q_ASSERT(Value::TUserData == LUA_TUSERDATA);
+	Q_ASSERT(Value::TThread == LUA_TTHREAD);
 
-  _mst = _lst = luaL_newstate();
+	_mst = _lst = luaL_newstate();
 
-  // creat metatable for UserData events
+	// creat metatable for UserData events
 
-  lua_pushlightuserdata(_mst, &_key_item_metatable);
-  lua_newtable(_mst);
+	lua_pushlightuserdata(_mst, &_key_item_metatable);
+	lua_newtable(_mst);
 
-#define LUA_META_BIND(n)			\
-  lua_pushstring(_mst, "__" #n);			\
-  lua_pushcfunction(_mst, lua_meta_item_##n);	\
-  lua_rawset(_mst, -3);
+#define LUA_META_BIND(n)                        \
+	lua_pushstring(_mst, "__" #n);              \
+	lua_pushcfunction(_mst, lua_meta_item_##n); \
+	lua_rawset(_mst, -3);
 
-  LUA_META_BIND(add);
-  LUA_META_BIND(sub);
-  LUA_META_BIND(mul);
-  LUA_META_BIND(div);
-  LUA_META_BIND(mod);
-  LUA_META_BIND(pow);
-  LUA_META_BIND(unm);
-  LUA_META_BIND(concat);
-  LUA_META_BIND(len);
-  LUA_META_BIND(eq);
-  LUA_META_BIND(lt);
-  LUA_META_BIND(le);
-  LUA_META_BIND(index);
-  LUA_META_BIND(newindex);
-  LUA_META_BIND(call);
-  LUA_META_BIND(gc);
+	LUA_META_BIND(add);
+	LUA_META_BIND(sub);
+	LUA_META_BIND(mul);
+	LUA_META_BIND(div);
+	LUA_META_BIND(mod);
+	LUA_META_BIND(pow);
+	LUA_META_BIND(unm);
+	LUA_META_BIND(concat);
+	LUA_META_BIND(len);
+	LUA_META_BIND(eq);
+	LUA_META_BIND(lt);
+	LUA_META_BIND(le);
+	LUA_META_BIND(index);
+	LUA_META_BIND(newindex);
+	LUA_META_BIND(call);
+	LUA_META_BIND(gc);
 
-  lua_rawset(_mst, LUA_REGISTRYINDEX);
+	lua_rawset(_mst, LUA_REGISTRYINDEX);
 
-  // pointer to this
+	// pointer to this
 
-  lua_pushlightuserdata(_mst, &_key_this);
-  lua_pushlightuserdata(_mst, this);
-  lua_rawset(_mst, LUA_REGISTRYINDEX);
+	lua_pushlightuserdata(_mst, &_key_this);
+	lua_pushlightuserdata(_mst, this);
+	lua_rawset(_mst, LUA_REGISTRYINDEX);
 
-  _yield_on_return = false;
+	_yield_on_return = false;
 }
 
 State::~State()
 {
-  // disconnect all Qt slots while associated Value objects are still valid
-  foreach(QObjectWrapper *w, _whash)
-    w->_lua_disconnect_all();
+	// disconnect all Qt slots while associated Value objects are still valid
+	foreach (QObjectWrapper *w, _whash)
+		w->_lua_disconnect_all();
 
-  // lua state close
-  lua_close(_mst);
+	// lua state close
+	lua_close(_mst);
 
-  // wipe QObjectWrapper objects
-  wrapper_hash_t::const_iterator i;
+	// wipe QObjectWrapper objects
+	wrapper_hash_t::const_iterator i;
 
-  while ((i = _whash.begin()) != _whash.end())
-    i.value()->_drop();
+	while ((i = _whash.begin()) != _whash.end())
+		i.value()->_drop();
 
-  foreach (Function *function, _functions)
-    delete function;
+	foreach (Function *function, _functions)
+		delete function;
 }
 
 Value State::eval_expr(bool use_lua, const String &expr)
 {
-  // Use lua to transform user input to lua value
-  if (use_lua)
-    {
-      Value::List res = exec_statements(String("return ") + expr);
+	// Use lua to transform user input to lua value
+	if (use_lua)
+	{
+		Value::List res = exec_statements(String("return ") + expr);
 
-      if (res.empty())
-	QTLUA_THROW(QtLua::State, "The lua expression '%' returned no value.", .arg(expr));
+		if (res.empty())
+			QTLUA_THROW(QtLua::State, "The lua expression '%' returned no value.", .arg(expr));
 
-      return res[0];
-    }
+		return res[0];
+	}
 
-    // Do not use lua, only handle string and number cases
-    else
-      {
-	bool ok = false;
-	double number = expr.toDouble(&ok);
-
-	if (ok)
-	  return Value(this, number);
+	// Do not use lua, only handle string and number cases
 	else
-	  {
-	    // strip double quotes if any
-	    if (expr.size() > 1 && expr.startsWith('"') && expr.endsWith('"'))
-	      return Value(this, String(expr.mid(1, expr.size() - 2)));
-	    else
-	      return Value(this, expr);
-	  }
-      }
+	{
+		bool ok = false;
+		double number = expr.toDouble(&ok);
+
+		if (ok)
+			return Value(this, number);
+		else
+		{
+			// strip double quotes if any
+			if (expr.size() > 1 && expr.startsWith('"') && expr.endsWith('"'))
+				return Value(this, String(expr.mid(1, expr.size() - 2)));
+			else
+				return Value(this, expr);
+		}
+	}
 }
 
 struct lua_reader_state_s
 {
-  QIODevice *_io;
-  QByteArray _read_buf;
+	QIODevice *_io;
+	QByteArray _read_buf;
 };
 
-static const char * lua_reader(lua_State *st, void *data, size_t *size)
+static const char *lua_reader(lua_State *st, void *data, size_t *size)
 {
-  Q_UNUSED(st)
-  struct lua_reader_state_s *rst = (struct lua_reader_state_s *)data;
+	Q_UNUSED(st)
+	struct lua_reader_state_s *rst = (struct lua_reader_state_s *)data;
 
-  rst->_read_buf = rst->_io->read(4096);
-  *size = rst->_read_buf.size();
-  return rst->_read_buf.constData();
+	rst->_read_buf = rst->_io->read(4096);
+	*size = rst->_read_buf.size();
+	return rst->_read_buf.constData();
 }
 
 Value::List State::exec_chunk(QIODevice &io)
 {
-  struct lua_reader_state_s rst;
-  rst._io = &io;
+	struct lua_reader_state_s rst;
+	rst._io = &io;
 
 #if LUA_VERSION_NUM < 502
-  if (lua_load(_lst, &lua_reader, &rst, ""))
+	if (lua_load(_lst, &lua_reader, &rst, ""))
 #else
-  if (lua_load(_lst, &lua_reader, &rst, "", NULL))
+	if (lua_load(_lst, &lua_reader, &rst, "", NULL))
 #endif
-    {
-      String err(lua_tostring(_lst, -1));
-      lua_pop(_lst, 1);
-      throw err;
-    }
+	{
+		String err(lua_tostring(_lst, -1));
+		lua_pop(_lst, 1);
+		throw err;
+	}
 
-  int oldtop = lua_gettop(_lst);
+	int oldtop = lua_gettop(_lst);
 
-  if (lua_pcall(_lst, 0, LUA_MULTRET, 0))
-    {
-      String err(lua_tostring(_lst, -1));
-      lua_pop(_lst, 1);
-      throw err;
-    }
+	if (lua_pcall(_lst, 0, LUA_MULTRET, 0))
+	{
+		String err(lua_tostring(_lst, -1));
+		lua_pop(_lst, 1);
+		throw err;
+	}
 
-  Value::List res;
-  for (int i = oldtop; i <= lua_gettop(_lst); i++)
-    res += Value(i, this);
-  lua_pop(_lst, lua_gettop(_lst) - oldtop + 1);
+	Value::List res;
+	for (int i = oldtop; i <= lua_gettop(_lst); i++)
+		res += Value(i, this);
+	lua_pop(_lst, lua_gettop(_lst) - oldtop + 1);
 
-  return res;
+	return res;
 }
 
-Value::List State::exec_statements(const String & statement)
+Value::List State::exec_statements(const String &statement)
 {
-  if (luaL_loadbuffer(_lst, statement.constData(), statement.size(), ""))
-    {
-      String err(lua_tostring(_lst, -1));
-      lua_pop(_lst, 1);
-      throw err;
-    }
+	if (luaL_loadbuffer(_lst, statement.constData(), statement.size(), ""))
+	{
+		String err(lua_tostring(_lst, -1));
+		lua_pop(_lst, 1);
+		throw err;
+	}
 
-  int oldtop = lua_gettop(_lst);
+	int oldtop = lua_gettop(_lst);
 
-  if (lua_pcall(_lst, 0, LUA_MULTRET, 0))
-    {
-      String err(lua_tostring(_lst, -1));
-      lua_pop(_lst, 1);
-      throw err;
-    }
+	if (lua_pcall(_lst, 0, LUA_MULTRET, 0))
+	{
+		String err(lua_tostring(_lst, -1));
+		lua_pop(_lst, 1);
+		throw err;
+	}
 
-  Value::List res;
-  for (int i = oldtop; i <= lua_gettop(_lst); i++)
-    res += Value(i, this);
-  lua_pop(_lst, lua_gettop(_lst) - oldtop + 1);
+	Value::List res;
+	for (int i = oldtop; i <= lua_gettop(_lst); i++)
+		res += Value(i, this);
+	lua_pop(_lst, lua_gettop(_lst) - oldtop + 1);
 
-  return res;
+	return res;
 }
 
 void State::exec(const QString &statement)
 {
-  try {
-    exec_statements(statement);
+	try
+	{
+		exec_statements(statement);
+	}
+	catch (QtLua::String &e)
+	{
+		output_str(String("\033[7merror\033[2m: ") + e.constData() + "\n");
+	}
 
-  } catch (QtLua::String &e) {
-    output_str(String("\033[7merror\033[2m: ") + e.constData() + "\n");
-  }
-
-  gc_collect();
+	gc_collect();
 }
 
 void State::gc_collect()
 {
-  lua_gc(_lst, LUA_GCCOLLECT, 0);
+	lua_gc(_lst, LUA_GCCOLLECT, 0);
 }
 
 void State::reg_c_function(const char *name, lua_CFunction f)
 {
-  lua_pushcfunction(_lst, f);
-  lua_setglobal(_lst, name);
+	lua_pushcfunction(_lst, f);
+	lua_setglobal(_lst, name);
 }
 
-State * State::get_this(lua_State *st)
+State *State::get_this(lua_State *st)
 {
-  void *data;
+	void *data;
 
-  lua_pushlightuserdata(st, &_key_this);
-  lua_rawget(st, LUA_REGISTRYINDEX);
-  data = lua_touserdata(st, -1);
-  lua_pop(st, 1);
+	lua_pushlightuserdata(st, &_key_this);
+	lua_rawget(st, LUA_REGISTRYINDEX);
+	data = lua_touserdata(st, -1);
+	lua_pop(st, 1);
 
-  return static_cast<State*>(data);
+	return static_cast<State *>(data);
 }
 
 #if LUA_VERSION_NUM < 502
-# define QTLUA_LUA_CALL(st, f, modname)	\
-  lua_pushcfunction(st, f);		\
-  lua_call(st, 0, 0);
+#define QTLUA_LUA_CALL(st, f, modname) \
+	lua_pushcfunction(st, f);          \
+	lua_call(st, 0, 0);
 #else
-# define QTLUA_LUA_CALL(st, f, modname)	\
-  luaL_requiref(st, modname, f, 1);     \
-  lua_pop(st, 1);
+#define QTLUA_LUA_CALL(st, f, modname) \
+	luaL_requiref(st, modname, f, 1);  \
+	lua_pop(st, 1);
 #endif
 
 bool State::openlib(Library lib)
 {
-  switch (lib)
-    {
-    case CoroutineLib:
+	switch (lib)
+	{
+	case CoroutineLib:
 #if LUA_VERSION_NUM >= 502
-      QTLUA_LUA_CALL(_lst, luaopen_coroutine, "coroutine");
-      return true;
+		QTLUA_LUA_CALL(_lst, luaopen_coroutine, "coroutine");
+		return true;
 #endif
-    case BaseLib:
-      QTLUA_LUA_CALL(_lst, luaopen_base, "_G");
-      return true;
-    case PackageLib:
-      QTLUA_LUA_CALL(_lst, luaopen_package, "package");
-      return true;
-    case StringLib:
-      QTLUA_LUA_CALL(_lst, luaopen_string, "string");
-      return true;
-    case TableLib:
-      QTLUA_LUA_CALL(_lst, luaopen_table, "table");
-      return true;
-    case MathLib:
-      QTLUA_LUA_CALL(_lst, luaopen_math, "math");
-      return true;
-    case IoLib:
-      QTLUA_LUA_CALL(_lst, luaopen_io, "io");
-      return true;
-    case OsLib:
-      QTLUA_LUA_CALL(_lst, luaopen_os, "os");
-      return true;
-    case DebugLib:
-      QTLUA_LUA_CALL(_lst, luaopen_debug, "debug");
-      return true;
+	case BaseLib:
+		QTLUA_LUA_CALL(_lst, luaopen_base, "_G");
+		return true;
+	case PackageLib:
+		QTLUA_LUA_CALL(_lst, luaopen_package, "package");
+		return true;
+	case StringLib:
+		QTLUA_LUA_CALL(_lst, luaopen_string, "string");
+		return true;
+	case TableLib:
+		QTLUA_LUA_CALL(_lst, luaopen_table, "table");
+		return true;
+	case MathLib:
+		QTLUA_LUA_CALL(_lst, luaopen_math, "math");
+		return true;
+	case IoLib:
+		QTLUA_LUA_CALL(_lst, luaopen_io, "io");
+		return true;
+	case OsLib:
+		QTLUA_LUA_CALL(_lst, luaopen_os, "os");
+		return true;
+	case DebugLib:
+		QTLUA_LUA_CALL(_lst, luaopen_debug, "debug");
+		return true;
 
 #if LUA_VERSION_NUM >= 502
-    case Bit32Lib:
-      QTLUA_LUA_CALL(_lst, luaopen_bit32, "bit32");
-      return true;
+	case Bit32Lib:
+		QTLUA_LUA_CALL(_lst, luaopen_bit32, "bit32");
+		return true;
 #endif
 
 #ifdef LUAJIT_VERSION_NUM
-    case Bit32Lib:
-      QTLUA_LUA_CALL(_lst, luaopen_bit, "bit");
-      return true;
-    case JitLib:
-      QTLUA_LUA_CALL(_lst, luaopen_jit, "jit");
-      return true;
-    case FfiLib:
-      QTLUA_LUA_CALL(_lst, luaopen_ffi, "ffi");
-      return true;
+	case Bit32Lib:
+		QTLUA_LUA_CALL(_lst, luaopen_bit, "bit");
+		return true;
+	case JitLib:
+		QTLUA_LUA_CALL(_lst, luaopen_jit, "jit");
+		return true;
+	case FfiLib:
+		QTLUA_LUA_CALL(_lst, luaopen_ffi, "ffi");
+		return true;
 #endif
 
-    case AllLibs:
+	case AllLibs:
 #if LUA_VERSION_NUM >= 502
-      QTLUA_LUA_CALL(_lst, luaopen_coroutine, "coroutine");
-      QTLUA_LUA_CALL(_lst, luaopen_bit32, "bit32");
+		QTLUA_LUA_CALL(_lst, luaopen_coroutine, "coroutine");
+		QTLUA_LUA_CALL(_lst, luaopen_bit32, "bit32");
 #endif
-      QTLUA_LUA_CALL(_lst, luaopen_os, "os");
-      QTLUA_LUA_CALL(_lst, luaopen_package, "package");
-      QTLUA_LUA_CALL(_lst, luaopen_base, "_G");
-      QTLUA_LUA_CALL(_lst, luaopen_string, "string");
-      QTLUA_LUA_CALL(_lst, luaopen_table, "table");
-      QTLUA_LUA_CALL(_lst, luaopen_math, "math");
-      QTLUA_LUA_CALL(_lst, luaopen_io, "io");
-      QTLUA_LUA_CALL(_lst, luaopen_debug, "debug");
+		QTLUA_LUA_CALL(_lst, luaopen_os, "os");
+		QTLUA_LUA_CALL(_lst, luaopen_package, "package");
+		QTLUA_LUA_CALL(_lst, luaopen_base, "_G");
+		QTLUA_LUA_CALL(_lst, luaopen_string, "string");
+		QTLUA_LUA_CALL(_lst, luaopen_table, "table");
+		QTLUA_LUA_CALL(_lst, luaopen_math, "math");
+		QTLUA_LUA_CALL(_lst, luaopen_io, "io");
+		QTLUA_LUA_CALL(_lst, luaopen_debug, "debug");
 #ifdef LUAJIT_VERSION_NUM
-      QTLUA_LUA_CALL(_lst, luaopen_bit, "bit");
-      QTLUA_LUA_CALL(_lst, luaopen_jit, "jit");
-      QTLUA_LUA_CALL(_lst, luaopen_ffi, "ffi");
+		QTLUA_LUA_CALL(_lst, luaopen_bit, "bit");
+		QTLUA_LUA_CALL(_lst, luaopen_jit, "jit");
+		QTLUA_LUA_CALL(_lst, luaopen_ffi, "ffi");
 #endif
-      qtluaopen_qt(this);
+		qtluaopen_qt(this);
 
-    case QtLuaLib:
-      reg_c_function("print", lua_cmd_print);
-      reg_c_function("list", lua_cmd_list);
-      reg_c_function("each", lua_cmd_each);
-      reg_c_function("qtype", lua_cmd_qtype);
-      return true;
+	case QtLuaLib:
+		reg_c_function("print", lua_cmd_print);
+		reg_c_function("list", lua_cmd_list);
+		reg_c_function("each", lua_cmd_each);
+		reg_c_function("qtype", lua_cmd_qtype);
+		return true;
 
-    case QtLib:
-      qtluaopen_qt(this);
-      return true;
+	case QtLib:
+		qtluaopen_qt(this);
+		return true;
 
-    default:
-      return false;
-    }
+	default:
+		return false;
+	}
 }
 
 int State::lua_version() const
 {
-  return LUA_VERSION_NUM;
+	return LUA_VERSION_NUM;
 }
 
 void State::fill_completion_list_r(String &path, const String &prefix,
-				   QStringList &list, const Value &tbl,
-				   int &cursor_offset)
+								   QStringList &list, const Value &tbl,
+								   int &cursor_offset)
 {
-  int len = strcspn(prefix.constData(), ":.");
+	int len = strcspn(prefix.constData(), ":.");
 
-  if (len == prefix.size())
-    {
-      String lastentry, tpath(path);
-
-      // enumerate table object
-      for (Value::const_iterator i = tbl.begin(); i != tbl.end(); i++)
+	if (len == prefix.size())
 	{
-	  const Value &k = i.key();
+		String lastentry, tpath(path);
 
-	  if (list.size() >= QTLUA_MAX_COMPLETION)
-	    return;
+		// enumerate table object
+		for (Value::const_iterator i = tbl.begin(); i != tbl.end(); i++)
+		{
+			const Value &k = i.key();
 
-	  // ignore non string keys
-	  if (k.type() != Value::TString)
-	    continue;
+			if (list.size() >= QTLUA_MAX_COMPLETION)
+				return;
 
-	  String entry = k.to_string();
+			// ignore non string keys
+			if (k.type() != Value::TString)
+				continue;
 
-	  if (entry.startsWith(prefix))
-	    {
-	      try {
-		const Value &v = i.value();
+			String entry = k.to_string();
 
-		// add operator for known types
-		switch (v.type())
-		  {
-		  case Value::TTable:
+			if (entry.startsWith(prefix))
+			{
+				try
+				{
+					const Value &v = i.value();
 
-		    try {
-		      v.push_value(_lst);
-		      try {
-			lua_pushnil(_lst);
-			if (lua_pnext(_lst, -2))
-			  {
-			    if (lua_type(_lst, -2) == Value::TString)
-			      entry += ".";
-			    else
-			      {
-				entry += "[]";
-				cursor_offset = -1;
-			      }
-			    lua_pop(_lst, 2);  // pop key/value
-			  }
-		      } catch (...) {
-			lua_pop(_lst, 1);  // pop key on pnext error
-		      }
-		      lua_pop(_lst, 1);    // pop table
-		    } catch (...) {
-		    }
-		    check_empty_stack();
+					// add operator for known types
+					switch (v.type())
+					{
+					case Value::TTable:
 
-		    break;
+						try
+						{
+							v.push_value(_lst);
+							try
+							{
+								lua_pushnil(_lst);
+								if (lua_pnext(_lst, -2))
+								{
+									if (lua_type(_lst, -2) == Value::TString)
+										entry += ".";
+									else
+									{
+										entry += "[]";
+										cursor_offset = -1;
+									}
+									lua_pop(_lst, 2); // pop key/value
+								}
+							}
+							catch (...)
+							{
+								lua_pop(_lst, 1); // pop key on pnext error
+							}
+							lua_pop(_lst, 1); // pop table
+						}
+						catch (...)
+						{
+						}
+						check_empty_stack();
 
-		  case Value::TFunction:
-		    entry += "()";
-		    cursor_offset = -1;
-		    break;
+						break;
 
-		  case Value::TUserData:
-		    v.to_userdata()->completion_patch(tpath, entry, cursor_offset);
-		  default:
-		    break;
-		  }
-	      } catch (String &e) {
-		/* can not access value */
-	      }
+					case Value::TFunction:
+						entry += "()";
+						cursor_offset = -1;
+						break;
 
-	      lastentry = entry;
-	      list.push_back(path.to_qstring() + entry.to_qstring());
-	    }
+					case Value::TUserData:
+						v.to_userdata()->completion_patch(tpath, entry, cursor_offset);
+					default:
+						break;
+					}
+				}
+				catch (String &e)
+				{
+					/* can not access value */
+				}
+
+				lastentry = entry;
+				list.push_back(path.to_qstring() + entry.to_qstring());
+			}
+		}
+
+		// apply path patch only if single match
+		if (list.size() == 1)
+			list[0] = tpath.to_qstring() + lastentry.to_qstring();
 	}
 
-      // apply path patch only if single match
-      if (list.size() == 1)
-	list[0] = tpath.to_qstring() + lastentry.to_qstring();
-    }
+	if (list.empty())
+	{
+		// find intermediate values in path
+		String next = prefix.mid(0, len);
 
-  if (list.empty())
-    {
-      // find intermediate values in path
-      String next = prefix.mid(0, len);
-
-      try {
-	path += next;
-	if (len < prefix.size())
-	  path += prefix[len];
-	fill_completion_list_r(path, prefix.mid(len + 1), list,
-			       tbl.at(next), cursor_offset);
-      } catch (...) {
-      }
-
-    }
+		try
+		{
+			path += next;
+			if (len < prefix.size())
+				path += prefix[len];
+			fill_completion_list_r(path, prefix.mid(len + 1), list,
+								   tbl.at(next), cursor_offset);
+		}
+		catch (...)
+		{
+		}
+	}
 }
 
 void State::fill_completion_list(const QString &prefix, QStringList &list, int &cursor_offset)
 {
-  String path;
+	String path;
 
-  fill_completion_list_r(path, prefix, list, Value::new_global_env(this), cursor_offset);
+	fill_completion_list_r(path, prefix, list, Value::new_global_env(this), cursor_offset);
 }
 
 }
-

@@ -26,92 +26,91 @@
 
 namespace QtLua {
 
-  template <class Container>
-  QLinkedListProxy<Container>::QLinkedListProxy()
-    : _linkedlist(0)
-  {
-  }
+template <class Container>
+QLinkedListProxy<Container>::QLinkedListProxy()
+	: _linkedlist(0)
+{
+}
 
-  template <class Container>
-  QLinkedListProxy<Container>::QLinkedListProxy(Container &list)
-    : _linkedlist(&list)
-  {
-  }
+template <class Container>
+QLinkedListProxy<Container>::QLinkedListProxy(Container &list)
+	: _linkedlist(&list)
+{
+}
 
-  template <class Container>
-  void QLinkedListProxy<Container>::set_container(Container *list)
-  {
-    _linkedlist = list;
-  }
+template <class Container>
+void QLinkedListProxy<Container>::set_container(Container *list)
+{
+	_linkedlist = list;
+}
 
-  template <class Container>
-  Ref<Iterator> QLinkedListProxy<Container>::new_iterator(State *ls)
-  {
-    if (!_linkedlist)
-      QTLUA_THROW(QtLua::QLinkedListProxy, "Can not iterate on a null container.");
+template <class Container>
+Ref<Iterator> QLinkedListProxy<Container>::new_iterator(State *ls)
+{
+	if (!_linkedlist)
+		QTLUA_THROW(QtLua::QLinkedListProxy, "Can not iterate on a null container.");
 
-    return QTLUA_REFNEW(ProxyIterator, ls, *this);
-  }
+	return QTLUA_REFNEW(ProxyIterator, ls, *this);
+}
 
-  template <class Container>
-  bool QLinkedListProxy<Container>::support(Value::Operation c) const
-  {
-    switch (c)
-      {
-      case Value::OpIterate:
-	return true;
-      default:
-	return false;
-      }
-  }
+template <class Container>
+bool QLinkedListProxy<Container>::support(Value::Operation c) const
+{
+	switch (c)
+	{
+	case Value::OpIterate:
+		return true;
+	default:
+		return false;
+	}
+}
 
-  template <class Container>
-  String QLinkedListProxy<Container>::get_type_name() const
-  {
-    return type_name<Container>();
-  }
+template <class Container>
+String QLinkedListProxy<Container>::get_type_name() const
+{
+	return type_name<Container>();
+}
 
-  template <class Container>
-  QLinkedListProxy<Container>::ProxyIterator::ProxyIterator(State *ls, const Ref<QLinkedListProxy> &proxy)
-    : _ls(ls),
-      _proxy(proxy),
-      _it(_proxy->_linkedlist->begin()),
-      _i(0)
-  {
-  }
+template <class Container>
+QLinkedListProxy<Container>::ProxyIterator::ProxyIterator(State *ls, const Ref<QLinkedListProxy> &proxy)
+	: _ls(ls)
+	, _proxy(proxy)
+	, _it(_proxy->_linkedlist->begin())
+	, _i(0)
+{
+}
 
-  template <class Container>
-  bool QLinkedListProxy<Container>::ProxyIterator::more() const
-  {
-    return _proxy->_linkedlist && _it != _proxy->_linkedlist->end();
-  }
+template <class Container>
+bool QLinkedListProxy<Container>::ProxyIterator::more() const
+{
+	return _proxy->_linkedlist && _it != _proxy->_linkedlist->end();
+}
 
-  template <class Container>
-  void QLinkedListProxy<Container>::ProxyIterator::next()
-  {
-    _it++;
-    _i++;
-  }
+template <class Container>
+void QLinkedListProxy<Container>::ProxyIterator::next()
+{
+	_it++;
+	_i++;
+}
 
-  template <class Container>
-  Value QLinkedListProxy<Container>::ProxyIterator::get_key() const
-  {
-    return Value(_ls, (int)_i);
-  }
+template <class Container>
+Value QLinkedListProxy<Container>::ProxyIterator::get_key() const
+{
+	return Value(_ls, (int)_i);
+}
 
-  template <class Container>
-  Value QLinkedListProxy<Container>::ProxyIterator::get_value() const
-  {
-    return Value(_ls, *_it);
-  }
+template <class Container>
+Value QLinkedListProxy<Container>::ProxyIterator::get_value() const
+{
+	return Value(_ls, *_it);
+}
 
-  template <class Container>
-  ValueRef QLinkedListProxy<Container>::ProxyIterator::get_value_ref()
-  {
-    return ValueRef(Value(_ls, _proxy), Value(_ls, (double)_i));
-  }
+template <class Container>
+ValueRef QLinkedListProxy<Container>::ProxyIterator::get_value_ref()
+{
+	return ValueRef(Value(_ls, _proxy), Value(_ls, (double)_i));
+}
 
 }
 
 #endif
-

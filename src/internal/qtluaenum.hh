@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAENUM_HH_
 #define QTLUAENUM_HH_
 
@@ -39,22 +38,21 @@ namespace QtLua {
  * access to enums of @ref QObject objects from lua.
  */
 
-  class Enum : public Member
-  {
-  public:
-    QTLUA_REFTYPE(Enum)
+class Enum : public Member
+{
+public:
+	QTLUA_REFTYPE(Enum)
 
-    Enum(const QMetaObject *mo, int index);
+	Enum(const QMetaObject *mo, int index);
 
-  private:
-    Value meta_index(State *ls, const Value &key);
-    Ref<Iterator> new_iterator(State *ls);
-    bool support(Value::Operation c) const;
-    String get_value_str() const;
-    void completion_patch(String &path, String &entry, int &offset);
-  };
+private:
+	Value meta_index(State *ls, const Value &key);
+	Ref<Iterator> new_iterator(State *ls);
+	bool support(Value::Operation c) const;
+	String get_value_str() const;
+	void completion_patch(String &path, String &entry, int &offset);
+};
 
 }
 
 #endif
-

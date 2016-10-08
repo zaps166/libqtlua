@@ -18,15 +18,12 @@
 
 */
 
-
 #ifndef QTLUAMETHOD_HXX_
 #define QTLUAMETHOD_HXX_
 
 #include <internal/qtluamember.hxx>
 
 namespace QtLua {
-
 }
 
 #endif
-

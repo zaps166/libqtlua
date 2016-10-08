@@ -28,7 +28,7 @@
 
 namespace QtLua {
 
-  /**
+/**
    * @short QLinkedList access wrapper for lua script
    * @header QtLua/QLinkedListProxy
    * @module {Container proxies}
@@ -46,50 +46,48 @@ template <class Container>
 class QLinkedListProxy : public UserData
 {
 public:
-  QTLUA_REFTYPE(QLinkedListProxy)
+	QTLUA_REFTYPE(QLinkedListProxy)
 
-  /** Create a @ref QListProxy object with no attached container */
-  QLinkedListProxy();
-  /** Create a @ref QListProxy object and attach given container */
-  QLinkedListProxy(Container &list);
+	/** Create a @ref QListProxy object with no attached container */
+	QLinkedListProxy();
+	/** Create a @ref QListProxy object and attach given container */
+	QLinkedListProxy(Container &list);
 
-  /** Attach or detach container. argument may be NULL */
-  void set_container(Container *list);
+	/** Attach or detach container. argument may be NULL */
+	void set_container(Container *list);
 
-  Ref<Iterator> new_iterator(State *ls);
-  bool support(Value::Operation c) const;
+	Ref<Iterator> new_iterator(State *ls);
+	bool support(Value::Operation c) const;
 
 private:
+	String get_type_name() const;
 
-  String get_type_name() const;
-
-  /**
+	/**
    * @short QLinkedListProxy iterator class
    * @internal
    */
-  class ProxyIterator : public Iterator
-  {
-  public:
-    QTLUA_REFTYPE(ProxyIterator)
-    ProxyIterator(State *ls, const Ref<QLinkedListProxy> &proxy);
+	class ProxyIterator : public Iterator
+	{
+	public:
+		QTLUA_REFTYPE(ProxyIterator)
+		ProxyIterator(State *ls, const Ref<QLinkedListProxy> &proxy);
 
-  private:
-    bool more() const;
-    void next();
-    Value get_key() const;
-    Value get_value() const;
-    ValueRef get_value_ref();
+	private:
+		bool more() const;
+		void next();
+		Value get_key() const;
+		Value get_value() const;
+		ValueRef get_value_ref();
 
-    QPointer<State> _ls;
-    Ref<QLinkedListProxy> _proxy;
-    typename Container::const_iterator _it;
-    unsigned int _i;
-  };
+		QPointer<State> _ls;
+		Ref<QLinkedListProxy> _proxy;
+		typename Container::const_iterator _it;
+		unsigned int _i;
+	};
 
-  Container *_linkedlist;
+	Container *_linkedlist;
 };
 
 }
 
 #endif
-

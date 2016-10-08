@@ -31,17 +31,17 @@
 
 namespace QtLua {
 
-  template <typename X>
-  class MetaType;
+template <typename X>
+class MetaType;
 
-  /** @internal */
-  typedef MetaType<void> metatype_void_t;
-  /** @internal */
-  typedef QMap<int, metatype_void_t* > metatype_map_t;
-  /** @internal */
-  extern metatype_map_t types_map;
+/** @internal */
+typedef MetaType<void> metatype_void_t;
+/** @internal */
+typedef QMap<int, metatype_void_t *> metatype_map_t;
+/** @internal */
+extern metatype_map_t types_map;
 
-  /**
+/**
    * @short Register Lua to Qt meta types conversion functions
    * @header QtLua/Value
    * @module {Base}
@@ -74,94 +74,98 @@ namespace QtLua {
    * @see qRegisterMetaType @see #QTLUA_METATYPE
    * @see #QTLUA_METATYPE_ID @see #QTLUA_METATYPE_QOBJECT
    */
-  template <typename X>
-  class MetaType
-  {
-    friend class QMetaValue;
+template <typename X>
+class MetaType
+{
+	friend class QMetaValue;
 
-  protected:
-    /** Register a conversion handler for an already registered Qt
+protected:
+	/** Register a conversion handler for an already registered Qt
 	meta type. */
-    MetaType(int type);
+	MetaType(int type);
 
-    /** Register a conversion handler @b and qt meta type (using the
+	/** Register a conversion handler @b and qt meta type (using the
 	@ref qRegisterMetaType function). */
-    MetaType(const char *type_name);
+	MetaType(const char *type_name);
 
-    /** Unregister conversion handler */
-    ~MetaType();
+	/** Unregister conversion handler */
+	~MetaType();
 
-    /** This function must be implemented to converts a C++ value to a
+	/** This function must be implemented to converts a C++ value to a
 	lua value. */
-    virtual Value qt2lua(State *ls, const X *qtvalue) = 0;
+	virtual Value qt2lua(State *ls, const X *qtvalue) = 0;
 
-    /** This function must be implemented to converts a lua value to a
+	/** This function must be implemented to converts a lua value to a
 	C++ value.  @return true on success. */
-    virtual bool  lua2qt(X *qtvalue, const ValueBase &luavalue) = 0;
+	virtual bool lua2qt(X *qtvalue, const ValueBase &luavalue) = 0;
 
-    /** @showcontent This macro defines a type conversion handler
+/** @showcontent This macro defines a type conversion handler
 	class. Class instantiation will also take care of registering
 	the meta type to Qt. @see MetaType */
-#define QTLUA_METATYPE(name, typename_)				\
-    struct name							\
-      : public QtLua::MetaType<typename_>			\
-    {								\
-      name()							\
-	: QtLua::MetaType<typename_>(#typename_) {}		\
-								\
-      inline QtLua::Value qt2lua(QtLua::State *ls,		\
-				 typename_ const * qtvalue);	\
-      inline bool lua2qt(typename_ *qtvalue,			\
-			 const QtLua::ValueBase &luavalue);	\
-    };
+#define QTLUA_METATYPE(name, typename_)                       \
+	struct name                                               \
+		: public QtLua::MetaType<typename_>                   \
+	{                                                         \
+		name()                                                \
+			: QtLua::MetaType<typename_>(#typename_)          \
+		{                                                     \
+		}                                                     \
+                                                              \
+		inline QtLua::Value qt2lua(QtLua::State *ls,          \
+								   typename_ const *qtvalue); \
+		inline bool lua2qt(typename_ *qtvalue,                \
+						   const QtLua::ValueBase &luavalue); \
+	};
 
-    /** @showcontent This macro defines a type conversion handler
+/** @showcontent This macro defines a type conversion handler
 	class for an existing Qt meta type id. @see MetaType */
-#define QTLUA_METATYPE_ID(name, typename_, typeid_)		\
-    struct name							\
-      : public QtLua::MetaType<typename_>			\
-    {								\
-      name()							\
-	: QtLua::MetaType<typename_>((int)typeid_) {}		\
-								\
-      inline QtLua::Value qt2lua(QtLua::State *ls,		\
-				 typename_ const * qtvalue);	\
-      inline bool lua2qt(typename_ *qtvalue,			\
-			 const QtLua::ValueBase &luavalue);	\
-    };
+#define QTLUA_METATYPE_ID(name, typename_, typeid_)           \
+	struct name                                               \
+		: public QtLua::MetaType<typename_>                   \
+	{                                                         \
+		name()                                                \
+			: QtLua::MetaType<typename_>((int)typeid_)        \
+		{                                                     \
+		}                                                     \
+                                                              \
+		inline QtLua::Value qt2lua(QtLua::State *ls,          \
+								   typename_ const *qtvalue); \
+		inline bool lua2qt(typename_ *qtvalue,                \
+						   const QtLua::ValueBase &luavalue); \
+	};
 
-    /** This macro defines a type conversion class along with its
+/** This macro defines a type conversion class along with its
 	handler functions able to convert @ref QObject pointers
 	values. The @tt class_ parameter is the bare class name
 	without star. @see MetaType */
-#define QTLUA_METATYPE_QOBJECT(name, class_)		\
-    typedef QtLua::MetaTypeQObjectStar<class_> name;
+#define QTLUA_METATYPE_QOBJECT(name, class_) \
+	typedef QtLua::MetaTypeQObjectStar<class_> name;
 
-    /** @hidden */
-    int get_type();
-  private:
-    MetaType();
-    int _type;
-    const char *_typename;
-  };
+	/** @hidden */
+	int get_type();
 
-  /** @hidden */
-  template <class X>
-  class MetaTypeQObjectStar
-    : public MetaType<X*>
-  {
-  public:
-    MetaTypeQObjectStar()
-      : MetaType<X*>(QByteArray(X::staticMetaObject.className()) + "*")
-    {
-    }
+private:
+	MetaType();
+	int _type;
+	const char *_typename;
+};
 
-  private:
-    inline QtLua::Value qt2lua(QtLua::State *ls, X* const * qtvalue);
-    inline bool lua2qt(X** qtvalue, const QtLua::ValueBase &luavalue);
-  };
+/** @hidden */
+template <class X>
+class MetaTypeQObjectStar
+	: public MetaType<X *>
+{
+public:
+	MetaTypeQObjectStar()
+		: MetaType<X *>(QByteArray(X::staticMetaObject.className()) + "*")
+	{
+	}
+
+private:
+	inline QtLua::Value qt2lua(QtLua::State *ls, X *const *qtvalue);
+	inline bool lua2qt(X **qtvalue, const QtLua::ValueBase &luavalue);
+};
 
 }
 
 #endif
-

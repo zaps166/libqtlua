@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAMETHOD_HH_
 #define QTLUAMETHOD_HH_
 
@@ -38,22 +37,21 @@ namespace QtLua {
  * This internal class implements the wrapper which enables invocation
  * of methods of @ref QObject objects from lua.
  */
-  class Method : public Member
-  {
-  public:
-    QTLUA_REFTYPE(Method)
+class Method : public Member
+{
+public:
+	QTLUA_REFTYPE(Method)
 
-    Method(const QMetaObject *mo, int index);
+	Method(const QMetaObject *mo, int index);
 
-  private:
-    Value::List meta_call(State *ls, const Value::List &args);
-    bool support(Value::Operation c) const;
-    String get_type_name() const;
-    String get_value_str() const;
-    void completion_patch(String &path, String &entry, int &offset);
-  };
+private:
+	Value::List meta_call(State *ls, const Value::List &args);
+	bool support(Value::Operation c) const;
+	String get_type_name() const;
+	String get_value_str() const;
+	void completion_patch(String &path, String &entry, int &offset);
+};
 
 }
 
 #endif
-

@@ -25,57 +25,56 @@
 
 namespace QtLua {
 
-  Property::Property(const QMetaObject *mo, int index)
-    : Member(mo, index)
-  { 
-  }
-
-  void Property::assign(QObjectWrapper &qow, const Value &value)
-  {
-    QMetaProperty mp = _mo->property(_index);
-    QObject &obj = qow.get_object();
-
-    // Try to reset property if assign nil
-    if (value.type() == Value::TNil && mp.isResettable())
-      {
-	if (!mp.reset(&obj))
-	  QTLUA_THROW(QtLua::Property, "Can't reset QObject property '%'.", .arg(mp.name()));
-	return;
-      }
-
-    if (!mp.isWritable())
-      QTLUA_THROW(QtLua::Property, "QObject property '%' is read only.", .arg(mp.name()));
-
-    if (!mp.write(&obj, QMetaValue(mp.userType(), value).to_qvariant()))
-      QTLUA_THROW(QtLua::Property, "Unable to set value of the '%' QObject property.", .arg(mp.name()));
-  }
-
-  Value Property::access(QObjectWrapper &qow)
-  {
-    QMetaProperty mp = _mo->property(_index);
-    QObject &obj = qow.get_object();
-
-    if (!mp.isReadable())
-      QTLUA_THROW(QtLua::Property, "QObject property '%' is not readable.", .arg(mp.name()));
-
-    QVariant variant = mp.read(&obj);
-
-    if (!variant.isValid())
-      QTLUA_THROW(QtLua::Property, "Unable to read a valid value from the '%' QObject property.", .arg(mp.name()));
-
-    return Value(qow.get_state(), variant);
-  }
-
-  String Property::get_value_str() const
-  {
-    return String(_mo->className()) + "::" + _mo->property(_index).name();
-  }
-
-  String Property::get_type_name() const
-  {
-    QMetaProperty mp = _mo->property(_index);
-    return Member::get_type_name() + "<" + mp.typeName() + ">";
-  }
-
+Property::Property(const QMetaObject *mo, int index)
+	: Member(mo, index)
+{
 }
 
+void Property::assign(QObjectWrapper &qow, const Value &value)
+{
+	QMetaProperty mp = _mo->property(_index);
+	QObject &obj = qow.get_object();
+
+	// Try to reset property if assign nil
+	if (value.type() == Value::TNil && mp.isResettable())
+	{
+		if (!mp.reset(&obj))
+			QTLUA_THROW(QtLua::Property, "Can't reset QObject property '%'.", .arg(mp.name()));
+		return;
+	}
+
+	if (!mp.isWritable())
+		QTLUA_THROW(QtLua::Property, "QObject property '%' is read only.", .arg(mp.name()));
+
+	if (!mp.write(&obj, QMetaValue(mp.userType(), value).to_qvariant()))
+		QTLUA_THROW(QtLua::Property, "Unable to set value of the '%' QObject property.", .arg(mp.name()));
+}
+
+Value Property::access(QObjectWrapper &qow)
+{
+	QMetaProperty mp = _mo->property(_index);
+	QObject &obj = qow.get_object();
+
+	if (!mp.isReadable())
+		QTLUA_THROW(QtLua::Property, "QObject property '%' is not readable.", .arg(mp.name()));
+
+	QVariant variant = mp.read(&obj);
+
+	if (!variant.isValid())
+		QTLUA_THROW(QtLua::Property, "Unable to read a valid value from the '%' QObject property.", .arg(mp.name()));
+
+	return Value(qow.get_state(), variant);
+}
+
+String Property::get_value_str() const
+{
+	return String(_mo->className()) + "::" + _mo->property(_index).name();
+}
+
+String Property::get_type_name() const
+{
+	QMetaProperty mp = _mo->property(_index);
+	return Member::get_type_name() + "<" + mp.typeName() + ">";
+}
+
+}

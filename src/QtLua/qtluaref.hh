@@ -18,22 +18,21 @@
 
 */
 
-
 #ifndef QTLUAREF_HH_
 #define QTLUAREF_HH_
 
 #ifndef __GNUC__
-# warning GCC atomic operations are not available, QtLua::Ref will not be thread-safe
+#warning GCC atomic operations are not available, QtLua::Ref will not be thread-safe
 #endif
 
 #include <QtGlobal> // for Q_UNUSED
 
 namespace QtLua {
 
-  template <class X>
-  class Refobj;
+template <class X>
+class Refobj;
 
-  /**
+/**
    * @short Smart pointer with reference counter.
    * @header QtLua/Ref
    * @module {Base}
@@ -72,13 +71,13 @@ namespace QtLua {
    * can be defined with the @ref #QTLUA_REFTYPE macro.
    */
 
-  template <class X, class Xnoconst = X>
-  class Ref
-  {
-    template <class, class> friend class Ref;
+template <class X, class Xnoconst = X>
+class Ref
+{
+	template <class, class>
+	friend class Ref;
 
-  public:
-
+public:
 /**
  * This macro dynamically allocate and construct an object of
  * requested type with given constructor arguments and returns an
@@ -91,8 +90,8 @@ namespace QtLua {
  *
  * @example examples/cpp/userdata/ref.cc:3|5
  */
-#define QTLUA_REFNEW(X, ...)			\
- (X::ptr::allocated(new X(__VA_ARGS__)))
+#define QTLUA_REFNEW(X, ...) \
+	(X::ptr::allocated(new X(__VA_ARGS__)))
 
 /**
  * This macro may be used to declare the X::ptr and X::const_ptr
@@ -106,339 +105,338 @@ namespace QtLua {
  * @example examples/cpp/userdata/ref.cc:1|2
  * @showcontent
  */
-#define QTLUA_REFTYPE(X)					 \
- /** Shortcut for @ref QtLua::Ref smart pointer class to X type provided for convenience */ \
- typedef QtLua::Ref<const X, X> const_ptr;			 \
- /** Shortcut for @ref QtLua::Ref smart pointer class to X type provided for convenience */ \
- typedef QtLua::Ref<X, X> ptr;
+#define QTLUA_REFTYPE(X)                                                                       \
+	/** Shortcut for @ref QtLua::Ref smart pointer class to X type provided for convenience */ \
+	typedef QtLua::Ref<const X, X> const_ptr;                                                  \
+	/** Shortcut for @ref QtLua::Ref smart pointer class to X type provided for convenience */ \
+	typedef QtLua::Ref<X, X> ptr;
 
-    /** Construct a null reference. */
-    Ref()
-      : _obj(0)
-    {
-    }
+	/** Construct a null reference. */
+	Ref()
+		: _obj(0)
+	{
+	}
 
-    /** Construct a const Ref from non const Ref. */
-    Ref(const Ref<Xnoconst, Xnoconst> & r)
-      : _obj(r._obj)
-    {
-      if (_obj)
-	_obj->_inc();
-    }
+	/** Construct a const Ref from non const Ref. */
+	Ref(const Ref<Xnoconst, Xnoconst> &r)
+		: _obj(r._obj)
+	{
+		if (_obj)
+			_obj->_inc();
+	}
 
-    /** Construct a const Ref from const Ref. */
-    Ref(const Ref<const Xnoconst, Xnoconst> & r)
-      : _obj(r._obj)
-    {
-      if (_obj)
-	_obj->_inc();
-    }
+	/** Construct a const Ref from const Ref. */
+	Ref(const Ref<const Xnoconst, Xnoconst> &r)
+		: _obj(r._obj)
+	{
+		if (_obj)
+			_obj->_inc();
+	}
 
-    /** Construct a const Ref from derived class Ref. */
-    template <class T>
-    Ref(const Ref<T, T> & r)
-      : _obj(r._obj)
-    {
-      if (_obj)
-	_obj->_inc();
-    }
+	/** Construct a const Ref from derived class Ref. */
+	template <class T>
+	Ref(const Ref<T, T> &r)
+		: _obj(r._obj)
+	{
+		if (_obj)
+			_obj->_inc();
+	}
 
-    /** Construct a const Ref from derived class const Ref. */
-    template <class T>
-    Ref(const Ref<const T, T> & r)
-      : _obj(r._obj)
-    {
-      if (_obj)
-	_obj->_inc();
-    }
+	/** Construct a const Ref from derived class const Ref. */
+	template <class T>
+	Ref(const Ref<const T, T> &r)
+		: _obj(r._obj)
+	{
+		if (_obj)
+			_obj->_inc();
+	}
 
 #ifdef Q_COMPILER_RVALUE_REFS
-    /** Construct a const Ref from non const Ref. */
-    Ref(Ref<Xnoconst, Xnoconst> && r)
-      : _obj(r._obj)
-    {
-      r._obj = 0;
-    }
+	/** Construct a const Ref from non const Ref. */
+	Ref(Ref<Xnoconst, Xnoconst> &&r)
+		: _obj(r._obj)
+	{
+		r._obj = 0;
+	}
 
-    /** Construct a const Ref from const Ref. */
-    Ref(Ref<const Xnoconst, Xnoconst> && r)
-      : _obj(r._obj)
-    {
-      r._obj = 0;
-    }
+	/** Construct a const Ref from const Ref. */
+	Ref(Ref<const Xnoconst, Xnoconst> &&r)
+		: _obj(r._obj)
+	{
+		r._obj = 0;
+	}
 
-    /** Construct a const Ref from derived class Ref. */
-    template <class T>
-    Ref(Ref<T, T> && r)
-      : _obj(r._obj)
-    {
-      r._obj = 0;
-    }
+	/** Construct a const Ref from derived class Ref. */
+	template <class T>
+	Ref(Ref<T, T> &&r)
+		: _obj(r._obj)
+	{
+		r._obj = 0;
+	}
 
-    /** Construct a const Ref from derived class const Ref. */
-    template <class T>
-    Ref(Ref<const T, T> && r)
-      : _obj(r._obj)
-    {
-      r._obj = 0;
-    }
+	/** Construct a const Ref from derived class const Ref. */
+	template <class T>
+	Ref(Ref<const T, T> &&r)
+		: _obj(r._obj)
+	{
+		r._obj = 0;
+	}
 #endif
 
-    /** Construct a Ref which points to specified object. */
-    Ref(X & obj)
-      : _obj(&obj)
-    {
-      _obj->_inc();
-    }
+	/** Construct a Ref which points to specified object. */
+	Ref(X &obj)
+		: _obj(&obj)
+	{
+		_obj->_inc();
+	}
 
-    /**
+	/**
      * Construct Ref from dynamically allocated object pointer.
      * Pointed object is marked as deletable when last reference is destroyed.
 
      * @internal
      */
-    static Ref allocated(X * obj)
-    {
-      obj->ref_allocated();
-      return Ref(obj);
-    }
+	static Ref allocated(X *obj)
+	{
+		obj->ref_allocated();
+		return Ref(obj);
+	}
 
-    /** Initialize Ref from Ref */
-    Ref & operator=(const Ref &r)
-    {
-      X *tmp = _obj;
-      _obj = 0;
-      if (tmp)
-	tmp->_drop();
-      _obj = r._obj;
-      if (_obj)
-	_obj->_inc();
-      return *this;
-    }
+	/** Initialize Ref from Ref */
+	Ref &operator=(const Ref &r)
+	{
+		X *tmp = _obj;
+		_obj = 0;
+		if (tmp)
+			tmp->_drop();
+		_obj = r._obj;
+		if (_obj)
+			_obj->_inc();
+		return *this;
+	}
 
 #ifdef Q_COMPILER_RVALUE_REFS
-    Ref & operator=(Ref &&r)
-    {
-      X *tmp = _obj;
-      _obj = 0;
-      if (tmp)
-	tmp->_drop();
-      _obj = r._obj;
-      r._obj = 0;
-      return *this;
-    }
+	Ref &operator=(Ref &&r)
+	{
+		X *tmp = _obj;
+		_obj = 0;
+		if (tmp)
+			tmp->_drop();
+		_obj = r._obj;
+		r._obj = 0;
+		return *this;
+	}
 #endif
 
-    /** Initialize Ref from object Reference */
-    Ref & operator=(X & obj)
-    {
-      X *tmp = _obj;
-      _obj = 0;
-      if (tmp)
-	tmp->_drop();
-      _obj = &obj;
-      Q_ASSERT(_obj);
-      _obj->_inc();
-      return *this;
-    }
+	/** Initialize Ref from object Reference */
+	Ref &operator=(X &obj)
+	{
+		X *tmp = _obj;
+		_obj = 0;
+		if (tmp)
+			tmp->_drop();
+		_obj = &obj;
+		Q_ASSERT(_obj);
+		_obj->_inc();
+		return *this;
+	}
 
-    /** Dynamic cast Ref to Ref of given type */
-    template <class T>
-    Ref<T, T> dynamiccast() const
-    {
-      return Ref<T, T>(dynamic_cast<T*>(_obj));
-    }
+	/** Dynamic cast Ref to Ref of given type */
+	template <class T>
+	Ref<T, T> dynamiccast() const
+	{
+		return Ref<T, T>(dynamic_cast<T *>(_obj));
+	}
 
-    /** Dynamic cast Ref to const Ref of given type */
-    template <class T>
-    Ref<const T, T> dynamiccast_const() const
-    {
-      return Ref<const T, T>(dynamic_cast<const T*>(_obj));
-    }
+	/** Dynamic cast Ref to const Ref of given type */
+	template <class T>
+	Ref<const T, T> dynamiccast_const() const
+	{
+		return Ref<const T, T>(dynamic_cast<const T *>(_obj));
+	}
 
-    /** Static cast Ref to Ref of given type */
-    template <class T>
-    Ref<T, T> staticcast() const
-    {
-      return Ref<T, T>(static_cast<T*>(_obj));
-    }
+	/** Static cast Ref to Ref of given type */
+	template <class T>
+	Ref<T, T> staticcast() const
+	{
+		return Ref<T, T>(static_cast<T *>(_obj));
+	}
 
-    /** Static cast Ref to const Ref of given type */
-    template <class T>
-    Ref<const T, T> staticcast_const() const
-    {
-      return Ref<const T, T>(static_cast<const T*>(_obj));
-    }
+	/** Static cast Ref to const Ref of given type */
+	template <class T>
+	Ref<const T, T> staticcast_const() const
+	{
+		return Ref<const T, T>(static_cast<const T *>(_obj));
+	}
 
-    /** Const cast const Ref to Ref of given type */
-    template <class T>
-    Ref<T, T> constcast() const
-    {
-      return Ref<T, T>(const_cast<T*>(_obj));
-    }
+	/** Const cast const Ref to Ref of given type */
+	template <class T>
+	Ref<T, T> constcast() const
+	{
+		return Ref<T, T>(const_cast<T *>(_obj));
+	}
 
-    /** Drop a Ref */
-    ~Ref()
-    {
-      if (_obj)
-	_obj->_drop();
-    }
+	/** Drop a Ref */
+	~Ref()
+	{
+		if (_obj)
+			_obj->_drop();
+	}
 
-    /** Invalidate Ref (set internal pointer to null) */
-    void invalidate()
-    {
-      X *tmp = _obj;
-      _obj = 0;
-      if (tmp)
-	tmp->_drop();
-    }
+	/** Invalidate Ref (set internal pointer to null) */
+	void invalidate()
+	{
+		X *tmp = _obj;
+		_obj = 0;
+		if (tmp)
+			tmp->_drop();
+	}
 
-    /** Test if Ref is valid (check if internal pointer is not null) */
-    bool valid() const
-    {
-      return _obj != 0;
-    }
+	/** Test if Ref is valid (check if internal pointer is not null) */
+	bool valid() const
+	{
+		return _obj != 0;
+	}
 
-    /** Access object */
-    X & operator*() const
-    {
-      Q_ASSERT(_obj);
-      return *_obj;
-    }
+	/** Access object */
+	X &operator*() const
+	{
+		Q_ASSERT(_obj);
+		return *_obj;
+	}
 
-    /** Access object */
-    X * operator->() const
-    {
-      Q_ASSERT(_obj);
-      return _obj;
-    }
+	/** Access object */
+	X *operator->() const
+	{
+		Q_ASSERT(_obj);
+		return _obj;
+	}
 
-    /** Get Ref internal object pointer */
-    X * ptr() const
-    {
-      return _obj;
-    }
+	/** Get Ref internal object pointer */
+	X *ptr() const
+	{
+		return _obj;
+	}
 
-    /** Get object Reference count */
-    int count() const
-    {
-      return _obj ? _obj->ref_count() : 0;
-    }
+	/** Get object Reference count */
+	int count() const
+	{
+		return _obj ? _obj->ref_count() : 0;
+	}
 
-    /** Test if pointed ojects are the same */
-    bool operator==(const Ref &r) const
-    {
-      return _obj == r._obj;
-    }
+	/** Test if pointed ojects are the same */
+	bool operator==(const Ref &r) const
+	{
+		return _obj == r._obj;
+	}
 
-    /** Test if pointed ojects are not the same */
-    bool operator!=(const Ref &r) const
-    {
-      return _obj != r._obj;
-    }
+	/** Test if pointed ojects are not the same */
+	bool operator!=(const Ref &r) const
+	{
+		return _obj != r._obj;
+	}
 
-  protected:
+protected:
+	explicit Ref(X *obj)
+		: _obj(obj)
+	{
+		if (_obj)
+			_obj->_inc();
+	}
 
-    explicit Ref(X * obj)
-      : _obj(obj)
-    {
-      if (_obj)
-	_obj->_inc();
-    }
+	X *_obj;
+};
 
-    X *_obj;
-  };
-
-  /**
+/**
    * @short Referenced objects base class
    * @header QtLua/Ref
    * @module {Base}
    * @internal
    */
-  class RefobjBase
-  {
-    template <class, class> friend class Ref;
-    template <class> friend class RefObj;
-    /** @internal Reference counter value */
-    uintptr_t _state;
+class RefobjBase
+{
+	template <class, class>
+	friend class Ref;
+	template <class>
+	friend class RefObj;
+	/** @internal Reference counter value */
+	uintptr_t _state;
 
-    static const uintptr_t REF_DELETE = 1;
-    static const uintptr_t REF_DELEGATE = 2;
-    static const uintptr_t REF_ONE = 4;
-    static const uintptr_t REF_MASK = ~3;
+	static const uintptr_t REF_DELETE = 1;
+	static const uintptr_t REF_DELEGATE = 2;
+	static const uintptr_t REF_ONE = 4;
+	static const uintptr_t REF_MASK = ~3;
 
-  protected:
-
-    virtual ~RefobjBase()
-    {
-    }
-
-    RefobjBase()
-      : _state(0)
-    {
-    }
-
-    /** @internal */
-    void _inc() const
-    {
-      RefobjBase *y = const_cast<RefobjBase*>(this);
-
-      while (y->_state & REF_DELEGATE)
-	y = (RefobjBase*)(y->_state & REF_MASK);
-
-#ifdef __GNUC__
-      __sync_add_and_fetch(&y->_state, REF_ONE);
-#else
-      y->_state += REF_ONE;
-#endif
-    }
-
-    /** @internal */
-    void _drop() const
-    {
-      RefobjBase *y = const_cast<RefobjBase*>(this);
-
-      while (y->_state & REF_DELEGATE)
-	y = (RefobjBase*)(y->_state & REF_MASK);
-
-#ifdef __GNUC__
-      intptr_t count = __sync_sub_and_fetch(&y->_state, REF_ONE) >> 2;
-#else
-      y->_state -= REF_ONE;
-      intptr_t count = y->_state >> 2;
-#endif
-
-      Q_ASSERT(count >= 0);
-
-      if (y->_state & REF_DELETE)
+protected:
+	virtual ~RefobjBase()
 	{
-	  switch (count)
-	    {
-	    case 0:
-	      delete y;
-	      return;
-	    case 1:
-	      y->ref_single();
-	      break;
-	    }
 	}
-    }
 
-    void ref_allocated()
-    {
-      Q_ASSERT(!(_state & REF_DELEGATE));
-      _state |= REF_DELETE;
-    }
+	RefobjBase()
+		: _state(0)
+	{
+	}
 
-    /** This function is called when a dynamically allocated object
+	/** @internal */
+	void _inc() const
+	{
+		RefobjBase *y = const_cast<RefobjBase *>(this);
+
+		while (y->_state & REF_DELEGATE)
+			y = (RefobjBase *)(y->_state & REF_MASK);
+
+#ifdef __GNUC__
+		__sync_add_and_fetch(&y->_state, REF_ONE);
+#else
+		y->_state += REF_ONE;
+#endif
+	}
+
+	/** @internal */
+	void _drop() const
+	{
+		RefobjBase *y = const_cast<RefobjBase *>(this);
+
+		while (y->_state & REF_DELEGATE)
+			y = (RefobjBase *)(y->_state & REF_MASK);
+
+#ifdef __GNUC__
+		intptr_t count = __sync_sub_and_fetch(&y->_state, REF_ONE) >> 2;
+#else
+		y->_state -= REF_ONE;
+		intptr_t count = y->_state >> 2;
+#endif
+
+		Q_ASSERT(count >= 0);
+
+		if (y->_state & REF_DELETE)
+		{
+			switch (count)
+			{
+			case 0:
+				delete y;
+				return;
+			case 1:
+				y->ref_single();
+				break;
+			}
+		}
+	}
+
+	void ref_allocated()
+	{
+		Q_ASSERT(!(_state & REF_DELEGATE));
+		_state |= REF_DELETE;
+	}
+
+	/** This function is called when a dynamically allocated object
 	has its reference count decreased to 1. */
-    virtual void ref_single()
-    {
-    }
+	virtual void ref_single()
+	{
+	}
 
-  public:
-
-    /** This function set the passed object as references counter in
+public:
+	/** This function set the passed object as references counter in
 	place of @tt this object. The reference counter of @tt this
 	object is disabled and all @ref Ref pointing to @tt this
 	contribute to reference counter of specified object instead.
@@ -446,36 +444,36 @@ namespace QtLua {
 	This function must be used when an object is instantiated as a
 	member of an other object so that references to the member
 	object are used to keep the container object alive. */
-    void ref_delegate(RefobjBase *o)
-    {
-      while (o->_state & REF_DELEGATE)
-	o = (RefobjBase*)(o->_state & REF_MASK);
+	void ref_delegate(RefobjBase *o)
+	{
+		while (o->_state & REF_DELEGATE)
+			o = (RefobjBase *)(o->_state & REF_MASK);
 
-      Q_ASSERT(!_state && !((uintptr_t)o & 3));
-      _state = REF_DELEGATE | (uintptr_t)o;
-    }
+		Q_ASSERT(!_state && !((uintptr_t)o & 3));
+		_state = REF_DELEGATE | (uintptr_t)o;
+	}
 
-    /** Check if @ref ref_delegate has been used on this object. */
-    bool ref_is_delegate() const
-    {
-      const RefobjBase *y = this;
+	/** Check if @ref ref_delegate has been used on this object. */
+	bool ref_is_delegate() const
+	{
+		const RefobjBase *y = this;
 
-      return (y->_state & REF_DELEGATE) != 0;
-    }
+		return (y->_state & REF_DELEGATE) != 0;
+	}
 
-    /** Get object current reference count */
-    int ref_count() const
-    {
-      const RefobjBase *y = this;
+	/** Get object current reference count */
+	int ref_count() const
+	{
+		const RefobjBase *y = this;
 
-      while (y->_state & REF_DELEGATE)
-	y = (RefobjBase*)(y->_state & REF_MASK);
+		while (y->_state & REF_DELEGATE)
+			y = (RefobjBase *)(y->_state & REF_MASK);
 
-      return y->_state >> 2;
-    }
-  };
+		return y->_state >> 2;
+	}
+};
 
-  /**
+/**
    * @short Referenced objects template base class
    * @header QtLua/Ref
    * @module {Base}
@@ -484,38 +482,36 @@ namespace QtLua {
    * be referenced by the @ref QtLua::Ref smart pointer.
    * @see QtLua::UserData.
    */
-  template <class X>
-  class Refobj : public RefobjBase
-  {
-  public:
-    QTLUA_REFTYPE(X)
+template <class X>
+class Refobj : public RefobjBase
+{
+public:
+	QTLUA_REFTYPE(X)
 
-    Refobj()
-      : RefobjBase()
-    {
-    }
+	Refobj()
+		: RefobjBase()
+	{
+	}
 
-    Refobj(const Refobj &r)
-      : RefobjBase()
-    {
-      Q_UNUSED(r)
-    }
+	Refobj(const Refobj &r)
+		: RefobjBase()
+	{
+		Q_UNUSED(r)
+	}
 
-    Refobj & operator=(const Refobj &r)
-    {
-      Q_UNUSED(r)
-      Q_ASSERT(ref_count() == 0 || !"Can not overwrite object with live references");
-      return *this;
-    }
+	Refobj &operator=(const Refobj &r)
+	{
+		Q_UNUSED(r)
+		Q_ASSERT(ref_count() == 0 || !"Can not overwrite object with live references");
+		return *this;
+	}
 
-    ~Refobj()
-    {
-      Q_ASSERT(ref_count() == 0 || !"Can not destruct object with live references");
-    }
-  };
-
+	~Refobj()
+	{
+		Q_ASSERT(ref_count() == 0 || !"Can not destruct object with live references");
+	}
+};
 
 }
 
 #endif
-

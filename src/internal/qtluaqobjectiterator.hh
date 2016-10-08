@@ -30,8 +30,8 @@
 
 namespace QtLua {
 
-  class State;
-  class QObjectWrapper;
+class State;
+class QObjectWrapper;
 
 /**
  * @short Lua QObject children and meta members iterator class
@@ -49,35 +49,33 @@ namespace QtLua {
 class QObjectIterator : public Iterator
 {
 public:
-  QTLUA_REFTYPE(QObjectIterator)
+	QTLUA_REFTYPE(QObjectIterator)
 
-  QObjectIterator(State *ls, const Ref<QObjectWrapper> &qow);
-  QObjectIterator(State *ls, const QMetaObject *mo);
+	QObjectIterator(State *ls, const Ref<QObjectWrapper> &qow);
+	QObjectIterator(State *ls, const QMetaObject *mo);
 
 private:
-  bool more() const;
-  void next();
-  void update();
-  Value get_key() const;
-  Value get_value() const;
-  ValueRef get_value_ref();
+	bool more() const;
+	void next();
+	void update();
+	Value get_key() const;
+	Value get_value() const;
+	ValueRef get_value_ref();
 
-  enum Current
-    {
-      CurChildren,
-      CurMember,
-      CurEnd,
-    };
+	enum Current {
+		CurChildren,
+		CurMember,
+		CurEnd,
+	};
 
-  QPointer<State> _ls;
-  Ref<QObjectWrapper> _qow;
-  MetaCache *_mc;
-  Current _cur;
-  member_cache_t::const_iterator _it;
-  int _child_id;
+	QPointer<State> _ls;
+	Ref<QObjectWrapper> _qow;
+	MetaCache *_mc;
+	Current _cur;
+	member_cache_t::const_iterator _it;
+	int _child_id;
 };
 
 }
 
 #endif
-

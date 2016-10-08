@@ -18,7 +18,6 @@
 
 */
 
-
 #ifndef QTLUAITERATOR_HH_
 #define QTLUAITERATOR_HH_
 
@@ -27,7 +26,7 @@
 
 namespace QtLua {
 
-  /**
+/**
    * @short Lua iterator base class
    * @header QtLua/Iterator
    * @module {Base}
@@ -64,22 +63,20 @@ namespace QtLua {
 class Iterator : public UserData
 {
 public:
+	QTLUA_REFTYPE(Iterator)
 
-  QTLUA_REFTYPE(Iterator)
-
-  /** @return true if more entries are available. */
-  virtual bool more() const = 0;
-  /** Jump to next entry. */
-  virtual void next() = 0;
-  /** @return current entry key */
-  virtual Value get_key() const = 0;
-  /** @return current entry value */
-  virtual Value get_value() const = 0;
-  /** @return reference to current entry value */
-  virtual ValueRef get_value_ref() = 0;
+	/** @return true if more entries are available. */
+	virtual bool more() const = 0;
+	/** Jump to next entry. */
+	virtual void next() = 0;
+	/** @return current entry key */
+	virtual Value get_key() const = 0;
+	/** @return current entry value */
+	virtual Value get_value() const = 0;
+	/** @return reference to current entry value */
+	virtual ValueRef get_value_ref() = 0;
 };
 
 }
 
 #endif
-

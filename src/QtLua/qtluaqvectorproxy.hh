@@ -28,7 +28,7 @@
 
 namespace QtLua {
 
-  /**
+/**
    * @short QVector read only access wrapper for lua script
    * @header QtLua/QVectorProxy
    * @module {Container proxies}
@@ -44,58 +44,58 @@ namespace QtLua {
    */
 
 template <class Container,
-	  unsigned int max_resize = 0,
-	  unsigned int min_resize = 0>
+		  unsigned int max_resize = 0,
+		  unsigned int min_resize = 0>
 class QVectorProxyRo : public UserData
 {
 public:
-  QTLUA_REFTYPE(QVectorProxyRo)
+	QTLUA_REFTYPE(QVectorProxyRo)
 
-  /** Create a @ref QVectorProxy object with no attached container */
-  QVectorProxyRo();
-  /** Create a @ref QVectorProxy object and attach given container */
-  QVectorProxyRo(Container &vector);
+	/** Create a @ref QVectorProxy object with no attached container */
+	QVectorProxyRo();
+	/** Create a @ref QVectorProxy object and attach given container */
+	QVectorProxyRo(Container &vector);
 
-  /** Attach or detach container. argument may be NULL */
-  void set_container(Container *vector);
+	/** Attach or detach container. argument may be NULL */
+	void set_container(Container *vector);
 
-  Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
-  Value meta_index(State *ls, const Value &key);
-  bool meta_contains(State *ls, const Value &key);
-  Ref<Iterator> new_iterator(State *ls);
-  bool support(Value::Operation c) const;
+	Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
+	Value meta_index(State *ls, const Value &key);
+	bool meta_contains(State *ls, const Value &key);
+	Ref<Iterator> new_iterator(State *ls);
+	bool support(Value::Operation c) const;
 
 private:
-  void completion_patch(String &path, String &entry, int &offset);
-  String get_type_name() const;
+	void completion_patch(String &path, String &entry, int &offset);
+	String get_type_name() const;
 
-  /**
+	/**
    * @short QVectorProxyRo iterator class
    * @internal
    */
-  class ProxyIterator : public Iterator
-  {
-  public:
-    QTLUA_REFTYPE(ProxyIterator)
-    ProxyIterator(State *ls, const Ref<QVectorProxyRo> &proxy);
+	class ProxyIterator : public Iterator
+	{
+	public:
+		QTLUA_REFTYPE(ProxyIterator)
+		ProxyIterator(State *ls, const Ref<QVectorProxyRo> &proxy);
 
-  private:
-    bool more() const;
-    void next();
-    Value get_key() const;
-    Value get_value() const;
-    ValueRef get_value_ref();
+	private:
+		bool more() const;
+		void next();
+		Value get_key() const;
+		Value get_value() const;
+		ValueRef get_value_ref();
 
-    QPointer<State> _ls;
-    Ref<QVectorProxyRo> _proxy;
-    unsigned int _it;
-  };
+		QPointer<State> _ls;
+		Ref<QVectorProxyRo> _proxy;
+		unsigned int _it;
+	};
 
 protected:
-  Container *_vector;
+	Container *_vector;
 };
 
-  /**
+/**
    * @short QVector access wrapper for lua script
    * @header QtLua/QVectorProxy
    * @module {Container proxies}
@@ -125,26 +125,25 @@ protected:
    * @example examples/cpp/proxy/qvectorproxy_string.cc:1|2|3
    */
 
-  template <class Container,
-	    unsigned int max_resize = 0,
-	    unsigned int min_resize = 0>
-  class QVectorProxy : public QVectorProxyRo<Container, max_resize, min_resize>
+template <class Container,
+		  unsigned int max_resize = 0,
+		  unsigned int min_resize = 0>
+class QVectorProxy : public QVectorProxyRo<Container, max_resize, min_resize>
 {
-  using QVectorProxyRo<Container, max_resize, min_resize>::_vector;
+	using QVectorProxyRo<Container, max_resize, min_resize>::_vector;
 
 public:
-  QTLUA_REFTYPE(QVectorProxy)
+	QTLUA_REFTYPE(QVectorProxy)
 
-  /** Create a @ref QVectorProxy object */
-  QVectorProxy();
-  /** Create a @ref QVectorProxy object */
-  QVectorProxy(Container &vector);
+	/** Create a @ref QVectorProxy object */
+	QVectorProxy();
+	/** Create a @ref QVectorProxy object */
+	QVectorProxy(Container &vector);
 
-  void meta_newindex(State *ls, const Value &key, const Value &value);
-  bool support(enum Value::Operation c);
+	void meta_newindex(State *ls, const Value &key, const Value &value);
+	bool support(enum Value::Operation c);
 };
 
 }
 
 #endif
-

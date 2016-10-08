@@ -28,7 +28,7 @@
 
 namespace QtLua {
 
-  /**
+/**
    * @short QList read only access wrapper for lua script
    * @header QtLua/QListProxy
    * @module {Container proxies}
@@ -44,54 +44,54 @@ template <class Container>
 class QListProxyRo : public UserData
 {
 public:
-  QTLUA_REFTYPE(QListProxyRo)
+	QTLUA_REFTYPE(QListProxyRo)
 
-  /** Create a @ref QListProxy object with no attached container */
-  QListProxyRo();
-  /** Create a @ref QListProxy object and attach given container */
-  QListProxyRo(Container &list);
+	/** Create a @ref QListProxy object with no attached container */
+	QListProxyRo();
+	/** Create a @ref QListProxy object and attach given container */
+	QListProxyRo(Container &list);
 
-  /** Attach or detach container. argument may be NULL */
-  void set_container(Container *list);
+	/** Attach or detach container. argument may be NULL */
+	void set_container(Container *list);
 
-  Value meta_index(State *ls, const Value &key);
-  bool meta_contains(State *ls, const Value &key);
-  Ref<Iterator> new_iterator(State *ls);
-  Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
-  bool support(Value::Operation c) const;
+	Value meta_index(State *ls, const Value &key);
+	bool meta_contains(State *ls, const Value &key);
+	Ref<Iterator> new_iterator(State *ls);
+	Value meta_operation(State *ls, Value::Operation op, const Value &a, const Value &b);
+	bool support(Value::Operation c) const;
 
 private:
-  void completion_patch(String &path, String &entry, int &offset);
-  String get_type_name() const;
+	void completion_patch(String &path, String &entry, int &offset);
+	String get_type_name() const;
 
-  /**
+	/**
    * @short QListProxyRo iterator class
    * @internal
    */
-  class ProxyIterator : public Iterator
-  {
-  public:
-    QTLUA_REFTYPE(ProxyIterator)
-    ProxyIterator(State *ls, const Ref<QListProxyRo> &proxy);
+	class ProxyIterator : public Iterator
+	{
+	public:
+		QTLUA_REFTYPE(ProxyIterator)
+		ProxyIterator(State *ls, const Ref<QListProxyRo> &proxy);
 
-  private:
-    bool more() const;
-    void next();
-    Value get_key() const;
-    Value get_value() const;
-    ValueRef get_value_ref();
+	private:
+		bool more() const;
+		void next();
+		Value get_key() const;
+		Value get_value() const;
+		ValueRef get_value_ref();
 
-    QPointer<State> _ls;
-    Ref<QListProxyRo> _proxy;
-    typename Container::const_iterator _it;
-    unsigned int _i;
-  };
+		QPointer<State> _ls;
+		Ref<QListProxyRo> _proxy;
+		typename Container::const_iterator _it;
+		unsigned int _i;
+	};
 
 protected:
-  Container *_list;
+	Container *_list;
 };
 
-  /**
+/**
    * @short QList access wrapper for lua script
    * @header QtLua/QListProxy
    * @module {Container proxies}
@@ -122,21 +122,20 @@ protected:
 template <class Container>
 class QListProxy : public QListProxyRo<Container>
 {
-  using QListProxyRo<Container>::_list;
+	using QListProxyRo<Container>::_list;
 
 public:
-  QTLUA_REFTYPE(QListProxy)
+	QTLUA_REFTYPE(QListProxy)
 
-  /** Create a @ref QListProxy object */
-  QListProxy();
-  /** Create a @ref QListProxy object */
-  QListProxy(Container &list);
+	/** Create a @ref QListProxy object */
+	QListProxy();
+	/** Create a @ref QListProxy object */
+	QListProxy(Container &list);
 
-  void meta_newindex(State *ls, const Value &key, const Value &value);
-  bool support(enum Value::Operation c);
+	void meta_newindex(State *ls, const Value &key, const Value &value);
+	bool support(enum Value::Operation c);
 };
 
 }
 
 #endif
-

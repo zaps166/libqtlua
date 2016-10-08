@@ -23,11 +23,9 @@
 
 namespace QtLua {
 
-  class State;
+class State;
 
-  void qtluaopen_qt(State *ls);
-
+void qtluaopen_qt(State *ls);
 }
 
 #endif
-

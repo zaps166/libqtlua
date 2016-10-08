@@ -7,18 +7,17 @@
 
 namespace QtLua {
 
-  class Pixmap :
-      public UserData,
-      public QPixmap
-  {
-  public:
-    QTLUA_REFTYPE(Pixmap)
+class Pixmap : public UserData,
+			   public QPixmap
+{
+public:
+	QTLUA_REFTYPE(Pixmap)
 
-  private:
-    Value meta_index(State *ls, const Value &key);
-    bool support(Value::Operation c) const;
-    virtual String get_value_str() const;
-  };
+private:
+	Value meta_index(State *ls, const Value &key);
+	bool support(Value::Operation c) const;
+	virtual String get_value_str() const;
+};
 
 }
 

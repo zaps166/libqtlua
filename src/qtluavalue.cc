@@ -34,255 +34,266 @@ namespace QtLua {
 
 void Value::push_value(lua_State *st) const
 {
-  if (!_st)
-    {
-      lua_pushnil(st);
-      return;
-    }
+	if (!_st)
+	{
+		lua_pushnil(st);
+		return;
+	}
 
-  lua_pushnumber(st, _id);
-  lua_rawget(st, LUA_REGISTRYINDEX);  
+	lua_pushnumber(st, _id);
+	lua_rawget(st, LUA_REGISTRYINDEX);
 }
 
 void Value::init_global()
 {
-  check_state();
-  lua_State *lst = _st->_lst;
-  lua_pushnumber(lst, _id);
+	check_state();
+	lua_State *lst = _st->_lst;
+	lua_pushnumber(lst, _id);
 #if LUA_VERSION_NUM < 502
-  lua_pushvalue(lst, LUA_GLOBALSINDEX);
+	lua_pushvalue(lst, LUA_GLOBALSINDEX);
 #else
-  lua_pushglobaltable(lst);
+	lua_pushglobaltable(lst);
 #endif
-  lua_rawset(lst, LUA_REGISTRYINDEX);
+	lua_rawset(lst, LUA_REGISTRYINDEX);
 }
 
 void Value::init_table()
 {
-  check_state();
-  lua_State *lst = _st->_lst;
-  lua_pushnumber(lst, _id);
-  lua_newtable(lst);
-  lua_rawset(lst, LUA_REGISTRYINDEX);
+	check_state();
+	lua_State *lst = _st->_lst;
+	lua_pushnumber(lst, _id);
+	lua_newtable(lst);
+	lua_rawset(lst, LUA_REGISTRYINDEX);
 }
 
 void Value::init_thread(const Value &main)
 {
-  check_state();
-  lua_State *lst = _st->_lst;
-  lua_pushnumber(lst, _id);
-  lua_State *th = lua_newthread(lst);
+	check_state();
+	lua_State *lst = _st->_lst;
+	lua_pushnumber(lst, _id);
+	lua_State *th = lua_newthread(lst);
 
-  try {
-    main.push_value(lst);
-  } catch (...) {
-    lua_pop(lst, 2);
-    throw;
-  }
+	try
+	{
+		main.push_value(lst);
+	}
+	catch (...)
+	{
+		lua_pop(lst, 2);
+		throw;
+	}
 
-  if (main.type() != TFunction)
-    {
-      lua_pop(lst, 3);
-      QTLUA_THROW(QtLua::Value, "A `lua::function' value is expected as coroutine entry point.");
-    }
+	if (main.type() != TFunction)
+	{
+		lua_pop(lst, 3);
+		QTLUA_THROW(QtLua::Value, "A `lua::function' value is expected as coroutine entry point.");
+	}
 
-  lua_xmove(lst, th, 1);
-  lua_rawset(lst, LUA_REGISTRYINDEX);
+	lua_xmove(lst, th, 1);
+	lua_rawset(lst, LUA_REGISTRYINDEX);
 }
 
-Value & Value::operator=(Bool n)
+Value &Value::operator=(Bool n)
 {
-  if (_st)
-    {
-      lua_State *lst = _st->_lst;
-      lua_pushnumber(lst, _id);
-      lua_pushboolean(lst, n);
-      lua_rawset(lst, LUA_REGISTRYINDEX);
-    }
-  return *this;
+	if (_st)
+	{
+		lua_State *lst = _st->_lst;
+		lua_pushnumber(lst, _id);
+		lua_pushboolean(lst, n);
+		lua_rawset(lst, LUA_REGISTRYINDEX);
+	}
+	return *this;
 }
 
-Value & Value::operator=(double n)
+Value &Value::operator=(double n)
 {
-  if (_st)
-    {
-      lua_State *lst = _st->_lst;
-      lua_pushnumber(lst, _id);
-      lua_pushnumber(lst, n);
-      lua_rawset(lst, LUA_REGISTRYINDEX);
-    }
-  return *this;
+	if (_st)
+	{
+		lua_State *lst = _st->_lst;
+		lua_pushnumber(lst, _id);
+		lua_pushnumber(lst, n);
+		lua_rawset(lst, LUA_REGISTRYINDEX);
+	}
+	return *this;
 }
 
-Value & Value::operator=(const String &str)
+Value &Value::operator=(const String &str)
 {
-  if (_st)
-    {
-      lua_State *lst = _st->_lst;
-      lua_pushnumber(lst, _id);
-      lua_pushlstring(lst, str.constData(), str.size());
-      lua_rawset(lst, LUA_REGISTRYINDEX);
-    }
-  return *this;
+	if (_st)
+	{
+		lua_State *lst = _st->_lst;
+		lua_pushnumber(lst, _id);
+		lua_pushlstring(lst, str.constData(), str.size());
+		lua_rawset(lst, LUA_REGISTRYINDEX);
+	}
+	return *this;
 }
 
-Value & Value::operator=(const Ref<UserData> &ud)
+Value &Value::operator=(const Ref<UserData> &ud)
 {
-  if (_st)
-    {
-      lua_State *lst = _st->_lst;
-      lua_pushnumber(lst, _id);
-      if (ud.valid())
-	ud->push_ud(lst);
-      else
-        lua_pushnil(lst);
-      lua_rawset(lst, LUA_REGISTRYINDEX);
-    }
-  return *this;
+	if (_st)
+	{
+		lua_State *lst = _st->_lst;
+		lua_pushnumber(lst, _id);
+		if (ud.valid())
+			ud->push_ud(lst);
+		else
+			lua_pushnil(lst);
+		lua_rawset(lst, LUA_REGISTRYINDEX);
+	}
+	return *this;
 }
 
 Value::Value(State *ls, QObject *obj, bool delete_, bool reparent)
-  : ValueBase(ls)
-  , _id(_id_counter++)
+	: ValueBase(ls)
+	, _id(_id_counter++)
 {
-  lua_State *lst = _st->_lst;
-  lua_pushnumber(lst, _id);
-  QObjectWrapper::get_wrapper(_st, obj, reparent, delete_)->push_ud(lst);
-  lua_rawset(lst, LUA_REGISTRYINDEX);
+	lua_State *lst = _st->_lst;
+	lua_pushnumber(lst, _id);
+	QObjectWrapper::get_wrapper(_st, obj, reparent, delete_)->push_ud(lst);
+	lua_rawset(lst, LUA_REGISTRYINDEX);
 }
 
-Value & Value::operator=(QObject *obj)
+Value &Value::operator=(QObject *obj)
 {
-  if (_st)
-    {
-      lua_State *lst = _st->_lst;
-      lua_pushnumber(lst, _id);
-      QObjectWrapper::get_wrapper(_st, obj)->push_ud(lst);
-      lua_rawset(lst, LUA_REGISTRYINDEX);
-    }
-  return *this;
+	if (_st)
+	{
+		lua_State *lst = _st->_lst;
+		lua_pushnumber(lst, _id);
+		QObjectWrapper::get_wrapper(_st, obj)->push_ud(lst);
+		lua_rawset(lst, LUA_REGISTRYINDEX);
+	}
+	return *this;
 }
 
-Value & Value::operator=(const QVariant &qv)
+Value &Value::operator=(const QVariant &qv)
 {
-  if (_st)
-    *this = QMetaValue::raw_get_object(_st, qv.userType(), qv.constData());
-  return *this;
+	if (_st)
+		*this = QMetaValue::raw_get_object(_st, qv.userType(), qv.constData());
+	return *this;
 }
 
-Value & Value::operator=(const Value &lv)
+Value &Value::operator=(const Value &lv)
 {
-  if (_st && _st != lv._st)
-    {
-      lua_State *lst = _st->_lst;
-      lua_pushnumber(lst, _id);
-      lua_pushnil(lst);
-      lua_rawset(lst, LUA_REGISTRYINDEX);
-    }
+	if (_st && _st != lv._st)
+	{
+		lua_State *lst = _st->_lst;
+		lua_pushnumber(lst, _id);
+		lua_pushnil(lst);
+		lua_rawset(lst, LUA_REGISTRYINDEX);
+	}
 
-  _st = lv._st;
+	_st = lv._st;
 
-  if (_st)
-    {
-      lua_State *lst = _st->_lst;
-      lua_pushnumber(lst, _id);
+	if (_st)
+	{
+		lua_State *lst = _st->_lst;
+		lua_pushnumber(lst, _id);
 
-      try {
-	lv.push_value(lst);
-      } catch (...) {
-	lua_pop(lst, 1);
-	throw;
-      }
+		try
+		{
+			lv.push_value(lst);
+		}
+		catch (...)
+		{
+			lua_pop(lst, 1);
+			throw;
+		}
 
-      lua_rawset(lst, LUA_REGISTRYINDEX);
-    }
+		lua_rawset(lst, LUA_REGISTRYINDEX);
+	}
 
-  return *this;
+	return *this;
 }
 
 Value::Value(const Value &lv)
-  : ValueBase(lv._st)
-  , _id(_id_counter++)
+	: ValueBase(lv._st)
+	, _id(_id_counter++)
 {
-  if (!_st)
-    return;
+	if (!_st)
+		return;
 
-  lua_State *lst = _st->_lst;
-  lua_pushnumber(lst, _id);
-  try {
-    lv.push_value(lst);
-  } catch (...) {
-    lua_pop(lst, 1);
-    throw;
-  }
-  lua_rawset(lst, LUA_REGISTRYINDEX);
+	lua_State *lst = _st->_lst;
+	lua_pushnumber(lst, _id);
+	try
+	{
+		lv.push_value(lst);
+	}
+	catch (...)
+	{
+		lua_pop(lst, 1);
+		throw;
+	}
+	lua_rawset(lst, LUA_REGISTRYINDEX);
 }
 
 Value::Value()
-  : ValueBase(0)
-  , _id(_id_counter++)
+	: ValueBase(0)
+	, _id(_id_counter++)
 {
 }
 
 Value::Value(const State *ls, const Value &lv)
-  : ValueBase(ls)
-  , _id(_id_counter++)
+	: ValueBase(ls)
+	, _id(_id_counter++)
 {
-  if (!_st)
-    return;
+	if (!_st)
+		return;
 
-  Q_ASSERT(_st == lv._st);
+	Q_ASSERT(_st == lv._st);
 
-  lua_State *lst = _st->_lst;
-  lua_pushnumber(lst, _id);
-  try {
-    lv.push_value(lst);
-  } catch (...) {
-    lua_pop(lst, 1);
-    throw;
-  }
-  lua_rawset(lst, LUA_REGISTRYINDEX);
+	lua_State *lst = _st->_lst;
+	lua_pushnumber(lst, _id);
+	try
+	{
+		lv.push_value(lst);
+	}
+	catch (...)
+	{
+		lua_pop(lst, 1);
+		throw;
+	}
+	lua_rawset(lst, LUA_REGISTRYINDEX);
 }
 
 void Value::cleanup()
 {
-  lua_State *lst = _st->_lst;
-  lua_pushnumber(lst, _id);
-  lua_pushnil(lst);
-  lua_rawset(lst, LUA_REGISTRYINDEX);
+	lua_State *lst = _st->_lst;
+	lua_pushnumber(lst, _id);
+	lua_pushnil(lst);
+	lua_rawset(lst, LUA_REGISTRYINDEX);
 }
 
 Value::Value(int index, const State *st)
-  : ValueBase(st)
-  , _id(_id_counter++)
+	: ValueBase(st)
+	, _id(_id_counter++)
 {
-  lua_State *lst = _st->_lst;
+	lua_State *lst = _st->_lst;
 
-  lua_pushnumber(lst, _id);
-  if (index < 0
+	lua_pushnumber(lst, _id);
+	if (index < 0
 #if LUA_VERSION_NUM < 502
-      && index != LUA_GLOBALSINDEX
+		&& index != LUA_GLOBALSINDEX
 #endif
-      )
-    index--;
-  lua_pushvalue(lst, index);
-  lua_rawset(lst, LUA_REGISTRYINDEX);
+		)
+		index--;
+	lua_pushvalue(lst, index);
+	lua_rawset(lst, LUA_REGISTRYINDEX);
 }
 
 #ifdef Q_COMPILER_RVALUE_REFS
 Value::Value(Value &&lv)
-  : ValueBase(lv._st)
-  , _id(lv._id)
+	: ValueBase(lv._st)
+	, _id(lv._id)
 {
-  lv._st = 0;
+	lv._st = 0;
 }
 #endif
 
 Value::~Value()
 {
-  if (_st)
-    cleanup();
+	if (_st)
+		cleanup();
 }
 
 }
-
