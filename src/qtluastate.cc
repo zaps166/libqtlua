@@ -991,11 +991,6 @@ int State::lua_version() const
   return LUA_VERSION_NUM;
 }
 
-void State::lua_do(void (*func)(lua_State *st))
-{
-  func(_lst);
-}
-
 void State::fill_completion_list_r(String &path, const String &prefix,
 				   QStringList &list, const Value &tbl,
 				   int &cursor_offset)

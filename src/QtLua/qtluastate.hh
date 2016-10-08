@@ -198,15 +198,6 @@ public:
    */
   bool openlib(Library lib);
 
-  /** 
-   * Call given function pointer with internal @ref lua_State
-   * pointer. Can be used to register extra libraries or access
-   * internal lua interpreter directly.
-   *
-   * Use with care if you are nor familiar with the lua C API.
-   */
-  void lua_do(void (*func)(lua_State *st));
-
   /**
    * @This returns a pointer to the internal Lua state.
    */
