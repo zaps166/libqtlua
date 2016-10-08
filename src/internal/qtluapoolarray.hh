@@ -21,6 +21,8 @@
 #ifndef QTLUAPOOLARRAY_HH_
 #define QTLUAPOOLARRAY_HH_
 
+#include <stdint.h>
+
 namespace QtLua {
 
 template <class X, int max_size>

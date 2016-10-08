@@ -21,6 +21,7 @@
 #ifndef QTLUAVALUEREF_HXX_
 #define QTLUAVALUEREF_HXX_
 
+#include "qtluavalueref.hh"
 #include "qtluavalue.hxx"
 
 #include "State"

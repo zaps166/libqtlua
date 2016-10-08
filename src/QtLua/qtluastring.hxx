@@ -21,6 +21,8 @@
 #ifndef QTLUASTRING_HXX_
 #define QTLUASTRING_HXX_
 
+#include "qtluastring.hh"
+
 namespace QtLua {
 
 String::String()

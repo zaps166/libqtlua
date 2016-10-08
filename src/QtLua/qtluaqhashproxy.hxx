@@ -21,6 +21,7 @@
 #ifndef QTLUAQHASHPROXY_HXX_
 #define QTLUAQHASHPROXY_HXX_
 
+#include "qtluaqhashproxy.hh"
 #include "qtluauserdata.hxx"
 #include "qtluaiterator.hxx"
 

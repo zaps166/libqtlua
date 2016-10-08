@@ -22,6 +22,7 @@
 #define QTLUAMETACACHE_HXX_
 
 #include <QtLua/String>
+#include <internal/qtluametacache.hh>
 #include <internal/Member>
 
 namespace QtLua {

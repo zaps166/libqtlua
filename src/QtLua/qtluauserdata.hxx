@@ -25,6 +25,7 @@
 #include <cxxabi.h>
 #endif
 
+#include "qtluauserdata.hh"
 #include "qtluavalue.hxx"
 
 namespace QtLua {

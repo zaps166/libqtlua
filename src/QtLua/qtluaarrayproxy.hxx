@@ -21,6 +21,7 @@
 #ifndef QTLUAARRAYPROXY_HXX_
 #define QTLUAARRAYPROXY_HXX_
 
+#include "qtluaarrayproxy.hh"
 #include "qtluauserdata.hxx"
 #include "qtluaiterator.hxx"
 

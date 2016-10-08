@@ -21,6 +21,7 @@
 #ifndef QTLUAQOBJECTWRAPPER_HXX_
 #define QTLUAQOBJECTWRAPPER_HXX_
 
+#include <internal/qtluaqobjectwrapper.hh>
 #include <QtLua/qtluauserdata.hxx>
 
 namespace QtLua {

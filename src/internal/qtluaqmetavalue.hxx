@@ -21,6 +21,7 @@
 #ifndef QTLUAQMETAVALUE_HXX_
 #define QTLUAQMETAVALUE_HXX_
 
+#include <internal/qtluaqmetavalue.hh>
 #include <QtLua/qtluametatype.hxx>
 #include <QtLua/qtluavalue.hxx>
 

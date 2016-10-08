@@ -21,6 +21,7 @@
 #ifndef QTLUAUSEROBJECT_HXX_
 #define QTLUAUSEROBJECT_HXX_
 
+#include "qtluauserobject.hh"
 #include "qtluauserdata.hxx"
 #include "qtluaiterator.hxx"
 

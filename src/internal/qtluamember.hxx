@@ -21,6 +21,7 @@
 #ifndef QTLUAMEMBER_HXX_
 #define QTLUAMEMBER_HXX_
 
+#include <internal/qtluamember.hh>
 #include <QtLua/qtluauserdata.hxx>
 
 namespace QtLua {

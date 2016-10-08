@@ -21,6 +21,7 @@
 #ifndef QTLUASTATE_HXX_
 #define QTLUASTATE_HXX_
 
+#include "qtluastate.hh"
 #include "qtluastring.hxx"
 #include "qtluavalue.hxx"
 #include "qtluavalueref.hxx"

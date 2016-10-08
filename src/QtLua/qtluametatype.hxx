@@ -21,6 +21,7 @@
 #ifndef QTLUAMETATYPE_HXX_
 #define QTLUAMETATYPE_HXX_
 
+#include "qtluametatype.hh"
 #include "qtluavalue.hxx"
 
 namespace QtLua {

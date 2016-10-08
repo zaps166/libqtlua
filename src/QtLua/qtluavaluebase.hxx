@@ -23,6 +23,7 @@
 
 #include <typeinfo>
 
+#include "qtluavaluebase.hh"
 #include "qtluastring.hxx"
 
 #include "Iterator"

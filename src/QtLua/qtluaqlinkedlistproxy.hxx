@@ -21,6 +21,7 @@
 #ifndef QTLUAQLINKEDLISTPROXY_HXX_
 #define QTLUAQLINKEDLISTPROXY_HXX_
 
+#include "qtluaqlinkedlistproxy.hh"
 #include "qtluauserdata.hxx"
 #include "qtluaiterator.hxx"
 

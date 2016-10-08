@@ -26,11 +26,14 @@
 
 #include <QtLua/Ref>
 
+class QObject;
+
 namespace QtLua {
 
 class MetaCache;
 class QObjectWrapper;
 class Member;
+class String;
 
 typedef QMap<String, Ref<Member> > member_cache_t;
 typedef QHash<const QMetaObject *, MetaCache> meta_cache_t;

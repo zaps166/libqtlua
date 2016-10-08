@@ -23,6 +23,7 @@
 
 #include <typeinfo>
 
+#include "qtluavalue.hh"
 #include "qtluavaluebase.hxx"
 
 namespace QtLua {
