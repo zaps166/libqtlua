@@ -279,6 +279,11 @@ public:
 	/** Drop a Ref */
 	~Ref()
 	{
+		drop();
+	}
+
+	void drop()
+	{
 		if (_obj)
 			_obj->_drop();
 	}

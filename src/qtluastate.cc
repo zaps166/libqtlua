@@ -376,7 +376,7 @@ int State::lua_meta_item_gc(lua_State *st)
 	State *this_ = get_this(st);
 	QTLUA_SWITCH_THREAD(this_, st);
 
-	UserData::get_ud(st, 1).~Ref<UserData>();
+	UserData::get_ud(st, 1).drop();
 
 	QTLUA_RESTORE_THREAD(this_);
 	return 0;
