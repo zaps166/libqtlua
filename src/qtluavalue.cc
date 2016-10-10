@@ -86,7 +86,7 @@ void Value::init_thread(const Value &main)
 	if (main.type() != TFunction)
 	{
 		lua_pop(lst, 3);
-		QTLUA_THROW(QtLua::Value, "A `lua::function' value is expected as coroutine entry point.");
+		QTLUA_THROW(QtLua::Value, "A 'lua::function' value is expected as coroutine entry point.");
 	}
 
 	lua_xmove(lst, th, 1);
