@@ -280,7 +280,7 @@ void QMetaValue::raw_set_object(int type, void *data, const Value &v)
 			break;
 		}
 		QObject *obj = &v.to_userdata_cast<QObjectWrapper>()->get_object();
-		QWidget *w = dynamic_cast<QWidget *>(obj);
+		QWidget *w = qobject_cast<QWidget *>(obj);
 		if (obj && !w)
 			QTLUA_THROW(QtLua::MetaType, "Can not convert a non-QObject lua value to a QWidget.");
 		else

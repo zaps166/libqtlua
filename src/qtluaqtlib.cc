@@ -245,7 +245,7 @@ QTLUA_FUNCTION(layout_add)
 
 	QObject *obj = get_arg_qobject<QObject>(args, 0);
 
-	if (QFormLayout *la = dynamic_cast<QFormLayout *>(obj))
+	if (QFormLayout *la = qobject_cast<QFormLayout *>(obj))
 	{
 		if (args[1].type() == Value::TString)
 		{
@@ -253,14 +253,14 @@ QTLUA_FUNCTION(layout_add)
 			QObject &item2 = qow2->get_object();
 
 			// QFormLayout::addRow ( const QString & labelText, QLayout * field )
-			if (QLayout *li = dynamic_cast<QLayout *>(&item2))
+			if (QLayout *li = qobject_cast<QLayout *>(&item2))
 			{
 				qow2->set_delete(false);
 				la->addRow(args[1].to_string(), li);
 			}
 
 			// QFormLayout::addRow ( const QString & labelText, QWidget * field )
-			else if (QWidget *w2 = dynamic_cast<QWidget *>(&item2))
+			else if (QWidget *w2 = qobject_cast<QWidget *>(&item2))
 			{
 				if (QLayout *ol = w2->layout())
 					ol->removeWidget(w2);
@@ -285,14 +285,14 @@ QTLUA_FUNCTION(layout_add)
 			QFormLayout::ItemRole role = (col_span > 1 ? QFormLayout::SpanningRole : col ? QFormLayout::FieldRole : QFormLayout::LabelRole);
 
 			// QFormLayout::setLayout ( int row, ItemRole role, QLayout * layout )
-			if (QLayout *li = dynamic_cast<QLayout *>(&item))
+			if (QLayout *li = qobject_cast<QLayout *>(&item))
 			{
 				qow->set_delete(false);
 				la->setLayout(row, role, li);
 			}
 
 			// QFormLayout::setWidget ( int row, ItemRole role, QWidget * widget )
-			else if (QWidget *w = dynamic_cast<QWidget *>(&item))
+			else if (QWidget *w = qobject_cast<QWidget *>(&item))
 			{
 				if (QLayout *ol = w->layout())
 					ol->removeWidget(w);
@@ -305,7 +305,7 @@ QTLUA_FUNCTION(layout_add)
 		}
 	}
 
-	if (QGridLayout *la = dynamic_cast<QGridLayout *>(obj))
+	if (QGridLayout *la = qobject_cast<QGridLayout *>(obj))
 	{
 		QObjectWrapper::ptr qow = get_arg_ud<QObjectWrapper>(args, 1);
 		QObject &item = qow->get_object();
@@ -317,14 +317,14 @@ QTLUA_FUNCTION(layout_add)
 		int align = get_arg<int>(args, 6, 0);
 
 		// QGridLayout::addLayout ( QLayout * layout, int row, int column, int rowSpan, int columnSpan, Qt::Alignment alignment )
-		if (QLayout *li = dynamic_cast<QLayout *>(&item))
+		if (QLayout *li = qobject_cast<QLayout *>(&item))
 		{
 			qow->set_delete(false);
 			la->addLayout(li, row, col, row_span, col_span, (Qt::Alignment)align);
 		}
 
 		// QGridLayout::addWidget ( QWidget * widget, int row, int column, int rowSpan, int columnSpan, Qt::Alignment alignment )
-		else if (QWidget *w = dynamic_cast<QWidget *>(&item))
+		else if (QWidget *w = qobject_cast<QWidget *>(&item))
 		{
 			if (QLayout *ol = w->layout())
 				ol->removeWidget(w);
@@ -336,18 +336,18 @@ QTLUA_FUNCTION(layout_add)
 		return QtLua::Value(ls);
 	}
 
-	if (QBoxLayout *la = dynamic_cast<QBoxLayout *>(obj))
+	if (QBoxLayout *la = qobject_cast<QBoxLayout *>(obj))
 	{
 		QObjectWrapper::ptr qow = get_arg_ud<QObjectWrapper>(args, 1);
 		QObject &item = qow->get_object();
 
-		if (QLayout *li = dynamic_cast<QLayout *>(&item))
+		if (QLayout *li = qobject_cast<QLayout *>(&item))
 		{
 			qow->set_delete(false);
 			la->addLayout(li);
 		}
 
-		else if (QWidget *w = dynamic_cast<QWidget *>(&item))
+		else if (QWidget *w = qobject_cast<QWidget *>(&item))
 		{
 			if (QLayout *ol = w->layout())
 				ol->removeWidget(w);
@@ -359,7 +359,7 @@ QTLUA_FUNCTION(layout_add)
 		return QtLua::Value(ls);
 	}
 
-	if (QWidget *w = dynamic_cast<QWidget *>(obj))
+	if (QWidget *w = qobject_cast<QWidget *>(obj))
 	{
 		QLayout *la = get_arg_qobject<QLayout>(args, 1);
 		delete w->layout();
@@ -434,9 +434,9 @@ QTLUA_FUNCTION(add_menu)
 	String text = args[1].to_string();
 	QObject *result;
 
-	if (QMenu *menu = dynamic_cast<QMenu *>(obj))
+	if (QMenu *menu = qobject_cast<QMenu *>(obj))
 		result = menu->addMenu(text);
-	else if (QMenuBar *menubar = dynamic_cast<QMenuBar *>(obj))
+	else if (QMenuBar *menubar = qobject_cast<QMenuBar *>(obj))
 		result = menubar->addMenu(text);
 	else
 		QTLUA_THROW(qt.ui.menu.add_menu, "Bad object type.");
@@ -455,9 +455,9 @@ QTLUA_FUNCTION(add_separator)
 	QObject *obj = args[0].to_qobject();
 	QObject *result;
 
-	if (QMenu *menu = dynamic_cast<QMenu *>(obj))
+	if (QMenu *menu = qobject_cast<QMenu *>(obj))
 		result = menu->addSeparator();
-	else if (QToolBar *tb = dynamic_cast<QToolBar *>(obj))
+	else if (QToolBar *tb = qobject_cast<QToolBar *>(obj))
 		result = tb->addSeparator();
 	else
 		QTLUA_THROW(qt.ui.menu.add_separator, "Bad object type.");
@@ -477,13 +477,13 @@ QTLUA_FUNCTION(add_action)
 	String text = args[1].to_string();
 	QObject *result;
 
-	if (QMenu *menu = dynamic_cast<QMenu *>(obj))
+	if (QMenu *menu = qobject_cast<QMenu *>(obj))
 		result = menu->addAction(text);
-	else if (QMenuBar *menubar = dynamic_cast<QMenuBar *>(obj))
+	else if (QMenuBar *menubar = qobject_cast<QMenuBar *>(obj))
 		result = menubar->addAction(text);
-	else if (QActionGroup *group = dynamic_cast<QActionGroup *>(obj))
+	else if (QActionGroup *group = qobject_cast<QActionGroup *>(obj))
 		result = group->addAction(text);
-	else if (QToolBar *tb = dynamic_cast<QToolBar *>(obj))
+	else if (QToolBar *tb = qobject_cast<QToolBar *>(obj))
 		result = tb->addAction(text);
 	else
 		QTLUA_THROW(qt.ui.menu.add_action, "Bad object type.");
@@ -499,24 +499,24 @@ QTLUA_FUNCTION(menu_attach)
 	QObject *obj = get_arg_qobject<QObject>(args, 0);
 	QObject *obj2 = get_arg_qobject<QObject>(args, 1);
 
-	if (QAction *action = dynamic_cast<QAction *>(obj2))
+	if (QAction *action = qobject_cast<QAction *>(obj2))
 	{
-		if (QMenu *menu = dynamic_cast<QMenu *>(obj))
+		if (QMenu *menu = qobject_cast<QMenu *>(obj))
 			menu->addAction(action);
-		else if (QMenuBar *menubar = dynamic_cast<QMenuBar *>(obj))
+		else if (QMenuBar *menubar = qobject_cast<QMenuBar *>(obj))
 			menubar->addAction(action);
-		else if (QActionGroup *group = dynamic_cast<QActionGroup *>(obj))
+		else if (QActionGroup *group = qobject_cast<QActionGroup *>(obj))
 			group->addAction(action);
-		else if (QToolBar *tb = dynamic_cast<QToolBar *>(obj))
+		else if (QToolBar *tb = qobject_cast<QToolBar *>(obj))
 			tb->addAction(action);
 		else
 			goto err;
 	}
-	else if (QMenu *submenu = dynamic_cast<QMenu *>(obj2))
+	else if (QMenu *submenu = qobject_cast<QMenu *>(obj2))
 	{
-		if (QMenu *menu = dynamic_cast<QMenu *>(obj))
+		if (QMenu *menu = qobject_cast<QMenu *>(obj))
 			menu->addAction(submenu->menuAction());
-		else if (QMenuBar *menubar = dynamic_cast<QMenuBar *>(obj))
+		else if (QMenuBar *menubar = qobject_cast<QMenuBar *>(obj))
 			menubar->addAction(submenu->menuAction());
 		else
 			goto err;
@@ -570,16 +570,16 @@ QTLUA_FUNCTION(remove)
 	else
 		pobj = obj->parent();
 
-	if ((action = dynamic_cast<QAction *>(obj)))
+	if ((action = qobject_cast<QAction *>(obj)))
 		;
-	else if ((menu = dynamic_cast<QMenu *>(obj)))
+	else if ((menu = qobject_cast<QMenu *>(obj)))
 		action = menu->menuAction();
 	else
 		QTLUA_THROW(qt.ui.menu.remove, "Bad object type.");
 
-	if (QWidget *w = dynamic_cast<QWidget *>(pobj))
+	if (QWidget *w = qobject_cast<QWidget *>(pobj))
 		w->removeAction(action);
-	else if (QActionGroup *group = dynamic_cast<QActionGroup *>(pobj))
+	else if (QActionGroup *group = qobject_cast<QActionGroup *>(pobj))
 		group->removeAction(action);
 	else
 		QTLUA_THROW(qt.ui.menu.remove, "Bad QWidget object type.");
@@ -594,37 +594,37 @@ QTLUA_FUNCTION(ui_attach)
 	QObject *obj = get_arg_qobject<QObject>(args, 0);
 	QObject *obj2 = get_arg_qobject<QObject>(args, 1);
 
-	if (QMainWindow *mainwin = dynamic_cast<QMainWindow *>(obj))
+	if (QMainWindow *mainwin = qobject_cast<QMainWindow *>(obj))
 	{
-		if (QMenuBar *menubar = dynamic_cast<QMenuBar *>(obj2))
+		if (QMenuBar *menubar = qobject_cast<QMenuBar *>(obj2))
 			mainwin->setMenuBar(menubar);
-		else if (QStatusBar *statusbar = dynamic_cast<QStatusBar *>(obj2))
+		else if (QStatusBar *statusbar = qobject_cast<QStatusBar *>(obj2))
 			mainwin->setStatusBar(statusbar);
-		else if (QToolBar *toolbar = dynamic_cast<QToolBar *>(obj2))
+		else if (QToolBar *toolbar = qobject_cast<QToolBar *>(obj2))
 			mainwin->addToolBar(toolbar);
-		else if (QDockWidget *dw = dynamic_cast<QDockWidget *>(obj2))
+		else if (QDockWidget *dw = qobject_cast<QDockWidget *>(obj2))
 			mainwin->addDockWidget((Qt::DockWidgetArea)get_arg<int>(args, 2, Qt::LeftDockWidgetArea), dw);
-		else if (QWidget *w = dynamic_cast<QWidget *>(obj2))
+		else if (QWidget *w = qobject_cast<QWidget *>(obj2))
 			mainwin->setCentralWidget(w);
 		else
 			goto err;
 	}
-	else if (QWidget *w = dynamic_cast<QWidget *>(obj2))
+	else if (QWidget *w = qobject_cast<QWidget *>(obj2))
 	{
-		if (QDockWidget *dw = dynamic_cast<QDockWidget *>(obj))
+		if (QDockWidget *dw = qobject_cast<QDockWidget *>(obj))
 			dw->setWidget(w);
-		else if (QStackedWidget *x = dynamic_cast<QStackedWidget *>(obj))
+		else if (QStackedWidget *x = qobject_cast<QStackedWidget *>(obj))
 			x->addWidget(w);
-		else if (QToolBar *x = dynamic_cast<QToolBar *>(obj))
+		else if (QToolBar *x = qobject_cast<QToolBar *>(obj))
 			x->addWidget(w);
-		else if (QScrollArea *x = dynamic_cast<QScrollArea *>(obj))
+		else if (QScrollArea *x = qobject_cast<QScrollArea *>(obj))
 			x->setWidget(w);
-		else if (QSplitter *x = dynamic_cast<QSplitter *>(obj))
+		else if (QSplitter *x = qobject_cast<QSplitter *>(obj))
 			x->addWidget(w);
-		else if (QMdiArea *x = dynamic_cast<QMdiArea *>(obj))
+		else if (QMdiArea *x = qobject_cast<QMdiArea *>(obj))
 			x->addSubWindow(w);
 #if QT_VERSION < 0x050000
-		else if (QWorkspace *x = dynamic_cast<QWorkspace *>(obj))
+		else if (QWorkspace *x = qobject_cast<QWorkspace *>(obj))
 			x->addWindow(w);
 #endif
 		else
