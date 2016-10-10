@@ -83,6 +83,7 @@ Value ArrayProxyRo<T>::meta_index(State *ls, const Value &key)
 template <class T>
 bool ArrayProxyRo<T>::meta_contains(State *ls, const Value &key)
 {
+	Q_UNUSED(ls)
 	try
 	{
 		unsigned int index = (unsigned int)key.to_number() - 1;
@@ -149,6 +150,8 @@ String ArrayProxyRo<T>::get_type_name() const
 template <class T>
 void ArrayProxy<T>::meta_newindex(State *ls, const Value &key, const Value &value)
 {
+	Q_UNUSED(ls)
+
 	if (!_array)
 		QTLUA_THROW(QtLua::ArrayProxy, "Can not index a null array.");
 

@@ -74,6 +74,7 @@ Value QVectorProxyRo<Container, max_resize, min_resize>::meta_index(State *ls, c
 template <class Container, unsigned max_resize, unsigned min_resize>
 bool QVectorProxyRo<Container, max_resize, min_resize>::meta_contains(State *ls, const Value &key)
 {
+	Q_UNUSED(ls)
 	try
 	{
 		int index = (unsigned int)key.to_number() - 1;
@@ -140,6 +141,8 @@ String QVectorProxyRo<Container, max_resize, min_resize>::get_type_name() const
 template <class Container, unsigned max_resize, unsigned min_resize>
 void QVectorProxyRo<Container, max_resize, min_resize>::completion_patch(String &path, String &entry, int &offset)
 {
+	Q_UNUSED(path)
+
 	entry += "[]";
 	offset--;
 }
@@ -147,6 +150,8 @@ void QVectorProxyRo<Container, max_resize, min_resize>::completion_patch(String 
 template <class Container, unsigned max_resize, unsigned min_resize>
 void QVectorProxy<Container, max_resize, min_resize>::meta_newindex(State *ls, const Value &key, const Value &value)
 {
+	Q_UNUSED(ls)
+
 	if (!_vector)
 		QTLUA_THROW(QtLua::QVectorProxy, "Can not write to a null vector.");
 

@@ -74,6 +74,7 @@ Value QListProxyRo<Container>::meta_index(State *ls, const Value &key)
 template <class Container>
 bool QListProxyRo<Container>::meta_contains(State *ls, const Value &key)
 {
+	Q_UNUSED(ls)
 	try
 	{
 		int index = (unsigned int)key.to_number() - 1;
@@ -140,6 +141,7 @@ String QListProxyRo<Container>::get_type_name() const
 template <class Container>
 void QListProxyRo<Container>::completion_patch(String &path, String &entry, int &offset)
 {
+	Q_UNUSED(path)
 	entry += "[]";
 	offset--;
 }
@@ -147,6 +149,8 @@ void QListProxyRo<Container>::completion_patch(String &path, String &entry, int 
 template <class Container>
 void QListProxy<Container>::meta_newindex(State *ls, const Value &key, const Value &value)
 {
+	Q_UNUSED(ls)
+
 	if (!_list)
 		QTLUA_THROW(QtLua::QListProxy, "Can not index a null container.");
 
