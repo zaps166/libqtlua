@@ -46,7 +46,6 @@
 #include <QWorkspace>
 #endif
 
-#include <QAbstractItemView>
 #include <QComboBox>
 
 #include <QMenu>
