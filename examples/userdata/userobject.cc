@@ -20,39 +20,45 @@
 
 #include <iostream>
 
-#include <QDebug>
+#include <QtLua/UserObject>
+
+/* anchor 1 */
+class Test : public QtLua::UserObject<Test>
+{
+	QTLUA_USEROBJECT(Test);
+
+	QTLUA_PROPERTY(int, _value);
+
+public:
+	Test(int value)
+		: _value(value)
+	{
+	}
+};
+
+QTLUA_PROPERTIES_TABLE(Test, QTLUA_PROPERTY_ENTRY(Test, "value", _value));
 
 #include <QtLua/State>
-#include <QtLua/Value>
+#include <QtLua/Function>
 
 int main()
 {
-  try {
-							/* anchor i1 */
-    QtLua::State state;
-							/* anchor i2 */
-    QtLua::State const & const_state = state;
-							/* anchor end */
+	try
+	{
 
-							/* anchor 1 */
-    // Access global table from lua
-    state.exec_statements("foo = 5");
+		QtLua::State state;
+		state.openlib(QtLua::QtLuaLib);
+		state.enable_qdebug_print(true);
 
-    // Access global table from C++
-    int foo = const_state["foo"];
-							/* anchor end */
-    std::cout << foo << std::endl;
-							/* anchor 2 */
-    // Access global table from lua
-    state.exec_statements("foo = 5");
+		state["foo"] = QTLUA_REFNEW(Test, 21);
+		state["bar"] = QTLUA_REFNEW(Test, 42);
 
-    // Access global table from C++
-    state["bar"] = 5;
-							/* anchor end */
+		state.exec_statements("for key, value in each(foo) do print(key, value) end");
+	}
+	catch (QtLua::String &e)
+	{
+		std::cerr << e.constData() << std::endl;
+	}
 
-  } catch (QtLua::String &e) {
-    std::cerr << e.constData() << std::endl;
-  }
-
+	return 0;
 }
-

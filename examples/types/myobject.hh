@@ -28,72 +28,61 @@
 #include <QtLua/State>
 #include <QDebug>
 
-							/* anchor 3 */
 struct Mystruct
 {
-  int a;
-  int b;
+	int a;
+	int b;
 };
 
-							/* anchor end */
-
-							/* anchor 1 */
 QTLUA_METATYPE(MyStructConvert, Mystruct);
 
 QtLua::Value MyStructConvert::qt2lua(QtLua::State *ls, const Mystruct *qtvalue)
 {
-  QtLua::Value luavalue(QtLua::Value::new_table(ls));
-  luavalue[1] = qtvalue->a;
-  luavalue[2] = qtvalue->b;
-  return luavalue;
+	QtLua::Value luavalue(QtLua::Value::new_table(ls));
+	luavalue[1] = qtvalue->a;
+	luavalue[2] = qtvalue->b;
+	return luavalue;
 }
 
 bool MyStructConvert::lua2qt(Mystruct *qtvalue, const QtLua::ValueBase &luavalue)
 {
-  qtvalue->a = luavalue.at(1);
-  qtvalue->b = luavalue.at(2);
-  return true;
+	qtvalue->a = luavalue.at(1);
+	qtvalue->b = luavalue.at(2);
+	return true;
 }
-							/* anchor end */
 
-							/* anchor 2 */
 QTLUA_METATYPE_QOBJECT(MyQMainwindowConvert, QMainWindow);
-							/* anchor end */
 
-							/* anchor 3 */
 class MyQObject : public QObject
 {
-  Q_OBJECT;
-  Q_PROPERTY(Mystruct mystruct READ mystruct WRITE setMystruct);
-  Q_PROPERTY(QMainWindow* mainwindow READ mainwindow WRITE setMainwindow);
-							/* anchor end */
+	Q_OBJECT;
+	Q_PROPERTY(Mystruct mystruct READ mystruct WRITE setMystruct);
+	Q_PROPERTY(QMainWindow *mainwindow READ mainwindow WRITE setMainwindow);
 
- public:
+public:
+	void setMystruct(Mystruct m)
+	{
+		my = m;
+	}
 
-  void setMystruct(Mystruct m)
-  {
-    my = m;
-  }
+	Mystruct mystruct() const
+	{
+		return my;
+	}
 
-  Mystruct mystruct() const
-  {
-    return my;
-  }
+	void setMainwindow(QMainWindow *m)
+	{
+		mw = m;
+	}
 
-  void setMainwindow(QMainWindow *m)
-  {
-    mw = m;
-  }
-
-  QMainWindow* mainwindow() const
-  {
-    return mw;
-  }
+	QMainWindow *mainwindow() const
+	{
+		return mw;
+	}
 
 private:
-  QMainWindow *mw;
-  Mystruct my;
+	QMainWindow *mw;
+	Mystruct my;
 };
 
 #endif
-

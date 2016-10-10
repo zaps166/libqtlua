@@ -32,43 +32,42 @@
 
 struct MyClass : public QtLua::UserData
 {
-  QTLUA_REFTYPE(MyClass);
-
+	QTLUA_REFTYPE(MyClass);
 };
 
 int main()
 {
-  try {
-    typedef QVector<MyClass::ptr> Container;
+	try
+	{
+		typedef QVector<MyClass::ptr> Container;
 
-    // QVector we want to access from lua
-    Container vector(2);
+		// QVector we want to access from lua
+		Container vector(2);
 
-    // Vector proxy which provides access to our QVector from lua
-    QtLua::QVectorProxy<Container> proxy(vector);
+		// Vector proxy which provides access to our QVector from lua
+		QtLua::QVectorProxy<Container> proxy(vector);
 
-    QtLua::State state;
-    state.openlib(QtLua::QtLuaLib);
-    state.enable_qdebug_print(true);
+		QtLua::State state;
+		state.openlib(QtLua::QtLuaLib);
+		state.enable_qdebug_print(true);
 
-    // Declare a lua global variable using our vector proxy
-    state["vector"] = proxy;
+		// Declare a lua global variable using our vector proxy
+		state["vector"] = proxy;
 
-    // Set a ref counted pointer to newly allocated object in QVector directly
-    vector[0] = QTLUA_REFNEW(MyClass, );
+		// Set a ref counted pointer to newly allocated object in QVector directly
+		vector[0] = QTLUA_REFNEW(MyClass, );
 
-    // Read/Write in QVector from lua using the proxy object
-    state.exec_statements("vector[2] = vector[1]");
+		// Read/Write in QVector from lua using the proxy object
+		state.exec_statements("vector[2] = vector[1]");
 
-    // Read back pointer in QVector inserted from lua script
-    std::cout << vector[1].ptr() << std::endl;
+		// Read back pointer in QVector inserted from lua script
+		std::cout << vector[1].ptr() << std::endl;
 
-    // Iterate through QVector from lua script
-    state.exec_statements("for key, value in each(vector) do print(key, value) end");
-
-  } catch (QtLua::String &e) {
-    std::cerr << e.constData() << std::endl;
-  }
-
+		// Iterate through QVector from lua script
+		state.exec_statements("for key, value in each(vector) do print(key, value) end");
+	}
+	catch (QtLua::String &e)
+	{
+		std::cerr << e.constData() << std::endl;
+	}
 }
-

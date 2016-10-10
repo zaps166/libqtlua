@@ -30,31 +30,33 @@
 
 int main()
 {
-  try {
-    typedef QLinkedList<QtLua::String> Container;
+	try
+	{
+		typedef QLinkedList<QtLua::String> Container;
 
-    // QLinkedlist we want to access from lua
-    Container linkedlist;
+		// QLinkedlist we want to access from lua
+		Container linkedlist;
 
-    // Linkedlist proxy which provides access to our QLinkedlist from lua
-    QtLua::QLinkedListProxy<Container> proxy(linkedlist);
+		// Linkedlist proxy which provides access to our QLinkedlist from lua
+		QtLua::QLinkedListProxy<Container> proxy(linkedlist);
 
-    QtLua::State state;
-    state.openlib(QtLua::QtLuaLib);
-    state.enable_qdebug_print(true);
+		QtLua::State state;
+		state.openlib(QtLua::QtLuaLib);
+		state.enable_qdebug_print(true);
 
-    // Declare a lua global variable using our QLinkedlist proxy
-    state["linkedlist"] = proxy;
+		// Declare a lua global variable using our QLinkedlist proxy
+		state["linkedlist"] = proxy;
 
-    // Set a value in QLinkedlist directly
-    linkedlist << "foo" << "bar" << "FOO";
+		// Set a value in QLinkedlist directly
+		linkedlist << "foo"
+				   << "bar"
+				   << "FOO";
 
-    // Iterate through QLinkedlist from lua script
-    state.exec_statements("for key, value in each(linkedlist) do print(key, value) end");
-
-  } catch (QtLua::String &e) {
-    std::cerr << e.constData() << std::endl;
-  }
-
+		// Iterate through QLinkedlist from lua script
+		state.exec_statements("for key, value in each(linkedlist) do print(key, value) end");
+	}
+	catch (QtLua::String &e)
+	{
+		std::cerr << e.constData() << std::endl;
+	}
 }
-

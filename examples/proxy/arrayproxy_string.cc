@@ -29,40 +29,34 @@
 
 int main()
 {
-  try {
-							/* anchor 1 */
-    QtLua::String array[4];
+	try
+	{
+		QtLua::String array[4];
 
-    // Array proxy which provides access to our array from lua.
-    QtLua::ArrayProxy<QtLua::String> proxy(array, 4);
-							/* anchor 2 */
+		// Array proxy which provides access to our array from lua.
+		QtLua::ArrayProxy<QtLua::String> proxy(array, 4);
 
-    QtLua::State state;
-    state.openlib(QtLua::QtLuaLib);
-							/* anchor end */
-    state.enable_qdebug_print(true);
-							/* anchor 2 */
+		QtLua::State state;
+		state.openlib(QtLua::QtLuaLib);
+		state.enable_qdebug_print(true);
 
-    // Declare a lua global variable using our array proxy
-    state["array"] = proxy;
+		// Declare a lua global variable using our array proxy
+		state["array"] = proxy;
 
-    // Set a value in array
-    array[0] = "foo";
+		// Set a value in array
+		array[0] = "foo";
 
-    // Read/Write array from lua using the proxy object
-    state.exec_statements("array[2] = array[1]..\"bar\" ");
+		// Read/Write array from lua using the proxy object
+		state.exec_statements("array[2] = array[1]..\"bar\" ");
 
-							/* anchor 3 */
-    // Read back value in array modified from lua script
-    std::cout << array[1].constData() << std::endl;
+		// Read back value in array modified from lua script
+		std::cout << array[1].constData() << std::endl;
 
-    // Iterate through array from lua script
-    state.exec_statements("for key, value in each(array) do print(key, value) end");
-							/* anchor end */
-
-  } catch (QtLua::String &e) {
-    std::cerr << e.constData() << std::endl;
-  }
-
+		// Iterate through array from lua script
+		state.exec_statements("for key, value in each(array) do print(key, value) end");
+	}
+	catch (QtLua::String &e)
+	{
+		std::cerr << e.constData() << std::endl;
+	}
 }
-

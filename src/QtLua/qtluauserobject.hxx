@@ -65,6 +65,7 @@ Value UserObject<T>::meta_index(State *ls, const Value &key)
 template <class T>
 bool UserObject<T>::meta_contains(State *ls, const Value &key)
 {
+	Q_UNUSED(ls)
 	try
 	{
 		get_entry(key.to_string());
@@ -113,6 +114,8 @@ bool UserObject<T>::support(Value::Operation c) const
 template <class T>
 void UserObject<T>::completion_patch(String &path, String &entry, int &offset)
 {
+	Q_UNUSED(path)
+	Q_UNUSED(offset)
 	entry += ".";
 }
 

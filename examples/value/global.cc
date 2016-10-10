@@ -18,43 +18,34 @@
 
 */
 
-/* example */
+#include <iostream>
+
+#include <QDebug>
+
 #include <QtLua/State>
-#include <QtLua/Function>
+#include <QtLua/Value>
 
-							/* anchor 1 */
-class MyObject : public QtLua::UserData
-{
-public:
-  QTLUA_REFTYPE(MyObject);
-
-  MyObject(int a)
-  : a_(a) {}
-
-private:
-  int a_;
-};
-
-							/* anchor 2 */
-MyObject::ptr my;
-							/* anchor end */
 int main()
 {
-  QtLua::State ls;
+	try
+	{
+		QtLua::State state;
+		QtLua::State const &const_state = state;
 
-  /* anchor end */
-  try {
-							/* anchor 3 */
-    QtLua::UserData::ptr ud = QTLUA_REFNEW(QtLua::UserData, );
-							/* anchor 4 */
-    ls["my_global_var"] = ud;
-							/* anchor 5 */
-    MyObject::ptr my = QTLUA_REFNEW(MyObject, 42);
-							/* anchor end */
- } catch (QtLua::String &e) {
-    std::cerr << e.constData() << std::endl;
-  }
+		// Access global table from lua
+		state.exec_statements("foo = 5");
 
-  return 0;
+		// Access global table from C++
+		int foo = const_state["foo"];
+		std::cout << foo << std::endl;
+		// Access global table from lua
+		state.exec_statements("foo = 5");
+
+		// Access global table from C++
+		state["bar"] = 5;
+	}
+	catch (QtLua::String &e)
+	{
+		std::cerr << e.constData() << std::endl;
+	}
 }
-

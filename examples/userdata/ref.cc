@@ -18,47 +18,41 @@
 
 */
 
-#include <QtLua/UserObject>
-
-								/* anchor 1 */
-class Test : public QtLua::UserObject<Test>
-{
-  QTLUA_USEROBJECT(Test);
-
-  QTLUA_PROPERTY(int, _value);
-
-public:
-  Test(int value)
-    : _value(value)
-  {
-  }
-
-};
-
-QTLUA_PROPERTIES_TABLE(Test,
-  QTLUA_PROPERTY_ENTRY(Test, "value", _value)
-);
-/* anchor end */
+#include <iostream>
 
 #include <QtLua/State>
 #include <QtLua/Function>
 
+class MyObject : public QtLua::UserData
+{
+public:
+	QTLUA_REFTYPE(MyObject);
+
+	MyObject(int a)
+		: a_(a)
+	{
+	}
+
+private:
+	int a_;
+};
+
+MyObject::ptr my;
+
 int main()
 {
-  try {
+	QtLua::State ls;
 
-    QtLua::State state;
-    state.openlib(QtLua::QtLuaLib);
-    state.enable_qdebug_print(true);
+	try
+	{
+		QtLua::UserData::ptr ud = QTLUA_REFNEW(QtLua::UserData, );
+		ls["my_global_var"] = ud;
+		MyObject::ptr my = QTLUA_REFNEW(MyObject, 42);
+	}
+	catch (QtLua::String &e)
+	{
+		std::cerr << e.constData() << std::endl;
+	}
 
-    state["foo"] = QTLUA_REFNEW(Test, 21);
-    state["bar"] = QTLUA_REFNEW(Test, 42);
-
-    state.exec_statements("for key, value in each(foo) do print(key, value) end");
-  } catch (QtLua::String &e) {
-    std::cerr << e.constData() << std::endl;
-  }
-
-
-  return 0;
+	return 0;
 }

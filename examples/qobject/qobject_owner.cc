@@ -26,31 +26,28 @@
 
 int main(int argc, char *argv[])
 {
-  /* anchor 1 */
-  QApplication app(argc, argv);
-  QtLua::State state;
+	QApplication app(argc, argv);
+	QtLua::State state;
 
-  QDialog *qd = new QDialog();
-  // Assume C++ pointers to QDialog exist as it has no parents, do not take ownership
-  state["dialog1"] = qd;
+	QDialog *qd = new QDialog();
+	// Assume C++ pointers to QDialog exist as it has no parents, do not take ownership
+	state["dialog1"] = qd;
 
-  // Explicitly take ownership of new QDialog
-  state["dialog2"] = QtLua::Value(&state, new QDialog(), true, true);
+	// Explicitly take ownership of new QDialog
+	state["dialog2"] = QtLua::Value(&state, new QDialog(), true, true);
 
-  // Reuse same wrapper as dialog1 and explicitly leave ownership
-  state["dialog3"] = QtLua::Value(&state, qd, false, true);
+	// Reuse same wrapper as dialog1 and explicitly leave ownership
+	state["dialog3"] = QtLua::Value(&state, qd, false, true);
 
-  // Invoke QDialog show() methods from lua
-  state.exec_statements("dialog1:show(); dialog2:show();");
+	// Invoke QDialog show() methods from lua
+	state.exec_statements("dialog1:show(); dialog2:show();");
 
-  app.exec();
+	app.exec();
 
-  // Delete qd QObject, dialog1 and dialog3 now refer to an empty wrapper
-  delete qd;
-  // Delete wrapper and associated QObject
-  state.exec_statements("dialog2 = nil");
-  /* anchor end */
+	// Delete qd QObject, dialog1 and dialog3 now refer to an empty wrapper
+	delete qd;
+	// Delete wrapper and associated QObject
+	state.exec_statements("dialog2 = nil");
 
-  return 0;
+	return 0;
 }
-

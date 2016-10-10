@@ -18,22 +18,49 @@
 
 */
 
-#include <QAction>
+#include <iostream>
 
 #include <QtLua/State>
+#include <QtLua/Function>
+
+/* anchor 1 */
+QTLUA_FUNCTION(foo)
+{
+	QtLua::String a = get_arg<QtLua::String>(args, 0);
+	int b = get_arg<int>(args, 1, 42);
+
+	Q_UNUSED(a);
+	Q_UNUSED(b);
+
+	return QtLua::Value(ls, "test");
+}
 
 int main()
 {
-  QtLua::State state;
-  state.openlib(QtLua::QtLuaLib);
-  state.enable_qdebug_print(true);
+	try
+	{
+		{
+			QtLua::State state;
 
-  QAction object(0);
+			QTLUA_FUNCTION_REGISTER(&state, "bar.", foo);
 
-  state["qobject"] = &object;
+			state.openlib(QtLua::QtLuaLib);
+			state.enable_qdebug_print(true);
+			state.exec_statements("print(bar.foo(\"test\"))");
+		}
 
-  state.exec_statements("for key, value in each(qobject) do print(key, value) end");
+		{
+			QtLua::State state;
 
-  state["qobject"] = QtLua::Value(&state);
+			static QtLua_Function_foo foo;
+
+			QtLua::Value f(&state, foo);
+		}
+	}
+	catch (QtLua::String &e)
+	{
+		std::cerr << e.constData() << std::endl;
+	}
+
+	return 0;
 }
-

@@ -18,6 +18,8 @@
 
 */
 
+#include <iostream>
+
 #include <QApplication>
 #include <QMainWindow>
 
@@ -26,34 +28,30 @@
 
 #include "myobject.hh"
 
-							/* anchor 1 */
 MyStructConvert mystruct_converter;
-							/* anchor end */
-							/* anchor 2 */
 MyQMainwindowConvert qmainwindow_converter;
-							/* anchor end */
 
 int main(int argc, char *argv[])
 {
-  try {
-    QApplication app(argc, argv);
+	try
+	{
+		QApplication app(argc, argv);
 
-    QtLua::State state;
+		QtLua::State state;
 
-    state["myobject"] = QtLua::Value(&state, new MyQObject());
+		state["myobject"] = QtLua::Value(&state, new MyQObject());
 
-    state["mw"] = QtLua::Value(&state, new QMainWindow());
-    state.exec_statements("myobject.mainwindow = mw");
+		state["mw"] = QtLua::Value(&state, new QMainWindow());
+		state.exec_statements("myobject.mainwindow = mw");
 
-    state.exec_statements("myobject.mystruct = {1, 2}");
+		state.exec_statements("myobject.mystruct = {1, 2}");
 
-    int a = state.exec_statements("return myobject.mystruct[1]")[0];
+		int a = state.exec_statements("return myobject.mystruct[1]")[0];
 
-    std::cout << a << std::endl;
-
-  } catch (QtLua::String &e) {
-    std::cerr << e.constData() << std::endl;
-  }
-
+		std::cout << a << std::endl;
+	}
+	catch (QtLua::String &e)
+	{
+		std::cerr << e.constData() << std::endl;
+	}
 }
-
