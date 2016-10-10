@@ -377,7 +377,7 @@ inline int ValueBase::to_integer() const
 template <class X>
 inline X *ValueBase::to_qobject_cast() const
 {
-	X *p = dynamic_cast<X *>(to_qobject());
+	X *p = qobject_cast<X *>(to_qobject());
 	if (!p)
 		QTLUA_THROW(QtLua::ValueBase, "Can not cast this QObject to the '%' class.",
 					.arg(X::staticMetaObject.className()));
